@@ -1,6 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
-import { ArrowLeft, BookOpen, ClipboardList, Download, StickyNote } from "lucide-react";
+import {
+  ArrowLeft,
+  BookOpen,
+  CalendarDays,
+  ClipboardList,
+  Download,
+  GraduationCap,
+  HeartHandshake,
+  ShieldCheck,
+  StickyNote,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 
 import { PageHero } from "@/components/academic/PageHero";
 import { TimetableSection } from "@/components/academic/TimetableSection";
