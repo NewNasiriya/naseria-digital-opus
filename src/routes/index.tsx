@@ -20,7 +20,7 @@ function Index() {
             المرحلة الأولى — نظام التصميم
           </p>
           <h1 className="mt-4 rule-accent inline-block">
-            مدرسة النصيرية الابتدائية الجديدة
+            مدرسة الناصرية الابتدائية الجديدة
           </h1>
           <p className="mt-6 text-lg leading-loose text-muted-foreground">
             تم إعداد الأساس البصري للمشروع. سيتم بناء صفحات الموقع الرسمية في
