@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Award, ArrowLeft, Star, Trophy } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
@@ -28,10 +29,10 @@ export function HonorBoardPreview() {
             </p>
             <div className="mt-8">
               <Button asChild variant="outline" size="lg">
-                <a href="#honor-all">
+                <Link to="/honor">
                   عرض لوحة الشرف
                   <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                </a>
+                </Link>
               </Button>
             </div>
           </div>

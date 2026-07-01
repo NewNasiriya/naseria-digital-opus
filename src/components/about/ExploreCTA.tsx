@@ -1,8 +1,10 @@
+import { Link } from "@tanstack/react-router";
 import {
   BookOpen,
   Newspaper,
   Sparkles,
   Trophy,
+  Award,
   Phone,
   ArrowLeft,
   type LucideIcon,
@@ -14,7 +16,7 @@ import { Section } from "@/components/layout/Section";
 interface Explore {
   title: string;
   description: string;
-  href: string;
+  to: string;
   icon: LucideIcon;
 }
 
@@ -22,31 +24,37 @@ const ITEMS: Explore[] = [
   {
     title: "الحياة الأكاديمية",
     description: "الجداول، الامتحانات، والتقويم الأكاديمي.",
-    href: "/#academic",
+    to: "/academic",
     icon: BookOpen,
+  },
+  {
+    title: "الإنجازات",
+    description: "مشاريع التطوير والبنية التحتية للمدرسة.",
+    to: "/achievements",
+    icon: Trophy,
   },
   {
     title: "أخبار المدرسة",
     description: "آخر المستجدات والفعاليات الرسمية.",
-    href: "/#news",
+    to: "/news",
     icon: Newspaper,
   },
   {
     title: "الأنشطة",
     description: "الرياضة والفنون والثقافة والرحلات.",
-    href: "/#activities",
+    to: "/activities",
     icon: Sparkles,
   },
   {
     title: "لوحة الشرف",
     description: "طلاب متميزون نفتخر بهم.",
-    href: "/#honor",
-    icon: Trophy,
+    to: "/honor",
+    icon: Award,
   },
   {
     title: "تواصل معنا",
     description: "قنوات التواصل الرسمية مع الإدارة.",
-    href: "#contact",
+    to: "/contact",
     icon: Phone,
   },
 ];
@@ -69,9 +77,9 @@ export function ExploreCTA() {
           {ITEMS.map((it) => {
             const Icon = it.icon;
             return (
-              <a
+              <Link
                 key={it.title}
-                href={it.href}
+                to={it.to}
                 className="group flex h-full flex-col rounded-2xl border border-border bg-card p-6 elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:elevation-md"
               >
                 <span
@@ -90,7 +98,7 @@ export function ExploreCTA() {
                   الانتقال
                   <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                 </span>
-              </a>
+              </Link>
             );
           })}
         </div>

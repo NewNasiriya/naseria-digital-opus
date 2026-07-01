@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import { ArrowLeft, CalendarDays, Newspaper } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
@@ -38,10 +39,10 @@ function SectionHeader() {
         <h2 className="mt-3 rule-accent inline-block">أخبار المدرسة</h2>
       </div>
       <Button asChild variant="ghost" className="text-primary">
-        <a href="#news-all">
+        <Link to="/news">
           كل الأخبار
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        </a>
+        </Link>
       </Button>
     </div>
   );
@@ -75,13 +76,14 @@ function NewsCard({ item }: { item: NewsRow }) {
           </p>
         )}
         <div className="mt-auto pt-5">
-          <a
-            href={`#news/${item.slug}`}
+          <Link
+            to="/news/$slug"
+            params={{ slug: item.slug }}
             className="inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors hover:text-primary-hover"
           >
             اقرأ المزيد
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          </a>
+          </Link>
         </div>
       </div>
     </article>

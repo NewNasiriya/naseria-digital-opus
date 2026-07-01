@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Phone } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
@@ -19,10 +20,10 @@ export function CallToAction() {
             size="lg"
             className="bg-white text-primary hover:bg-white/90"
           >
-            <a href="#contact">
+            <Link to="/contact">
               <Phone className="h-4 w-4" aria-hidden="true" />
               تواصل معنا
-            </a>
+            </Link>
           </Button>
           <Button
             asChild
@@ -30,10 +31,10 @@ export function CallToAction() {
             variant="outline"
             className="border-white/40 bg-transparent text-primary-foreground hover:bg-white/10 hover:text-primary-foreground"
           >
-            <a href="#about">
+            <Link to="/about">
               تعرّف على المدرسة
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            </a>
+            </Link>
           </Button>
         </div>
       </Container>
