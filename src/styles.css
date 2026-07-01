@@ -394,12 +394,12 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Admin sidebar off-canvas (mobile). Uses logical translate so RTL and LTR both hide correctly. */
+/* Admin sidebar off-canvas (mobile). Anchored to start (right in RTL, left in LTR). */
 .admin-sidebar[data-open="false"] {
-  transform: translateX(100%);
+  transform: translateX(-100%);
 }
 [dir="rtl"] .admin-sidebar[data-open="false"] {
-  transform: translateX(-100%);
+  transform: translateX(100%);
 }
 @media (min-width: 1024px) {
   .admin-sidebar[data-open="false"],
