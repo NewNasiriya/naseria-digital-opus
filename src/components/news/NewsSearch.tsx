@@ -21,7 +21,7 @@ export function NewsSearch({ initialValue = "" }: NewsSearchProps) {
   useEffect(() => {
     const t = setTimeout(() => {
       navigate({
-        search: (prev) => ({
+        search: (prev: Record<string, unknown>) => ({
           ...prev,
           q: value.trim() ? value.trim() : undefined,
           page: undefined,
