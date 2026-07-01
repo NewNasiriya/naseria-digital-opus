@@ -115,9 +115,32 @@ interface StatsProps {
   items?: StatItem[];
 }
 
-export function Stats({ items = DEFAULT_STATS }: StatsProps) {
+export function Stats({ items }: StatsProps) {
   const [active, setActive] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  const { data: cmsItems } = useQuery({
+    queryKey: ["home", "statistics"],
+    enabled: !items,
+    staleTime: 5 * 60 * 1000,
+    queryFn: async (): Promise<StatItem[]> => {
+      const { data, error } = await supabase
+        .from("statistics")
+        .select("key,label_ar,value,icon_key,display_order,is_visible")
+        .eq("is_visible", true)
+        .order("display_order", { ascending: true });
+      if (error) throw error;
+      return (data ?? []).map((r: any) => ({
+        key: r.key,
+        label: r.label_ar,
+        value: r.value ?? 0,
+        icon: resolveIcon(r.icon_key, r.key),
+      }));
+    },
+  });
+
+  const finalItems =
+    items ?? (cmsItems && cmsItems.length > 0 ? cmsItems : DEFAULT_STATS);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -138,7 +161,7 @@ export function Stats({ items = DEFAULT_STATS }: StatsProps) {
     <Section id="stats" tone="default" spacing="default">
       <Container size="wide">
         <div ref={ref} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((stat) => (
+          {finalItems.map((stat) => (
             <StatCard key={stat.key} stat={stat} active={active} />
           ))}
         </div>
