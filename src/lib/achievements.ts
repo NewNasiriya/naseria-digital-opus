@@ -36,10 +36,29 @@ export interface AchievementListItem {
   academic_year: string | null;
 }
 
+export interface AchievementStoryHighlight {
+  title_ar: string;
+  body_ar: string;
+}
+
+export interface AchievementStoryContent {
+  layout: string | null;
+  welcome_title_ar: string | null;
+  welcome_body_ar: string | null;
+  official_message_title_ar: string | null;
+  official_message_ar: string | null;
+  closing_title_ar: string | null;
+  closing_body_ar: string | null;
+  supervision_label_ar: string | null;
+  supervision_name_ar: string | null;
+  highlights: AchievementStoryHighlight[];
+}
+
 export interface AchievementDetail extends AchievementListItem {
   seo_title: string | null;
   seo_description: string | null;
   gallery: AchievementGalleryItem[];
+  story: AchievementStoryContent | null;
 }
 
 const LIST_SELECT = `
@@ -71,6 +90,50 @@ function mapListRow(row: any): AchievementListItem {
       ? { id: row.category.id, slug: row.category.slug, name_ar: row.category.name_ar }
       : null,
     academic_year: row.academic_year?.name ?? null,
+  };
+}
+
+function mapStoryContent(externalRef: unknown): AchievementStoryContent | null {
+  if (!externalRef || typeof externalRef !== "object" || Array.isArray(externalRef)) {
+    return null;
+  }
+
+  const data = externalRef as Record<string, unknown>;
+  const rawHighlights = Array.isArray(data.highlights) ? data.highlights : [];
+
+  return {
+    layout: typeof data.story_layout === "string" ? data.story_layout : null,
+    welcome_title_ar:
+      typeof data.welcome_title_ar === "string" ? data.welcome_title_ar : null,
+    welcome_body_ar:
+      typeof data.welcome_body_ar === "string" ? data.welcome_body_ar : null,
+    official_message_title_ar:
+      typeof data.official_message_title_ar === "string"
+        ? data.official_message_title_ar
+        : null,
+    official_message_ar:
+      typeof data.official_message_ar === "string" ? data.official_message_ar : null,
+    closing_title_ar:
+      typeof data.closing_title_ar === "string" ? data.closing_title_ar : null,
+    closing_body_ar:
+      typeof data.closing_body_ar === "string" ? data.closing_body_ar : null,
+    supervision_label_ar:
+      typeof data.supervision_label_ar === "string" ? data.supervision_label_ar : null,
+    supervision_name_ar:
+      typeof data.supervision_name_ar === "string" ? data.supervision_name_ar : null,
+    highlights: rawHighlights
+      .map((item) => {
+        if (!item || typeof item !== "object" || Array.isArray(item)) return null;
+        const entry = item as Record<string, unknown>;
+        if (typeof entry.title_ar !== "string" || typeof entry.body_ar !== "string") {
+          return null;
+        }
+        return {
+          title_ar: entry.title_ar,
+          body_ar: entry.body_ar,
+        } satisfies AchievementStoryHighlight;
+      })
+      .filter((item): item is AchievementStoryHighlight => item !== null),
   };
 }
 
@@ -133,7 +196,7 @@ export async function fetchAchievementBySlug(
   const { data, error } = await supabase
     .from("achievements")
     .select(
-      `${LIST_SELECT}, seo_title, seo_description,
+      `${LIST_SELECT}, seo_title, seo_description, external_ref,
        gallery:achievement_media(id, caption_ar, caption_en, alt_ar, alt_en, display_order, image_url,
          media:media!achievement_media_media_id_fkey(bucket, storage_path, alt_ar, alt_en, file_name))`,
     )
@@ -171,6 +234,7 @@ export async function fetchAchievementBySlug(
     seo_title: (data as any).seo_title ?? null,
     seo_description: (data as any).seo_description ?? null,
     gallery,
+    story: mapStoryContent((data as any).external_ref),
   };
 }
 
