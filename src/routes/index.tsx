@@ -1,33 +1,56 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { Container } from "@/components/layout/Container";
-import { Section } from "@/components/layout/Section";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { SiteFooter } from "@/components/layout/SiteFooter";
+import { Hero } from "@/components/home/Hero";
+import { Stats } from "@/components/home/Stats";
+import { WelcomePreview } from "@/components/home/WelcomePreview";
+import { LatestNews } from "@/components/home/LatestNews";
+import { AcademicLifePreview } from "@/components/home/AcademicLifePreview";
+import { HonorBoardPreview } from "@/components/home/HonorBoardPreview";
+import { ActivitiesPreview } from "@/components/home/ActivitiesPreview";
+import { CallToAction } from "@/components/home/CallToAction";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "مدرسة الناصرية الابتدائية الجديدة" },
+      {
+        name: "description",
+        content:
+          "الموقع الرسمي لمدرسة الناصرية الابتدائية الجديدة — الأخبار، الجداول الدراسية، الأنشطة، لوحة الشرف، وإرشادات الطلاب وأولياء الأمور.",
+      },
+      {
+        property: "og:title",
+        content: "مدرسة الناصرية الابتدائية الجديدة",
+      },
+      {
+        property: "og:description",
+        content:
+          "الموقع الرسمي لمدرسة الناصرية الابتدائية الجديدة — تعليم متميز في بيئة حكومية آمنة ومحفزة.",
+      },
+      { property: "og:url", content: "/" },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+  }),
+  component: HomePage,
 });
 
-/**
- * Phase 1 placeholder — design system only.
- * The public homepage is built in a later phase per the project plan.
- */
-function Index() {
+function HomePage() {
   return (
-    <main>
-      <Section spacing="default" tone="default">
-        <Container size="narrow" className="text-center">
-          <p className="text-sm font-medium tracking-wide text-muted-foreground">
-            المرحلة الأولى — نظام التصميم
-          </p>
-          <h1 className="mt-4 rule-accent inline-block">
-            مدرسة الناصرية الابتدائية الجديدة
-          </h1>
-          <p className="mt-6 text-lg leading-loose text-muted-foreground">
-            تم إعداد الأساس البصري للمشروع. سيتم بناء صفحات الموقع الرسمية في
-            المراحل القادمة وفق دليل نظام التصميم.
-          </p>
-        </Container>
-      </Section>
-    </main>
+    <>
+      <SiteHeader />
+      <main id="main">
+        <Hero />
+        <Stats />
+        <WelcomePreview />
+        <LatestNews />
+        <AcademicLifePreview />
+        <HonorBoardPreview />
+        <ActivitiesPreview />
+        <CallToAction />
+      </main>
+      <SiteFooter />
+    </>
   );
 }
