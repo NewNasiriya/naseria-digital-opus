@@ -1,24 +1,33 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+import { Container } from "@/components/layout/Container";
+import { Section } from "@/components/layout/Section";
+
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
+/**
+ * Phase 1 placeholder — design system only.
+ * The public homepage is built in a later phase per the project plan.
+ */
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main>
+      <Section spacing="default" tone="default">
+        <Container size="narrow" className="text-center">
+          <p className="text-sm font-medium tracking-wide text-muted-foreground">
+            المرحلة الأولى — نظام التصميم
+          </p>
+          <h1 className="mt-4 rule-accent inline-block">
+            مدرسة النصيرية الابتدائية الجديدة
+          </h1>
+          <p className="mt-6 text-lg leading-loose text-muted-foreground">
+            تم إعداد الأساس البصري للمشروع. سيتم بناء صفحات الموقع الرسمية في
+            المراحل القادمة وفق دليل نظام التصميم.
+          </p>
+        </Container>
+      </Section>
+    </main>
   );
 }
