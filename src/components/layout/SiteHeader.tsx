@@ -51,15 +51,15 @@ export function SiteHeader() {
           className="flex min-w-0 items-center gap-3"
           aria-label="الصفحة الرئيسية"
         >
-          <span
+          <SchoolLogo
+            decorative
+            eager
+            size={56}
             className={cn(
-              "grid shrink-0 place-items-center rounded-md bg-primary text-primary-foreground font-bold transition-all",
-              scrolled ? "h-9 w-9 text-sm" : "h-11 w-11 text-base"
+              "shrink-0 transition-all",
+              scrolled ? "h-10 w-10" : "h-12 w-12 sm:h-14 sm:w-14",
             )}
-            aria-hidden="true"
-          >
-            ن
-          </span>
+          />
           <span className="flex min-w-0 flex-col leading-tight">
             <span
               className={cn(
