@@ -1,9 +1,11 @@
 import { Link } from "@tanstack/react-router";
-import { Award, ArrowLeft, Star, Trophy } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Award, ArrowLeft, Star, Trophy, GraduationCap } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
+import { fetchPublishedHonorBoards } from "@/lib/honor";
 
 const PLACEHOLDERS = [
   { icon: Trophy, label: "التفوق الدراسي" },
@@ -12,6 +14,15 @@ const PLACEHOLDERS = [
 ];
 
 export function HonorBoardPreview() {
+  const { data } = useQuery({
+    queryKey: ["home", "honor-boards"],
+    queryFn: () => fetchPublishedHonorBoards(),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const boards = (data ?? []).slice(0, 3);
+  const hasBoards = boards.length > 0;
+
   return (
     <Section id="honor" tone="default" spacing="default">
       <Container size="wide">
@@ -38,28 +49,50 @@ export function HonorBoardPreview() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
-            {PLACEHOLDERS.map((p) => {
-              const Icon = p.icon;
-              return (
-                <div
-                  key={p.label}
-                  className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-card p-6 text-center elevation-sm"
-                >
-                  <span
-                    aria-hidden="true"
-                    className="grid h-14 w-14 place-items-center rounded-full bg-primary-soft text-primary"
+            {hasBoards
+              ? boards.map((b) => (
+                  <Link
+                    key={b.id}
+                    to="/honor/grades/$level"
+                    params={{ level: String(b.grade_level) }}
+                    className="group flex flex-col items-center gap-4 rounded-2xl border border-border bg-card p-6 text-center elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:elevation-md"
                   >
-                    <Icon className="h-6 w-6" />
-                  </span>
-                  <p className="text-sm font-medium text-foreground">
-                    {p.label}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    بانتظار النشر
-                  </p>
-                </div>
-              );
-            })}
+                    <span
+                      aria-hidden="true"
+                      className="grid h-14 w-14 place-items-center rounded-full bg-primary-soft text-primary"
+                    >
+                      <GraduationCap className="h-6 w-6" />
+                    </span>
+                    <p className="text-sm font-medium text-foreground">
+                      {b.grade_name_ar}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {b.academic_year}
+                    </p>
+                  </Link>
+                ))
+              : PLACEHOLDERS.map((p) => {
+                  const Icon = p.icon;
+                  return (
+                    <div
+                      key={p.label}
+                      className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-card p-6 text-center elevation-sm"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="grid h-14 w-14 place-items-center rounded-full bg-primary-soft text-primary"
+                      >
+                        <Icon className="h-6 w-6" />
+                      </span>
+                      <p className="text-sm font-medium text-foreground">
+                        {p.label}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        بانتظار النشر
+                      </p>
+                    </div>
+                  );
+                })}
           </div>
         </div>
       </Container>
