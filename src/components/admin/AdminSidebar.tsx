@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { X } from "lucide-react";
 
+import { SchoolLogo } from "@/components/brand/SchoolLogo";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
