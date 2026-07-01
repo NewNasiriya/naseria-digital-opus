@@ -8,7 +8,7 @@ import { signInWithPassword } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+import { SchoolLogo } from "@/components/brand/SchoolLogo";
 
 const searchSchema = z.object({
   redirect: z.string().optional(),
