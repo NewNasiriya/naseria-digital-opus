@@ -21,7 +21,7 @@ export type CmsRealtimeEvent =
   | "activities.updated"
   | "homepage.updated";
 
-interface WatchOptions<Row> {
+interface WatchOptions<Row extends { [key: string]: any }> {
   table: string;
   event?: "INSERT" | "UPDATE" | "DELETE" | "*";
   filter?: string; // PostgREST-style filter, e.g. "status=eq.published"
@@ -29,14 +29,12 @@ interface WatchOptions<Row> {
 }
 
 /** Subscribe to `postgres_changes` on a public table. Returns unsubscribe. */
-export function watchTable<Row extends Record<string, unknown>>(
+export function watchTable<Row extends { [key: string]: any }>(
   opts: WatchOptions<Row>,
 ): () => void {
   const channelName = `cms:${opts.table}:${opts.event ?? "*"}:${opts.filter ?? "all"}`;
-  const channel: RealtimeChannel = supabase
-    .channel(channelName)
+  const channel: RealtimeChannel = (supabase.channel(channelName) as any)
     .on(
-      // @ts-expect-error postgres_changes types are looser than the runtime schema
       "postgres_changes",
       {
         event: opts.event ?? "*",
