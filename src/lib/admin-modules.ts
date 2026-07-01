@@ -9,6 +9,7 @@ import {
   Sparkles,
   Images,
   FolderOpen,
+  FileText,
   Phone,
   Users,
   Settings,
@@ -28,6 +29,7 @@ export type AdminModuleId =
   | "activities"
   | "gallery"
   | "media"
+  | "documents"
   | "contact"
   | "users"
   | "settings"
@@ -142,6 +144,16 @@ export const ADMIN_MODULES: AdminModule[] = [
     description: "الصور والملفات المتاحة لجميع الأقسام.",
     icon: FolderOpen,
     primaryAction: "رفع ملفات",
+    group: "media",
+  },
+  {
+    id: "documents",
+    slug: "documents",
+    title: "مركز المستندات",
+    short: "المستندات",
+    description: "ملفات PDF، التعميمات، السياسات، والنماذج القابلة للتنزيل.",
+    icon: FileText,
+    primaryAction: "رفع مستند",
     group: "media",
   },
   {
