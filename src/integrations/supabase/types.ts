@@ -139,30 +139,39 @@ export type Database = {
       achievement_media: {
         Row: {
           achievement_id: string
+          alt_ar: string | null
+          alt_en: string | null
           caption_ar: string | null
           caption_en: string | null
           created_at: string
           display_order: number
           id: string
-          media_id: string
+          image_url: string | null
+          media_id: string | null
         }
         Insert: {
           achievement_id: string
+          alt_ar?: string | null
+          alt_en?: string | null
           caption_ar?: string | null
           caption_en?: string | null
           created_at?: string
           display_order?: number
           id?: string
-          media_id: string
+          image_url?: string | null
+          media_id?: string | null
         }
         Update: {
           achievement_id?: string
+          alt_ar?: string | null
+          alt_en?: string | null
           caption_ar?: string | null
           caption_en?: string | null
           created_at?: string
           display_order?: number
           id?: string
-          media_id?: string
+          image_url?: string | null
+          media_id?: string | null
         }
         Relationships: [
           {
@@ -183,9 +192,11 @@ export type Database = {
       }
       achievements: {
         Row: {
+          academic_year_id: string | null
           achieved_on: string | null
           category_id: string | null
           cover_image_media_id: string | null
+          cover_image_url: string | null
           created_at: string
           created_by: string | null
           description_ar: string | null
@@ -193,11 +204,14 @@ export type Database = {
           external_ref: Json | null
           id: string
           is_featured: boolean
+          is_pinned: boolean
           og_image_id: string | null
           published_at: string | null
           search_tsv: unknown
           seo_description: string | null
           seo_title: string | null
+          show_on_about_timeline: boolean
+          show_on_homepage: boolean
           slug: string
           status: Database["public"]["Enums"]["content_status"]
           title_ar: string
@@ -207,9 +221,11 @@ export type Database = {
           view_count: number
         }
         Insert: {
+          academic_year_id?: string | null
           achieved_on?: string | null
           category_id?: string | null
           cover_image_media_id?: string | null
+          cover_image_url?: string | null
           created_at?: string
           created_by?: string | null
           description_ar?: string | null
@@ -217,11 +233,14 @@ export type Database = {
           external_ref?: Json | null
           id?: string
           is_featured?: boolean
+          is_pinned?: boolean
           og_image_id?: string | null
           published_at?: string | null
           search_tsv?: unknown
           seo_description?: string | null
           seo_title?: string | null
+          show_on_about_timeline?: boolean
+          show_on_homepage?: boolean
           slug: string
           status?: Database["public"]["Enums"]["content_status"]
           title_ar: string
@@ -231,9 +250,11 @@ export type Database = {
           view_count?: number
         }
         Update: {
+          academic_year_id?: string | null
           achieved_on?: string | null
           category_id?: string | null
           cover_image_media_id?: string | null
+          cover_image_url?: string | null
           created_at?: string
           created_by?: string | null
           description_ar?: string | null
@@ -241,11 +262,14 @@ export type Database = {
           external_ref?: Json | null
           id?: string
           is_featured?: boolean
+          is_pinned?: boolean
           og_image_id?: string | null
           published_at?: string | null
           search_tsv?: unknown
           seo_description?: string | null
           seo_title?: string | null
+          show_on_about_timeline?: boolean
+          show_on_homepage?: boolean
           slug?: string
           status?: Database["public"]["Enums"]["content_status"]
           title_ar?: string
@@ -255,6 +279,13 @@ export type Database = {
           view_count?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "achievements_academic_year_id_fkey"
+            columns: ["academic_year_id"]
+            isOneToOne: false
+            referencedRelation: "academic_years"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "achievements_category_id_fkey"
             columns: ["category_id"]
