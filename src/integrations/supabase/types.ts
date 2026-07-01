@@ -786,6 +786,83 @@ export type Database = {
         }
         Relationships: []
       }
+      faq_categories: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          slug: string
+          status: Database["public"]["Enums"]["content_status"]
+          title_ar: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          slug: string
+          status?: Database["public"]["Enums"]["content_status"]
+          title_ar: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          slug?: string
+          status?: Database["public"]["Enums"]["content_status"]
+          title_ar?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      faq_items: {
+        Row: {
+          answer_ar: string | null
+          category_id: string | null
+          created_at: string
+          created_by: string | null
+          display_order: number
+          id: string
+          question_ar: string
+          status: Database["public"]["Enums"]["content_status"]
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          answer_ar?: string | null
+          category_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          display_order?: number
+          id?: string
+          question_ar: string
+          status?: Database["public"]["Enums"]["content_status"]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          answer_ar?: string | null
+          category_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          display_order?: number
+          id?: string
+          question_ar?: string
+          status?: Database["public"]["Enums"]["content_status"]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "faq_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "faq_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       gallery_albums: {
         Row: {
           category: string | null
@@ -1827,6 +1904,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      school_policies: {
+        Row: {
+          attachments: Json
+          category_ar: string | null
+          content_ar: string | null
+          created_at: string
+          created_by: string | null
+          display_order: number
+          effective_date: string | null
+          id: string
+          status: Database["public"]["Enums"]["content_status"]
+          summary_ar: string | null
+          title_ar: string
+          updated_at: string
+          updated_by: string | null
+          visibility: string
+        }
+        Insert: {
+          attachments?: Json
+          category_ar?: string | null
+          content_ar?: string | null
+          created_at?: string
+          created_by?: string | null
+          display_order?: number
+          effective_date?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["content_status"]
+          summary_ar?: string | null
+          title_ar: string
+          updated_at?: string
+          updated_by?: string | null
+          visibility?: string
+        }
+        Update: {
+          attachments?: Json
+          category_ar?: string | null
+          content_ar?: string | null
+          created_at?: string
+          created_by?: string | null
+          display_order?: number
+          effective_date?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["content_status"]
+          summary_ar?: string | null
+          title_ar?: string
+          updated_at?: string
+          updated_by?: string | null
+          visibility?: string
+        }
+        Relationships: []
       }
       site_settings: {
         Row: {
