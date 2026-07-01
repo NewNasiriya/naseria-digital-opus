@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as HonorRouteImport } from './routes/honor'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as AchievementsRouteImport } from './routes/achievements'
 import { Route as AcademicRouteImport } from './routes/academic'
@@ -19,9 +20,11 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as HonorIndexRouteImport } from './routes/honor.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AchievementsIndexRouteImport } from './routes/achievements.index'
 import { Route as AcademicIndexRouteImport } from './routes/academic.index'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
+import { Route as AdminModuleRouteImport } from './routes/admin.$module'
 import { Route as AchievementsSlugRouteImport } from './routes/achievements.$slug'
 import { Route as AcademicStudentGuidelinesRouteImport } from './routes/academic.student-guidelines'
 import { Route as AcademicParentGuidelinesRouteImport } from './routes/academic.parent-guidelines'
@@ -43,6 +46,11 @@ const HonorRoute = HonorRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ActivitiesRoute = ActivitiesRouteImport.update({
@@ -80,6 +88,11 @@ const HonorIndexRoute = HonorIndexRouteImport.update({
   path: '/',
   getParentRoute: () => HonorRoute,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AchievementsIndexRoute = AchievementsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -94,6 +107,11 @@ const NewsSlugRoute = NewsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => NewsRoute,
+} as any)
+const AdminModuleRoute = AdminModuleRouteImport.update({
+  id: '/$module',
+  path: '/$module',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AchievementsSlugRoute = AchievementsSlugRouteImport.update({
   id: '/$slug',
@@ -140,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/academic': typeof AcademicRouteWithChildren
   '/achievements': typeof AchievementsRouteWithChildren
   '/activities': typeof ActivitiesRoute
+  '/admin': typeof AdminRouteWithChildren
   '/contact': typeof ContactRoute
   '/honor': typeof HonorRouteWithChildren
   '/news': typeof NewsRouteWithChildren
@@ -148,9 +167,11 @@ export interface FileRoutesByFullPath {
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/achievements/$slug': typeof AchievementsSlugRoute
+  '/admin/$module': typeof AdminModuleRoute
   '/news/$slug': typeof NewsSlugRoute
   '/academic/': typeof AcademicIndexRoute
   '/achievements/': typeof AchievementsIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/honor/': typeof HonorIndexRoute
   '/news/': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
@@ -166,9 +187,11 @@ export interface FileRoutesByTo {
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/achievements/$slug': typeof AchievementsSlugRoute
+  '/admin/$module': typeof AdminModuleRoute
   '/news/$slug': typeof NewsSlugRoute
   '/academic': typeof AcademicIndexRoute
   '/achievements': typeof AchievementsIndexRoute
+  '/admin': typeof AdminIndexRoute
   '/honor': typeof HonorIndexRoute
   '/news': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
@@ -181,6 +204,7 @@ export interface FileRoutesById {
   '/academic': typeof AcademicRouteWithChildren
   '/achievements': typeof AchievementsRouteWithChildren
   '/activities': typeof ActivitiesRoute
+  '/admin': typeof AdminRouteWithChildren
   '/contact': typeof ContactRoute
   '/honor': typeof HonorRouteWithChildren
   '/news': typeof NewsRouteWithChildren
@@ -189,9 +213,11 @@ export interface FileRoutesById {
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/achievements/$slug': typeof AchievementsSlugRoute
+  '/admin/$module': typeof AdminModuleRoute
   '/news/$slug': typeof NewsSlugRoute
   '/academic/': typeof AcademicIndexRoute
   '/achievements/': typeof AchievementsIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/honor/': typeof HonorIndexRoute
   '/news/': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
@@ -205,6 +231,7 @@ export interface FileRouteTypes {
     | '/academic'
     | '/achievements'
     | '/activities'
+    | '/admin'
     | '/contact'
     | '/honor'
     | '/news'
@@ -213,9 +240,11 @@ export interface FileRouteTypes {
     | '/academic/parent-guidelines'
     | '/academic/student-guidelines'
     | '/achievements/$slug'
+    | '/admin/$module'
     | '/news/$slug'
     | '/academic/'
     | '/achievements/'
+    | '/admin/'
     | '/honor/'
     | '/news/'
     | '/academic/grades/$level'
@@ -231,9 +260,11 @@ export interface FileRouteTypes {
     | '/academic/parent-guidelines'
     | '/academic/student-guidelines'
     | '/achievements/$slug'
+    | '/admin/$module'
     | '/news/$slug'
     | '/academic'
     | '/achievements'
+    | '/admin'
     | '/honor'
     | '/news'
     | '/academic/grades/$level'
@@ -245,6 +276,7 @@ export interface FileRouteTypes {
     | '/academic'
     | '/achievements'
     | '/activities'
+    | '/admin'
     | '/contact'
     | '/honor'
     | '/news'
@@ -253,9 +285,11 @@ export interface FileRouteTypes {
     | '/academic/parent-guidelines'
     | '/academic/student-guidelines'
     | '/achievements/$slug'
+    | '/admin/$module'
     | '/news/$slug'
     | '/academic/'
     | '/achievements/'
+    | '/admin/'
     | '/honor/'
     | '/news/'
     | '/academic/grades/$level'
@@ -268,6 +302,7 @@ export interface RootRouteChildren {
   AcademicRoute: typeof AcademicRouteWithChildren
   AchievementsRoute: typeof AchievementsRouteWithChildren
   ActivitiesRoute: typeof ActivitiesRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ContactRoute: typeof ContactRoute
   HonorRoute: typeof HonorRouteWithChildren
   NewsRoute: typeof NewsRouteWithChildren
@@ -294,6 +329,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/activities': {
@@ -345,6 +387,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HonorIndexRouteImport
       parentRoute: typeof HonorRoute
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/achievements/': {
       id: '/achievements/'
       path: '/'
@@ -365,6 +414,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/news/$slug'
       preLoaderRoute: typeof NewsSlugRouteImport
       parentRoute: typeof NewsRoute
+    }
+    '/admin/$module': {
+      id: '/admin/$module'
+      path: '/$module'
+      fullPath: '/admin/$module'
+      preLoaderRoute: typeof AdminModuleRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/achievements/$slug': {
       id: '/achievements/$slug'
@@ -454,6 +510,18 @@ const AchievementsRouteWithChildren = AchievementsRoute._addFileChildren(
   AchievementsRouteChildren,
 )
 
+interface AdminRouteChildren {
+  AdminModuleRoute: typeof AdminModuleRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminModuleRoute: AdminModuleRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface HonorRouteChildren {
   HonorIndexRoute: typeof HonorIndexRoute
   HonorGradesLevelRoute: typeof HonorGradesLevelRoute
@@ -484,6 +552,7 @@ const rootRouteChildren: RootRouteChildren = {
   AcademicRoute: AcademicRouteWithChildren,
   AchievementsRoute: AchievementsRouteWithChildren,
   ActivitiesRoute: ActivitiesRoute,
+  AdminRoute: AdminRouteWithChildren,
   ContactRoute: ContactRoute,
   HonorRoute: HonorRouteWithChildren,
   NewsRoute: NewsRouteWithChildren,
@@ -491,13 +560,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
