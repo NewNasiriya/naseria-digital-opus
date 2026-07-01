@@ -22,6 +22,7 @@ import { Route as AcademicStudentGuidelinesRouteImport } from './routes/academic
 import { Route as AcademicParentGuidelinesRouteImport } from './routes/academic.parent-guidelines'
 import { Route as AcademicCalendarRouteImport } from './routes/academic.calendar'
 import { Route as AcademicAttendanceBehaviourRouteImport } from './routes/academic.attendance-behaviour'
+import { Route as HonorGradesLevelRouteImport } from './routes/honor.grades.$level'
 import { Route as AcademicGradesLevelRouteImport } from './routes/academic.grades.$level'
 
 const NewsRoute = NewsRouteImport.update({
@@ -92,6 +93,11 @@ const AcademicAttendanceBehaviourRoute =
     path: '/attendance-behaviour',
     getParentRoute: () => AcademicRoute,
   } as any)
+const HonorGradesLevelRoute = HonorGradesLevelRouteImport.update({
+  id: '/grades/$level',
+  path: '/grades/$level',
+  getParentRoute: () => HonorRoute,
+} as any)
 const AcademicGradesLevelRoute = AcademicGradesLevelRouteImport.update({
   id: '/grades/$level',
   path: '/grades/$level',
@@ -113,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/honor/': typeof HonorIndexRoute
   '/news/': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
+  '/honor/grades/$level': typeof HonorGradesLevelRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/honor': typeof HonorIndexRoute
   '/news': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
+  '/honor/grades/$level': typeof HonorGradesLevelRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/honor/': typeof HonorIndexRoute
   '/news/': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
+  '/honor/grades/$level': typeof HonorGradesLevelRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/honor/'
     | '/news/'
     | '/academic/grades/$level'
+    | '/honor/grades/$level'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -174,6 +184,7 @@ export interface FileRouteTypes {
     | '/honor'
     | '/news'
     | '/academic/grades/$level'
+    | '/honor/grades/$level'
   id:
     | '__root__'
     | '/'
@@ -190,6 +201,7 @@ export interface FileRouteTypes {
     | '/honor/'
     | '/news/'
     | '/academic/grades/$level'
+    | '/honor/grades/$level'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -293,6 +305,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcademicAttendanceBehaviourRouteImport
       parentRoute: typeof AcademicRoute
     }
+    '/honor/grades/$level': {
+      id: '/honor/grades/$level'
+      path: '/grades/$level'
+      fullPath: '/honor/grades/$level'
+      preLoaderRoute: typeof HonorGradesLevelRouteImport
+      parentRoute: typeof HonorRoute
+    }
     '/academic/grades/$level': {
       id: '/academic/grades/$level'
       path: '/grades/$level'
@@ -327,10 +346,12 @@ const AcademicRouteWithChildren = AcademicRoute._addFileChildren(
 
 interface HonorRouteChildren {
   HonorIndexRoute: typeof HonorIndexRoute
+  HonorGradesLevelRoute: typeof HonorGradesLevelRoute
 }
 
 const HonorRouteChildren: HonorRouteChildren = {
   HonorIndexRoute: HonorIndexRoute,
+  HonorGradesLevelRoute: HonorGradesLevelRoute,
 }
 
 const HonorRouteWithChildren = HonorRoute._addFileChildren(HonorRouteChildren)
