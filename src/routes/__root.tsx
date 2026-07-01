@@ -97,7 +97,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", type: "image/png", href: schoolLogo.url },
+      { rel: "shortcut icon", type: "image/png", href: schoolLogo.url },
+      { rel: "apple-touch-icon", href: schoolLogo.url },
+      { rel: "mask-icon", href: schoolLogo.url, color: "#0b2a5b" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       {
         rel: "preconnect",
@@ -107,6 +110,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "EducationalOrganization",
+          name: "مدرسة الناصرية الابتدائية الجديدة",
+          alternateName: "New Al-Nasiriya Primary School",
+          logo: schoolLogo.url,
+          image: schoolLogo.url,
+        }),
       },
     ],
   }),
