@@ -32,9 +32,13 @@ import { Route as AdminContactRouteImport } from './routes/admin.contact'
 import { Route as AdminModuleRouteImport } from './routes/admin.$module'
 import { Route as AchievementsSlugRouteImport } from './routes/achievements.$slug'
 import { Route as AcademicStudentGuidelinesRouteImport } from './routes/academic.student-guidelines'
+import { Route as AcademicPoliciesRouteImport } from './routes/academic.policies'
 import { Route as AcademicParentGuidelinesRouteImport } from './routes/academic.parent-guidelines'
+import { Route as AcademicFaqRouteImport } from './routes/academic.faq'
 import { Route as AcademicCalendarRouteImport } from './routes/academic.calendar'
+import { Route as AcademicBehaviourRouteImport } from './routes/academic.behaviour'
 import { Route as AcademicAttendanceBehaviourRouteImport } from './routes/academic.attendance-behaviour'
+import { Route as AcademicAttendanceRouteImport } from './routes/academic.attendance'
 import { Route as HonorGradesLevelRouteImport } from './routes/honor.grades.$level'
 import { Route as AcademicGradesLevelRouteImport } from './routes/academic.grades.$level'
 
@@ -154,15 +158,30 @@ const AcademicStudentGuidelinesRoute =
     path: '/student-guidelines',
     getParentRoute: () => AcademicRoute,
   } as any)
+const AcademicPoliciesRoute = AcademicPoliciesRouteImport.update({
+  id: '/policies',
+  path: '/policies',
+  getParentRoute: () => AcademicRoute,
+} as any)
 const AcademicParentGuidelinesRoute =
   AcademicParentGuidelinesRouteImport.update({
     id: '/parent-guidelines',
     path: '/parent-guidelines',
     getParentRoute: () => AcademicRoute,
   } as any)
+const AcademicFaqRoute = AcademicFaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => AcademicRoute,
+} as any)
 const AcademicCalendarRoute = AcademicCalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
+  getParentRoute: () => AcademicRoute,
+} as any)
+const AcademicBehaviourRoute = AcademicBehaviourRouteImport.update({
+  id: '/behaviour',
+  path: '/behaviour',
   getParentRoute: () => AcademicRoute,
 } as any)
 const AcademicAttendanceBehaviourRoute =
@@ -171,6 +190,11 @@ const AcademicAttendanceBehaviourRoute =
     path: '/attendance-behaviour',
     getParentRoute: () => AcademicRoute,
   } as any)
+const AcademicAttendanceRoute = AcademicAttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
+  getParentRoute: () => AcademicRoute,
+} as any)
 const HonorGradesLevelRoute = HonorGradesLevelRouteImport.update({
   id: '/grades/$level',
   path: '/grades/$level',
@@ -193,9 +217,13 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/honor': typeof HonorRouteWithChildren
   '/news': typeof NewsRouteWithChildren
+  '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
+  '/academic/behaviour': typeof AcademicBehaviourRoute
   '/academic/calendar': typeof AcademicCalendarRoute
+  '/academic/faq': typeof AcademicFaqRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
+  '/academic/policies': typeof AcademicPoliciesRoute
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/achievements/$slug': typeof AchievementsSlugRoute
   '/admin/$module': typeof AdminModuleRoute
@@ -218,9 +246,13 @@ export interface FileRoutesByTo {
   '/activities': typeof ActivitiesRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
+  '/academic/behaviour': typeof AcademicBehaviourRoute
   '/academic/calendar': typeof AcademicCalendarRoute
+  '/academic/faq': typeof AcademicFaqRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
+  '/academic/policies': typeof AcademicPoliciesRoute
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/achievements/$slug': typeof AchievementsSlugRoute
   '/admin/$module': typeof AdminModuleRoute
@@ -249,9 +281,13 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/honor': typeof HonorRouteWithChildren
   '/news': typeof NewsRouteWithChildren
+  '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
+  '/academic/behaviour': typeof AcademicBehaviourRoute
   '/academic/calendar': typeof AcademicCalendarRoute
+  '/academic/faq': typeof AcademicFaqRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
+  '/academic/policies': typeof AcademicPoliciesRoute
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/achievements/$slug': typeof AchievementsSlugRoute
   '/admin/$module': typeof AdminModuleRoute
@@ -281,9 +317,13 @@ export interface FileRouteTypes {
     | '/contact'
     | '/honor'
     | '/news'
+    | '/academic/attendance'
     | '/academic/attendance-behaviour'
+    | '/academic/behaviour'
     | '/academic/calendar'
+    | '/academic/faq'
     | '/academic/parent-guidelines'
+    | '/academic/policies'
     | '/academic/student-guidelines'
     | '/achievements/$slug'
     | '/admin/$module'
@@ -306,9 +346,13 @@ export interface FileRouteTypes {
     | '/activities'
     | '/auth'
     | '/contact'
+    | '/academic/attendance'
     | '/academic/attendance-behaviour'
+    | '/academic/behaviour'
     | '/academic/calendar'
+    | '/academic/faq'
     | '/academic/parent-guidelines'
+    | '/academic/policies'
     | '/academic/student-guidelines'
     | '/achievements/$slug'
     | '/admin/$module'
@@ -336,9 +380,13 @@ export interface FileRouteTypes {
     | '/contact'
     | '/honor'
     | '/news'
+    | '/academic/attendance'
     | '/academic/attendance-behaviour'
+    | '/academic/behaviour'
     | '/academic/calendar'
+    | '/academic/faq'
     | '/academic/parent-guidelines'
+    | '/academic/policies'
     | '/academic/student-guidelines'
     | '/achievements/$slug'
     | '/admin/$module'
@@ -532,11 +580,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcademicStudentGuidelinesRouteImport
       parentRoute: typeof AcademicRoute
     }
+    '/academic/policies': {
+      id: '/academic/policies'
+      path: '/policies'
+      fullPath: '/academic/policies'
+      preLoaderRoute: typeof AcademicPoliciesRouteImport
+      parentRoute: typeof AcademicRoute
+    }
     '/academic/parent-guidelines': {
       id: '/academic/parent-guidelines'
       path: '/parent-guidelines'
       fullPath: '/academic/parent-guidelines'
       preLoaderRoute: typeof AcademicParentGuidelinesRouteImport
+      parentRoute: typeof AcademicRoute
+    }
+    '/academic/faq': {
+      id: '/academic/faq'
+      path: '/faq'
+      fullPath: '/academic/faq'
+      preLoaderRoute: typeof AcademicFaqRouteImport
       parentRoute: typeof AcademicRoute
     }
     '/academic/calendar': {
@@ -546,11 +608,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcademicCalendarRouteImport
       parentRoute: typeof AcademicRoute
     }
+    '/academic/behaviour': {
+      id: '/academic/behaviour'
+      path: '/behaviour'
+      fullPath: '/academic/behaviour'
+      preLoaderRoute: typeof AcademicBehaviourRouteImport
+      parentRoute: typeof AcademicRoute
+    }
     '/academic/attendance-behaviour': {
       id: '/academic/attendance-behaviour'
       path: '/attendance-behaviour'
       fullPath: '/academic/attendance-behaviour'
       preLoaderRoute: typeof AcademicAttendanceBehaviourRouteImport
+      parentRoute: typeof AcademicRoute
+    }
+    '/academic/attendance': {
+      id: '/academic/attendance'
+      path: '/attendance'
+      fullPath: '/academic/attendance'
+      preLoaderRoute: typeof AcademicAttendanceRouteImport
       parentRoute: typeof AcademicRoute
     }
     '/honor/grades/$level': {
@@ -571,18 +647,26 @@ declare module '@tanstack/react-router' {
 }
 
 interface AcademicRouteChildren {
+  AcademicAttendanceRoute: typeof AcademicAttendanceRoute
   AcademicAttendanceBehaviourRoute: typeof AcademicAttendanceBehaviourRoute
+  AcademicBehaviourRoute: typeof AcademicBehaviourRoute
   AcademicCalendarRoute: typeof AcademicCalendarRoute
+  AcademicFaqRoute: typeof AcademicFaqRoute
   AcademicParentGuidelinesRoute: typeof AcademicParentGuidelinesRoute
+  AcademicPoliciesRoute: typeof AcademicPoliciesRoute
   AcademicStudentGuidelinesRoute: typeof AcademicStudentGuidelinesRoute
   AcademicIndexRoute: typeof AcademicIndexRoute
   AcademicGradesLevelRoute: typeof AcademicGradesLevelRoute
 }
 
 const AcademicRouteChildren: AcademicRouteChildren = {
+  AcademicAttendanceRoute: AcademicAttendanceRoute,
   AcademicAttendanceBehaviourRoute: AcademicAttendanceBehaviourRoute,
+  AcademicBehaviourRoute: AcademicBehaviourRoute,
   AcademicCalendarRoute: AcademicCalendarRoute,
+  AcademicFaqRoute: AcademicFaqRoute,
   AcademicParentGuidelinesRoute: AcademicParentGuidelinesRoute,
+  AcademicPoliciesRoute: AcademicPoliciesRoute,
   AcademicStudentGuidelinesRoute: AcademicStudentGuidelinesRoute,
   AcademicIndexRoute: AcademicIndexRoute,
   AcademicGradesLevelRoute: AcademicGradesLevelRoute,
