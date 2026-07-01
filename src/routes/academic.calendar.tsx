@@ -1,12 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { CalendarDays, CalendarRange } from "lucide-react";
+import { CalendarRange } from "lucide-react";
 
 import { PageHero } from "@/components/academic/PageHero";
 import { EmptyPanel } from "@/components/academic/EmptyPanel";
+import { AcademicTimelineWidget } from "@/components/academic/AcademicTimelineWidget";
+import { TimelineStrip } from "@/components/academic/TimelineStrip";
+import { OfficialCalendarViewer } from "@/components/academic/OfficialCalendarViewer";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
-import { supabase } from "@/integrations/supabase/client";
+import { useTimelineState } from "@/lib/timeline";
 
 export const Route = createFileRoute("/academic/calendar")({
   head: () => ({
@@ -15,7 +17,7 @@ export const Route = createFileRoute("/academic/calendar")({
       {
         name: "description",
         content:
-          "التقويم الأكاديمي الرسمي للمدرسة يعرض الفعاليات، الاختبارات، والإجازات خلال العام الدراسي.",
+          "التقويم الأكاديمي الرسمي 2026 / 2027 مع خط زمني تفاعلي، عدّاد تنازلي للفعاليات، والوثيقة الرسمية للوزارة.",
       },
       { property: "og:title", content: "التقويم الأكاديمي" },
     ],
@@ -24,105 +26,65 @@ export const Route = createFileRoute("/academic/calendar")({
   component: CalendarPage,
 });
 
-interface EventRow {
-  id: string;
-  title_ar: string;
-  description_ar: string | null;
-  starts_on: string;
-  ends_on: string | null;
-  category: string | null;
-  color: string | null;
-}
-
-async function fetchEvents(): Promise<EventRow[]> {
-  const { data, error } = await supabase
-    .from("academic_calendar_events")
-    .select("id,title_ar,description_ar,starts_on,ends_on,category,color")
-    .eq("status", "published")
-    .order("starts_on", { ascending: true });
-  if (error) throw error;
-  return (data ?? []) as EventRow[];
-}
-
-function formatDate(iso: string) {
-  try {
-    return new Intl.DateTimeFormat("ar-EG", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).format(new Date(iso));
-  } catch {
-    return iso;
-  }
-}
-
-function EventItem({ event }: { event: EventRow }) {
-  return (
-    <li className="relative rounded-2xl border border-border bg-card p-6 elevation-sm">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h3 className="text-base font-semibold text-foreground">{event.title_ar}</h3>
-          <p className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-            <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
-            {formatDate(event.starts_on)}
-            {event.ends_on && event.ends_on !== event.starts_on && (
-              <> — {formatDate(event.ends_on)}</>
-            )}
-          </p>
-          {event.description_ar && (
-            <p className="mt-3 text-sm leading-loose text-muted-foreground">
-              {event.description_ar}
-            </p>
-          )}
-        </div>
-        {event.category && (
-          <span className="rounded-full bg-primary-soft px-3 py-1 text-xs font-medium text-primary">
-            {event.category}
-          </span>
-        )}
-      </div>
-    </li>
-  );
-}
-
 function CalendarPage() {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["academic", "calendar"],
-    queryFn: fetchEvents,
-    staleTime: 60_000,
-  });
-
-  const events = data ?? [];
+  const { events, isLoading, isError } = useTimelineState();
 
   return (
     <>
       <PageHero
         title="التقويم الأكاديمي"
-        description="نظرة عامة على الفعاليات، الاختبارات، والإجازات الرسمية خلال العام الدراسي كما تعتمدها إدارة المدرسة."
+        description="خط زمني تفاعلي لأهم محطات العام الدراسي، مع عدّاد تنازلي مباشر للفعالية القادمة، والوثيقة الرسمية المعتمدة من وزارة التربية والتعليم."
         crumbs={[{ label: "الحياة الأكاديمية", to: "/academic" }, { label: "التقويم الأكاديمي" }]}
       />
 
+      {/* Live countdown widget */}
+      <div className="mt-10">
+        <AcademicTimelineWidget />
+      </div>
+
+      {/* Interactive timeline strip */}
       <Section spacing="default">
         <Container size="wide">
+          <div className="mb-6 flex items-end justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-semibold text-foreground">
+                خط الفعاليات الأكاديمية
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                جميع محطات العام الدراسي مرتبة تصاعديًا. تُبرز البطاقة الحالية الفعالية الجارية.
+              </p>
+            </div>
+          </div>
           {isLoading ? (
-            <div className="grid gap-4 md:grid-cols-2">
-              {[0, 1, 2, 3].map((i) => (
-                <div key={i} className="h-28 animate-pulse rounded-2xl bg-surface-muted" />
+            <div className="flex gap-4 overflow-x-auto pb-2">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-40 w-64 flex-none animate-pulse rounded-2xl bg-surface-muted" />
               ))}
             </div>
           ) : isError || events.length === 0 ? (
             <EmptyPanel
-              title="لم يُنشر التقويم الأكاديمي بعد"
+              title="لم يُنشر خط الفعاليات بعد"
               description="ستُضاف الفعاليات والمواعيد الرسمية عند اعتمادها من إدارة المدرسة."
               icon={CalendarRange}
             />
           ) : (
-            <ul className="grid gap-4 md:grid-cols-2">
-              {events.map((e) => (
-                <EventItem key={e.id} event={e} />
-              ))}
-            </ul>
+            <TimelineStrip events={events} />
           )}
+        </Container>
+      </Section>
+
+      {/* Official ministry document */}
+      <Section spacing="default">
+        <Container size="wide">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-foreground">
+              الوثيقة الرسمية للتقويم الأكاديمي
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              التقويم الرسمي المعتمد للعام الدراسي 2026 / 2027 كما صدر عن وزارة التربية والتعليم.
+            </p>
+          </div>
+          <OfficialCalendarViewer />
         </Container>
       </Section>
     </>

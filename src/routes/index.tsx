@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Hero } from "@/components/home/Hero";
 import { Stats } from "@/components/home/Stats";
+import { AcademicTimelineWidget } from "@/components/academic/AcademicTimelineWidget";
 import { WelcomePreview } from "@/components/home/WelcomePreview";
 import { LatestNews } from "@/components/home/LatestNews";
 import { AcademicLifePreview } from "@/components/home/AcademicLifePreview";
@@ -43,6 +44,7 @@ function HomePage() {
       <SiteHeader />
       <main id="main">
         <Hero />
+        <AcademicTimelineWidget />
         <Stats />
         <WelcomePreview />
         <LatestNews />
