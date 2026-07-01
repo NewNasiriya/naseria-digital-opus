@@ -182,7 +182,7 @@ function AchievementDetailPage() {
               {adjacent?.next ? (
                 <Button asChild variant="outline" size="sm">
                   <Link to="/achievements/$slug" params={{ slug: adjacent.next.slug }}>
-                    <span className="max-w-[16rem] truncate">{adjacent.next.title_ar}</span>
+                    <span className="max-w-[9rem] truncate sm:max-w-[16rem]">{adjacent.next.title_ar}</span>
                     <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                   </Link>
                 </Button>
