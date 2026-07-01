@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { X } from "lucide-react";
 
+import { SchoolLogo } from "@/components/brand/SchoolLogo";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -56,12 +57,7 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
             onClick={onClose}
             className="flex min-w-0 items-center gap-3"
           >
-            <span
-              aria-hidden="true"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground text-sm font-bold"
-            >
-              ن
-            </span>
+            <SchoolLogo decorative size={40} className="h-10 w-10 shrink-0" />
             <span className="flex min-w-0 flex-col leading-tight">
               <span className="truncate text-sm font-bold">لوحة الإدارة</span>
               <span className="truncate text-[11px] text-sidebar-foreground/70">
