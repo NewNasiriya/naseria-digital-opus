@@ -127,8 +127,10 @@ function EmptyState() {
 async function fetchLatestNews(): Promise<NewsRow[]> {
   const { data, error } = await supabase
     .from("news")
-    .select("id,title_ar,slug,summary_ar,published_at,featured_image_media_id")
+    .select("id,title_ar,slug,summary_ar,published_at,featured_image_media_id,is_pinned,is_featured")
     .eq("status", "published")
+    .order("is_pinned", { ascending: false })
+    .order("is_featured", { ascending: false })
     .order("published_at", { ascending: false })
     .limit(3);
   if (error) throw error;
