@@ -104,10 +104,10 @@ export function SiteHeader() {
             size="sm"
             className="hidden md:inline-flex"
           >
-            <Link to="/auth">
+            <a href="/auth">
               <LogIn className="h-4 w-4" aria-hidden="true" />
               <span>دخول الإدارة</span>
-            </Link>
+            </a>
           </Button>
 
           <Button
@@ -149,14 +149,14 @@ export function SiteHeader() {
                   {item.label}
                 </Link>
               ))}
-              <Link
-                to="/auth"
+              <a
+                href="/auth"
                 onClick={() => setOpen(false)}
                 className="mt-2 inline-flex items-center gap-2 rounded-md border border-border px-3 py-2.5 text-sm font-medium text-foreground hover:bg-accent"
               >
                 <LogIn className="h-4 w-4" aria-hidden="true" />
                 دخول الإدارة
-              </Link>
+              </a>
             </nav>
           </Container>
         </div>

@@ -131,12 +131,12 @@ export function SiteFooter() {
           <p className="text-xs text-muted-foreground">
             © {year} مدرسة الناصرية الابتدائية الجديدة. جميع الحقوق محفوظة.
           </p>
-          <Link
-            to="/auth"
+          <a
+            href="/auth"
             className="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
           >
             دخول الإدارة
-          </Link>
+          </a>
         </div>
       </Container>
     </footer>
