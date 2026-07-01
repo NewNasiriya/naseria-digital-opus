@@ -49,7 +49,7 @@ export const mediaService = {
       if (uploadError) throw new CmsError("storage", uploadError.message, { cause: uploadError });
 
       const url = await safePublicUrl(opts.bucket, key);
-      const { data, error } = await (supabase.from("media") as any)
+      const { data, error } = await ((supabase as any).from("media") as any)
         .insert({
           bucket: opts.bucket,
           path: key,
@@ -78,7 +78,7 @@ export const mediaService = {
 
   async attach(opts: AttachOptions): Promise<void> {
     try {
-      const { error } = await (supabase.from("media_usages") as any).insert({
+      const { error } = await ((supabase as any).from("media_usages") as any).insert({
         media_id: opts.mediaId,
         module: opts.module,
         entity_id: opts.entityId,
@@ -92,7 +92,7 @@ export const mediaService = {
 
   async detach(mediaId: UUID, module: string, entityId: UUID): Promise<void> {
     try {
-      const { error } = await (supabase.from("media_usages") as any)
+      const { error } = await ((supabase as any).from("media_usages") as any)
         .delete()
         .eq("media_id", mediaId)
         .eq("module", module)

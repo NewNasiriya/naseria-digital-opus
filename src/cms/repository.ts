@@ -49,7 +49,7 @@ export function createSupabaseRepository<T extends EntityMeta>(
     async list(query: ListQuery = {}): Promise<Page<T>> {
       try {
         // Cast to any: PostgREST builder types are per-table and we're intentionally generic here.
-        let q = (supabase.from(table as string) as any)
+        let q = ((supabase as any).from(table) as any)
           .select(select, { count: "exact" });
 
         if (query.status && query.status !== "all") q = q.eq("status", query.status);
@@ -87,7 +87,7 @@ export function createSupabaseRepository<T extends EntityMeta>(
 
     async getById(id) {
       try {
-        const { data, error } = await (supabase.from(table as string) as any)
+        const { data, error } = await ((supabase as any).from(table) as any)
           .select(select)
           .eq("id", id)
           .maybeSingle();
@@ -100,7 +100,7 @@ export function createSupabaseRepository<T extends EntityMeta>(
 
     async getBySlug(slugValue) {
       try {
-        const { data, error } = await (supabase.from(table as string) as any)
+        const { data, error } = await ((supabase as any).from(table) as any)
           .select(select)
           .eq(slugColumn, slugValue)
           .maybeSingle();
@@ -113,7 +113,7 @@ export function createSupabaseRepository<T extends EntityMeta>(
 
     async create(input) {
       try {
-        const { data, error } = await (supabase.from(table as string) as any)
+        const { data, error } = await ((supabase as any).from(table) as any)
           .insert(input as never)
           .select(select)
           .single();
@@ -126,7 +126,7 @@ export function createSupabaseRepository<T extends EntityMeta>(
 
     async update(id, patch) {
       try {
-        const { data, error } = await (supabase.from(table as string) as any)
+        const { data, error } = await ((supabase as any).from(table) as any)
           .update(patch as never)
           .eq("id", id)
           .select(select)
@@ -140,7 +140,7 @@ export function createSupabaseRepository<T extends EntityMeta>(
 
     async remove(id) {
       try {
-        const { error } = await (supabase.from(table as string) as any).delete().eq("id", id);
+        const { error } = await ((supabase as any).from(table) as any).delete().eq("id", id);
         if (error) throw fromPostgrest(error);
       } catch (err) {
         throw toCmsError(err);

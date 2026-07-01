@@ -19,7 +19,7 @@ export interface AuditEntry {
 
 export async function recordAudit(entry: AuditEntry): Promise<void> {
   try {
-    await (supabase.from("audit_log") as any).insert({
+    await ((supabase as any).from("audit_log") as any).insert({
       module: entry.module,
       entity_id: entry.entity_id,
       action: entry.action,
