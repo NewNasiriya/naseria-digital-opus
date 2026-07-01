@@ -1,6 +1,14 @@
 import { Link } from "@tanstack/react-router";
 
 import { Container } from "@/components/layout/Container";
+import {
+  DAY_NAMES_AR,
+  formatWorkingRange,
+  primaryEmail,
+  useContactInfo,
+  useSiteSettings,
+  useWorkingHours,
+} from "@/lib/contact";
 
 type FooterLink = { label: string; to: string };
 
@@ -22,14 +30,15 @@ const ACADEMIC_LINKS: FooterLink[] = [
   { label: "الحضور والسلوك", to: "/academic/attendance-behaviour" },
 ];
 
-const WORKING_HOURS = [
-  { day: "الأحد – الخميس", hours: "7:30 ص – 2:30 م" },
-  { day: "الجمعة", hours: "مغلق" },
-  { day: "السبت", hours: "مغلق" },
-];
-
 export function SiteFooter() {
   const year = new Date().getFullYear();
+  const { data: settings } = useSiteSettings();
+  const { data: info } = useContactInfo();
+  const { data: hours = [] } = useWorkingHours();
+  const email = primaryEmail(info);
+  const schoolAr = settings?.school_name_ar ?? "مدرسة الناصرية الابتدائية الجديدة";
+  const schoolEn = settings?.school_name_en ?? "New Al-Nasiriyah Primary School";
+
 
   return (
     <footer className="border-t border-border bg-surface-muted">
