@@ -97,7 +97,7 @@ export const Route = createFileRoute("/news/$slug")({
 });
 
 function NewsDetailPage() {
-  const { item } = Route.useLoaderData();
+  const { item } = Route.useLoaderData() as { item: NewsDetail };
   const cover = coverImageUrl(item);
 
   const relatedQ = useQuery({
