@@ -1285,8 +1285,10 @@ export type Database = {
           featured_image_media_id: string | null
           id: string
           is_featured: boolean
+          is_pinned: boolean
           og_image_id: string | null
           published_at: string | null
+          reading_minutes: number | null
           scheduled_at: string | null
           search_tsv: unknown
           seo_description: string | null
@@ -1312,8 +1314,10 @@ export type Database = {
           featured_image_media_id?: string | null
           id?: string
           is_featured?: boolean
+          is_pinned?: boolean
           og_image_id?: string | null
           published_at?: string | null
+          reading_minutes?: number | null
           scheduled_at?: string | null
           search_tsv?: unknown
           seo_description?: string | null
@@ -1339,8 +1343,10 @@ export type Database = {
           featured_image_media_id?: string | null
           id?: string
           is_featured?: boolean
+          is_pinned?: boolean
           og_image_id?: string | null
           published_at?: string | null
+          reading_minutes?: number | null
           scheduled_at?: string | null
           search_tsv?: unknown
           seo_description?: string | null

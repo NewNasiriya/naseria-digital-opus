@@ -9,16 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as NewsRouteImport } from './routes/news'
 import { Route as AcademicRouteImport } from './routes/academic'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as AcademicIndexRouteImport } from './routes/academic.index'
+import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as AcademicStudentGuidelinesRouteImport } from './routes/academic.student-guidelines'
 import { Route as AcademicParentGuidelinesRouteImport } from './routes/academic.parent-guidelines'
 import { Route as AcademicCalendarRouteImport } from './routes/academic.calendar'
 import { Route as AcademicAttendanceBehaviourRouteImport } from './routes/academic.attendance-behaviour'
 import { Route as AcademicGradesLevelRouteImport } from './routes/academic.grades.$level'
 
+const NewsRoute = NewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AcademicRoute = AcademicRouteImport.update({
   id: '/academic',
   path: '/academic',
@@ -34,10 +42,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsIndexRoute = NewsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => NewsRoute,
+} as any)
 const AcademicIndexRoute = AcademicIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AcademicRoute,
+} as any)
+const NewsSlugRoute = NewsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => NewsRoute,
 } as any)
 const AcademicStudentGuidelinesRoute =
   AcademicStudentGuidelinesRouteImport.update({
@@ -72,11 +90,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/academic': typeof AcademicRouteWithChildren
+  '/news': typeof NewsRouteWithChildren
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
   '/academic/calendar': typeof AcademicCalendarRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/academic/': typeof AcademicIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
 }
 export interface FileRoutesByTo {
@@ -86,7 +107,9 @@ export interface FileRoutesByTo {
   '/academic/calendar': typeof AcademicCalendarRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/academic': typeof AcademicIndexRoute
+  '/news': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
 }
 export interface FileRoutesById {
@@ -94,11 +117,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/academic': typeof AcademicRouteWithChildren
+  '/news': typeof NewsRouteWithChildren
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
   '/academic/calendar': typeof AcademicCalendarRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/academic/': typeof AcademicIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
 }
 export interface FileRouteTypes {
@@ -107,11 +133,14 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/academic'
+    | '/news'
     | '/academic/attendance-behaviour'
     | '/academic/calendar'
     | '/academic/parent-guidelines'
     | '/academic/student-guidelines'
+    | '/news/$slug'
     | '/academic/'
+    | '/news/'
     | '/academic/grades/$level'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -121,18 +150,23 @@ export interface FileRouteTypes {
     | '/academic/calendar'
     | '/academic/parent-guidelines'
     | '/academic/student-guidelines'
+    | '/news/$slug'
     | '/academic'
+    | '/news'
     | '/academic/grades/$level'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/academic'
+    | '/news'
     | '/academic/attendance-behaviour'
     | '/academic/calendar'
     | '/academic/parent-guidelines'
     | '/academic/student-guidelines'
+    | '/news/$slug'
     | '/academic/'
+    | '/news/'
     | '/academic/grades/$level'
   fileRoutesById: FileRoutesById
 }
@@ -140,10 +174,18 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AcademicRoute: typeof AcademicRouteWithChildren
+  NewsRoute: typeof NewsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/academic': {
       id: '/academic'
       path: '/academic'
@@ -165,12 +207,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/news/': {
+      id: '/news/'
+      path: '/'
+      fullPath: '/news/'
+      preLoaderRoute: typeof NewsIndexRouteImport
+      parentRoute: typeof NewsRoute
+    }
     '/academic/': {
       id: '/academic/'
       path: '/'
       fullPath: '/academic/'
       preLoaderRoute: typeof AcademicIndexRouteImport
       parentRoute: typeof AcademicRoute
+    }
+    '/news/$slug': {
+      id: '/news/$slug'
+      path: '/$slug'
+      fullPath: '/news/$slug'
+      preLoaderRoute: typeof NewsSlugRouteImport
+      parentRoute: typeof NewsRoute
     }
     '/academic/student-guidelines': {
       id: '/academic/student-guidelines'
@@ -232,10 +288,23 @@ const AcademicRouteWithChildren = AcademicRoute._addFileChildren(
   AcademicRouteChildren,
 )
 
+interface NewsRouteChildren {
+  NewsSlugRoute: typeof NewsSlugRoute
+  NewsIndexRoute: typeof NewsIndexRoute
+}
+
+const NewsRouteChildren: NewsRouteChildren = {
+  NewsSlugRoute: NewsSlugRoute,
+  NewsIndexRoute: NewsIndexRoute,
+}
+
+const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AcademicRoute: AcademicRouteWithChildren,
+  NewsRoute: NewsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
