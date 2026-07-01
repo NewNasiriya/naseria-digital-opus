@@ -394,16 +394,12 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Admin sidebar off-canvas (mobile). Anchored to start (right in RTL, left in LTR). */
+/* Admin sidebar off-canvas (mobile). RTL app: sidebar anchored to right, hides to the right. */
 .admin-sidebar[data-open="false"] {
-  transform: translateX(-100%);
-}
-[dir="rtl"] .admin-sidebar[data-open="false"] {
   transform: translateX(100%);
 }
 @media (min-width: 1024px) {
-  .admin-sidebar[data-open="false"],
-  [dir="rtl"] .admin-sidebar[data-open="false"] {
+  .admin-sidebar[data-open="false"] {
     transform: none;
   }
 }

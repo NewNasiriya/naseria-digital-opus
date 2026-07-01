@@ -47,7 +47,7 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
         aria-label="قائمة لوحة الإدارة"
         data-open={open ? "true" : "false"}
         className={cn(
-          "admin-sidebar fixed inset-y-0 start-0 z-40 flex w-72 flex-col border-e border-sidebar-border bg-sidebar text-sidebar-foreground transition-transform duration-300 lg:sticky lg:top-0 lg:h-dvh",
+          "admin-sidebar fixed inset-y-0 right-0 z-40 flex w-72 flex-col border-s border-sidebar-border bg-sidebar text-sidebar-foreground transition-transform duration-300 lg:sticky lg:top-0 lg:h-dvh",
         )}
       >
         <div className="flex h-16 items-center justify-between gap-3 border-b border-sidebar-border px-5">
