@@ -140,12 +140,11 @@ function AuthPage() {
         <section className="flex items-center justify-center px-6 py-12 sm:px-10">
           <div className="w-full max-w-md">
             <div className="mb-8 text-center lg:text-start">
-              <div
-                aria-hidden="true"
-                className="mx-auto mb-4 grid h-12 w-12 place-items-center rounded-2xl bg-primary text-primary-foreground lg:mx-0"
-              >
-                <ShieldCheck className="h-6 w-6" />
-              </div>
+              <SchoolLogo
+                eager
+                size={72}
+                className="mx-auto mb-4 h-16 w-16 lg:mx-0"
+              />
               <h2 className="text-2xl font-bold text-foreground">تسجيل الدخول</h2>
               <p className="mt-2 text-sm text-muted-foreground">
                 استخدم بيانات حساب الإدارة الرسمي للوصول إلى لوحة التحكم.
