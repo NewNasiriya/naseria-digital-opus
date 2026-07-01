@@ -51,12 +51,7 @@ export function SiteFooter() {
               className="flex items-center gap-3"
               aria-label="الصفحة الرئيسية"
             >
-              <span
-                aria-hidden="true"
-                className="grid h-11 w-11 place-items-center rounded-md bg-primary text-primary-foreground font-bold"
-              >
-                ن
-              </span>
+              <SchoolLogo decorative size={48} className="h-12 w-12 shrink-0" />
               <div className="leading-tight">
                 <p className="font-bold text-foreground">{schoolAr}</p>
                 <p className="text-xs text-muted-foreground">{schoolEn}</p>
