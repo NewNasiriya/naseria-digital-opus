@@ -121,21 +121,9 @@ export function HonorSheetViewer({
       </div>
 
       <Dialog open={fullscreen} onOpenChange={setFullscreen}>
-        <DialogContent
-          className="max-w-[100vw] h-[100dvh] p-0 gap-0 border-0 rounded-none bg-background/98 backdrop-blur sm:max-w-[100vw]"
-          showCloseButton={false}
-        >
-          <div className="flex items-center justify-between gap-3 border-b border-border bg-background/95 p-3 backdrop-blur">
+        <DialogContent className="max-w-[100vw] h-[100dvh] p-0 gap-0 border-0 rounded-none bg-background/98 backdrop-blur sm:max-w-[100vw]">
+          <div className="flex items-center justify-between gap-3 border-b border-border bg-background/95 p-3 pe-14 backdrop-blur">
             {controls}
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => setFullscreen(false)}
-              aria-label="إغلاق"
-            >
-              <X className="h-5 w-5" aria-hidden="true" />
-            </Button>
           </div>
           <div className="flex-1 overflow-auto p-4">
             <div className="mx-auto w-fit">
