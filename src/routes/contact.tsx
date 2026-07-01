@@ -1,11 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
 
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/academic/PageHero";
+import { LocationMap } from "@/components/contact/LocationMap";
+import {
+  DirectionsCard,
+  EmailCard,
+  FuturePhoneCard,
+  LocationCard,
+  PhoneCard,
+  WorkingHoursCard,
+} from "@/components/contact/ContactCards";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useContactInfo, useWorkingHours } from "@/lib/contact";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -14,7 +24,7 @@ export const Route = createFileRoute("/contact")({
       {
         name: "description",
         content:
-          "قنوات التواصل الرسمية مع إدارة مدرسة الناصرية الابتدائية الجديدة — العنوان، مواعيد العمل، وأوقات استقبال أولياء الأمور.",
+          "قنوات التواصل الرسمية مع إدارة مدرسة الناصرية الابتدائية الجديدة — العنوان، مواعيد العمل، البريد الإلكتروني، والموقع على الخريطة.",
       },
       {
         property: "og:title",
@@ -32,13 +42,10 @@ export const Route = createFileRoute("/contact")({
   component: ContactPage,
 });
 
-const WORKING_HOURS = [
-  { day: "الأحد – الخميس", hours: "7:30 ص – 2:30 م" },
-  { day: "الجمعة", hours: "مغلق" },
-  { day: "السبت", hours: "مغلق" },
-];
-
 function ContactPage() {
+  const { data: info, isLoading: infoLoading } = useContactInfo();
+  const { data: hours = [], isLoading: hoursLoading } = useWorkingHours();
+
   return (
     <>
       <SiteHeader />
@@ -52,78 +59,53 @@ function ContactPage() {
 
         <Section spacing="default">
           <Container size="wide">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              <article className="rounded-2xl border border-border bg-card p-6 elevation-sm">
-                <span
-                  aria-hidden="true"
-                  className="grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary"
-                >
-                  <MapPin className="h-6 w-6" />
-                </span>
-                <h2 className="mt-5 text-lg font-semibold text-foreground">
-                  عنوان المدرسة
-                </h2>
-                <p className="mt-3 text-sm leading-loose text-muted-foreground">
-                  مدرسة الناصرية الابتدائية الجديدة — إدارة تعليمية حكومية،
-                  جمهورية مصر العربية.
-                </p>
-              </article>
+            {infoLoading ? (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <Skeleton key={i} className="h-56 rounded-2xl" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <LocationCard info={info ?? null} />
+                <EmailCard info={info ?? null} />
+                {hoursLoading ? (
+                  <Skeleton className="h-56 rounded-2xl" />
+                ) : (
+                  <WorkingHoursCard hours={hours} info={info ?? null} />
+                )}
+                <DirectionsCard info={info ?? null} />
+                <PhoneCard info={info ?? null} />
+                <FuturePhoneCard />
+              </div>
+            )}
+          </Container>
+        </Section>
 
-              <article className="rounded-2xl border border-border bg-card p-6 elevation-sm">
-                <span
-                  aria-hidden="true"
-                  className="grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary"
-                >
-                  <Clock className="h-6 w-6" />
-                </span>
-                <h2 className="mt-5 text-lg font-semibold text-foreground">
-                  مواعيد العمل
-                </h2>
-                <ul className="mt-4 space-y-2.5">
-                  {WORKING_HOURS.map((w) => (
-                    <li
-                      key={w.day}
-                      className="flex items-center justify-between gap-4 text-sm"
-                    >
-                      <span className="text-muted-foreground">{w.day}</span>
-                      <span className="font-medium text-foreground">
-                        {w.hours}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-
-              <article className="rounded-2xl border border-border bg-card p-6 elevation-sm">
-                <span
-                  aria-hidden="true"
-                  className="grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary"
-                >
-                  <Phone className="h-6 w-6" />
-                </span>
-                <h2 className="mt-5 text-lg font-semibold text-foreground">
-                  قنوات التواصل الرسمية
-                </h2>
-                <p className="mt-3 text-sm leading-loose text-muted-foreground">
-                  ستنشر الإدارة هنا أرقام الهاتف والبريد الإلكتروني الرسمية
-                  للمدرسة فور اعتمادها من خلال لوحة التحكم.
+        <Section tone="muted" spacing="default">
+          <Container size="wide">
+            <div className="grid items-stretch gap-8 lg:grid-cols-[1.1fr_1fr]">
+              <LocationMap embedUrl={info?.google_maps_embed_url ?? null} />
+              <div className="flex flex-col justify-center">
+                <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
+                  موقع المدرسة
                 </p>
-                <p className="mt-4 inline-flex items-center gap-2 text-xs text-muted-foreground">
-                  <Mail className="h-4 w-4" aria-hidden="true" />
-                  قيد الإعداد
+                <h2 className="mt-3 rule-accent inline-block">كيف تصل إلينا</h2>
+                <p className="mt-6 text-base leading-loose text-muted-foreground">
+                  {info?.address_ar ||
+                    "سيتم إضافة عنوان المدرسة بالتفصيل من لوحة إدارة المحتوى."}
                 </p>
-              </article>
-            </div>
-
-            <div className="mt-12 rounded-2xl border border-dashed border-border bg-surface-muted p-8 text-center">
-              <h3 className="text-lg font-semibold text-foreground">
-                ملاحظات أولياء الأمور
-              </h3>
-              <p className="mx-auto mt-3 max-w-2xl text-sm leading-loose text-muted-foreground">
-                نرحّب باقتراحات أولياء الأمور وملاحظاتهم. يمكنكم الحضور شخصيًا
-                خلال ساعات العمل، وسيتم إتاحة نموذج تواصل رقمي هنا فور اعتماده
-                من الإدارة.
-              </p>
+                {info?.directions_ar && (
+                  <p className="mt-3 text-sm leading-loose text-muted-foreground">
+                    {info.directions_ar}
+                  </p>
+                )}
+                {info?.plus_code && (
+                  <p className="mt-4 inline-flex items-center gap-2 rounded-md bg-surface-muted px-2.5 py-1 font-mono text-xs text-foreground">
+                    Plus Code: {info.plus_code}
+                  </p>
+                )}
+              </div>
             </div>
           </Container>
         </Section>

@@ -27,6 +27,7 @@ import { Route as AcademicIndexRouteImport } from './routes/academic.index'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminDocumentsRouteImport } from './routes/admin.documents'
+import { Route as AdminContactRouteImport } from './routes/admin.contact'
 import { Route as AdminModuleRouteImport } from './routes/admin.$module'
 import { Route as AchievementsSlugRouteImport } from './routes/achievements.$slug'
 import { Route as AcademicStudentGuidelinesRouteImport } from './routes/academic.student-guidelines'
@@ -126,6 +127,11 @@ const AdminDocumentsRoute = AdminDocumentsRouteImport.update({
   path: '/documents',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminContactRoute = AdminContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminModuleRoute = AdminModuleRouteImport.update({
   id: '/$module',
   path: '/$module',
@@ -187,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/achievements/$slug': typeof AchievementsSlugRoute
   '/admin/$module': typeof AdminModuleRoute
+  '/admin/contact': typeof AdminContactRoute
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/media': typeof AdminMediaRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -210,6 +217,7 @@ export interface FileRoutesByTo {
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/achievements/$slug': typeof AchievementsSlugRoute
   '/admin/$module': typeof AdminModuleRoute
+  '/admin/contact': typeof AdminContactRoute
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/media': typeof AdminMediaRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -239,6 +247,7 @@ export interface FileRoutesById {
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/achievements/$slug': typeof AchievementsSlugRoute
   '/admin/$module': typeof AdminModuleRoute
+  '/admin/contact': typeof AdminContactRoute
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/media': typeof AdminMediaRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -269,6 +278,7 @@ export interface FileRouteTypes {
     | '/academic/student-guidelines'
     | '/achievements/$slug'
     | '/admin/$module'
+    | '/admin/contact'
     | '/admin/documents'
     | '/admin/media'
     | '/news/$slug'
@@ -292,6 +302,7 @@ export interface FileRouteTypes {
     | '/academic/student-guidelines'
     | '/achievements/$slug'
     | '/admin/$module'
+    | '/admin/contact'
     | '/admin/documents'
     | '/admin/media'
     | '/news/$slug'
@@ -320,6 +331,7 @@ export interface FileRouteTypes {
     | '/academic/student-guidelines'
     | '/achievements/$slug'
     | '/admin/$module'
+    | '/admin/contact'
     | '/admin/documents'
     | '/admin/media'
     | '/news/$slug'
@@ -473,6 +485,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDocumentsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/contact': {
+      id: '/admin/contact'
+      path: '/contact'
+      fullPath: '/admin/contact'
+      preLoaderRoute: typeof AdminContactRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/$module': {
       id: '/admin/$module'
       path: '/$module'
@@ -570,6 +589,7 @@ const AchievementsRouteWithChildren = AchievementsRoute._addFileChildren(
 
 interface AdminRouteChildren {
   AdminModuleRoute: typeof AdminModuleRoute
+  AdminContactRoute: typeof AdminContactRoute
   AdminDocumentsRoute: typeof AdminDocumentsRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -577,6 +597,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminModuleRoute: AdminModuleRoute,
+  AdminContactRoute: AdminContactRoute,
   AdminDocumentsRoute: AdminDocumentsRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminIndexRoute: AdminIndexRoute,

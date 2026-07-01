@@ -1,6 +1,14 @@
 import { Link } from "@tanstack/react-router";
 
 import { Container } from "@/components/layout/Container";
+import {
+  DAY_NAMES_AR,
+  formatWorkingRange,
+  primaryEmail,
+  useContactInfo,
+  useSiteSettings,
+  useWorkingHours,
+} from "@/lib/contact";
 
 type FooterLink = { label: string; to: string };
 
@@ -22,14 +30,15 @@ const ACADEMIC_LINKS: FooterLink[] = [
   { label: "الحضور والسلوك", to: "/academic/attendance-behaviour" },
 ];
 
-const WORKING_HOURS = [
-  { day: "الأحد – الخميس", hours: "7:30 ص – 2:30 م" },
-  { day: "الجمعة", hours: "مغلق" },
-  { day: "السبت", hours: "مغلق" },
-];
-
 export function SiteFooter() {
   const year = new Date().getFullYear();
+  const { data: settings } = useSiteSettings();
+  const { data: info } = useContactInfo();
+  const { data: hours = [] } = useWorkingHours();
+  const email = primaryEmail(info);
+  const schoolAr = settings?.school_name_ar ?? "مدرسة الناصرية الابتدائية الجديدة";
+  const schoolEn = settings?.school_name_en ?? "New Al-Nasiriyah Primary School";
+
 
   return (
     <footer className="border-t border-border bg-surface-muted">
@@ -49,12 +58,9 @@ export function SiteFooter() {
                 ن
               </span>
               <div className="leading-tight">
-                <p className="font-bold text-foreground">
-                  مدرسة الناصرية الابتدائية الجديدة
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  New Al-Nasiriyah Primary School
-                </p>
+                <p className="font-bold text-foreground">{schoolAr}</p>
+                <p className="text-xs text-muted-foreground">{schoolEn}</p>
+
               </div>
             </Link>
             <p className="mt-5 text-sm leading-loose text-muted-foreground">
@@ -107,16 +113,38 @@ export function SiteFooter() {
               مواعيد العمل
             </h3>
             <ul className="mt-4 space-y-2.5">
-              {WORKING_HOURS.map((w) => (
+              {(hours.length > 0
+                ? hours
+                : []
+              ).map((h) => (
                 <li
-                  key={w.day}
+                  key={h.id}
                   className="flex items-center justify-between gap-4 text-sm"
                 >
-                  <span className="text-muted-foreground">{w.day}</span>
-                  <span className="font-medium text-foreground">{w.hours}</span>
+                  <span className="text-muted-foreground">
+                    {DAY_NAMES_AR[h.day_of_week] ?? "—"}
+                  </span>
+                  <span className="font-medium text-foreground">
+                    {formatWorkingRange(h)}
+                  </span>
                 </li>
               ))}
+              {hours.length === 0 && (
+                <li className="text-sm text-muted-foreground">
+                  سيتم تحديث المواعيد قريبًا.
+                </li>
+              )}
             </ul>
+            {email && (
+              <a
+                href={`mailto:${email}`}
+                className="mt-4 block text-sm text-muted-foreground transition-colors hover:text-primary"
+                dir="ltr"
+              >
+                {email}
+              </a>
+            )}
+
             <Link
               to="/contact"
               className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors hover:text-primary-hover"
@@ -129,8 +157,9 @@ export function SiteFooter() {
 
         <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 sm:flex-row sm:items-center">
           <p className="text-xs text-muted-foreground">
-            © {year} مدرسة الناصرية الابتدائية الجديدة. جميع الحقوق محفوظة.
+            © {year} {schoolAr}. جميع الحقوق محفوظة.
           </p>
+
           <a
             href="/auth"
             className="text-xs font-medium text-muted-foreground transition-colors hover:text-primary"

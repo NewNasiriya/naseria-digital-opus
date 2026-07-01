@@ -599,42 +599,75 @@ export type Database = {
         Row: {
           address_ar: string | null
           address_en: string | null
+          country_ar: string | null
           created_at: string
+          directions_ar: string | null
+          directions_en: string | null
+          educational_administration_ar: string | null
           email: string | null
+          emails: Json
           google_maps_embed_url: string | null
           google_maps_lat: number | null
+          google_maps_link: string | null
           google_maps_lng: number | null
+          governorate_ar: string | null
+          holiday_notice_ar: string | null
           id: number
           phone_primary: string | null
           phone_secondary: string | null
+          phones: Json
+          plus_code: string | null
+          special_announcement_ar: string | null
           updated_at: string
           updated_by: string | null
         }
         Insert: {
           address_ar?: string | null
           address_en?: string | null
+          country_ar?: string | null
           created_at?: string
+          directions_ar?: string | null
+          directions_en?: string | null
+          educational_administration_ar?: string | null
           email?: string | null
+          emails?: Json
           google_maps_embed_url?: string | null
           google_maps_lat?: number | null
+          google_maps_link?: string | null
           google_maps_lng?: number | null
+          governorate_ar?: string | null
+          holiday_notice_ar?: string | null
           id?: number
           phone_primary?: string | null
           phone_secondary?: string | null
+          phones?: Json
+          plus_code?: string | null
+          special_announcement_ar?: string | null
           updated_at?: string
           updated_by?: string | null
         }
         Update: {
           address_ar?: string | null
           address_en?: string | null
+          country_ar?: string | null
           created_at?: string
+          directions_ar?: string | null
+          directions_en?: string | null
+          educational_administration_ar?: string | null
           email?: string | null
+          emails?: Json
           google_maps_embed_url?: string | null
           google_maps_lat?: number | null
+          google_maps_link?: string | null
           google_maps_lng?: number | null
+          governorate_ar?: string | null
+          holiday_notice_ar?: string | null
           id?: number
           phone_primary?: string | null
           phone_secondary?: string | null
+          phones?: Json
+          plus_code?: string | null
+          special_announcement_ar?: string | null
           updated_at?: string
           updated_by?: string | null
         }
