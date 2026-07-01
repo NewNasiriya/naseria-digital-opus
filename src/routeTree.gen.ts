@@ -9,9 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AcademicRouteImport } from './routes/academic'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AcademicIndexRouteImport } from './routes/academic.index'
+import { Route as AcademicStudentGuidelinesRouteImport } from './routes/academic.student-guidelines'
+import { Route as AcademicParentGuidelinesRouteImport } from './routes/academic.parent-guidelines'
+import { Route as AcademicCalendarRouteImport } from './routes/academic.calendar'
+import { Route as AcademicAttendanceBehaviourRouteImport } from './routes/academic.attendance-behaviour'
+import { Route as AcademicGradesLevelRouteImport } from './routes/academic.grades.$level'
 
+const AcademicRoute = AcademicRouteImport.update({
+  id: '/academic',
+  path: '/academic',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -22,35 +34,123 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AcademicIndexRoute = AcademicIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AcademicRoute,
+} as any)
+const AcademicStudentGuidelinesRoute =
+  AcademicStudentGuidelinesRouteImport.update({
+    id: '/student-guidelines',
+    path: '/student-guidelines',
+    getParentRoute: () => AcademicRoute,
+  } as any)
+const AcademicParentGuidelinesRoute =
+  AcademicParentGuidelinesRouteImport.update({
+    id: '/parent-guidelines',
+    path: '/parent-guidelines',
+    getParentRoute: () => AcademicRoute,
+  } as any)
+const AcademicCalendarRoute = AcademicCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => AcademicRoute,
+} as any)
+const AcademicAttendanceBehaviourRoute =
+  AcademicAttendanceBehaviourRouteImport.update({
+    id: '/attendance-behaviour',
+    path: '/attendance-behaviour',
+    getParentRoute: () => AcademicRoute,
+  } as any)
+const AcademicGradesLevelRoute = AcademicGradesLevelRouteImport.update({
+  id: '/grades/$level',
+  path: '/grades/$level',
+  getParentRoute: () => AcademicRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/academic': typeof AcademicRouteWithChildren
+  '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
+  '/academic/calendar': typeof AcademicCalendarRoute
+  '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
+  '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
+  '/academic/': typeof AcademicIndexRoute
+  '/academic/grades/$level': typeof AcademicGradesLevelRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
+  '/academic/calendar': typeof AcademicCalendarRoute
+  '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
+  '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
+  '/academic': typeof AcademicIndexRoute
+  '/academic/grades/$level': typeof AcademicGradesLevelRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/academic': typeof AcademicRouteWithChildren
+  '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
+  '/academic/calendar': typeof AcademicCalendarRoute
+  '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
+  '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
+  '/academic/': typeof AcademicIndexRoute
+  '/academic/grades/$level': typeof AcademicGradesLevelRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/academic'
+    | '/academic/attendance-behaviour'
+    | '/academic/calendar'
+    | '/academic/parent-guidelines'
+    | '/academic/student-guidelines'
+    | '/academic/'
+    | '/academic/grades/$level'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to:
+    | '/'
+    | '/about'
+    | '/academic/attendance-behaviour'
+    | '/academic/calendar'
+    | '/academic/parent-guidelines'
+    | '/academic/student-guidelines'
+    | '/academic'
+    | '/academic/grades/$level'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/academic'
+    | '/academic/attendance-behaviour'
+    | '/academic/calendar'
+    | '/academic/parent-guidelines'
+    | '/academic/student-guidelines'
+    | '/academic/'
+    | '/academic/grades/$level'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AcademicRoute: typeof AcademicRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/academic': {
+      id: '/academic'
+      path: '/academic'
+      fullPath: '/academic'
+      preLoaderRoute: typeof AcademicRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -65,12 +165,77 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/academic/': {
+      id: '/academic/'
+      path: '/'
+      fullPath: '/academic/'
+      preLoaderRoute: typeof AcademicIndexRouteImport
+      parentRoute: typeof AcademicRoute
+    }
+    '/academic/student-guidelines': {
+      id: '/academic/student-guidelines'
+      path: '/student-guidelines'
+      fullPath: '/academic/student-guidelines'
+      preLoaderRoute: typeof AcademicStudentGuidelinesRouteImport
+      parentRoute: typeof AcademicRoute
+    }
+    '/academic/parent-guidelines': {
+      id: '/academic/parent-guidelines'
+      path: '/parent-guidelines'
+      fullPath: '/academic/parent-guidelines'
+      preLoaderRoute: typeof AcademicParentGuidelinesRouteImport
+      parentRoute: typeof AcademicRoute
+    }
+    '/academic/calendar': {
+      id: '/academic/calendar'
+      path: '/calendar'
+      fullPath: '/academic/calendar'
+      preLoaderRoute: typeof AcademicCalendarRouteImport
+      parentRoute: typeof AcademicRoute
+    }
+    '/academic/attendance-behaviour': {
+      id: '/academic/attendance-behaviour'
+      path: '/attendance-behaviour'
+      fullPath: '/academic/attendance-behaviour'
+      preLoaderRoute: typeof AcademicAttendanceBehaviourRouteImport
+      parentRoute: typeof AcademicRoute
+    }
+    '/academic/grades/$level': {
+      id: '/academic/grades/$level'
+      path: '/grades/$level'
+      fullPath: '/academic/grades/$level'
+      preLoaderRoute: typeof AcademicGradesLevelRouteImport
+      parentRoute: typeof AcademicRoute
+    }
   }
 }
+
+interface AcademicRouteChildren {
+  AcademicAttendanceBehaviourRoute: typeof AcademicAttendanceBehaviourRoute
+  AcademicCalendarRoute: typeof AcademicCalendarRoute
+  AcademicParentGuidelinesRoute: typeof AcademicParentGuidelinesRoute
+  AcademicStudentGuidelinesRoute: typeof AcademicStudentGuidelinesRoute
+  AcademicIndexRoute: typeof AcademicIndexRoute
+  AcademicGradesLevelRoute: typeof AcademicGradesLevelRoute
+}
+
+const AcademicRouteChildren: AcademicRouteChildren = {
+  AcademicAttendanceBehaviourRoute: AcademicAttendanceBehaviourRoute,
+  AcademicCalendarRoute: AcademicCalendarRoute,
+  AcademicParentGuidelinesRoute: AcademicParentGuidelinesRoute,
+  AcademicStudentGuidelinesRoute: AcademicStudentGuidelinesRoute,
+  AcademicIndexRoute: AcademicIndexRoute,
+  AcademicGradesLevelRoute: AcademicGradesLevelRoute,
+}
+
+const AcademicRouteWithChildren = AcademicRoute._addFileChildren(
+  AcademicRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AcademicRoute: AcademicRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -11,12 +11,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { getGrade, parseGradeLevel, GRADES } from "@/lib/academic";
 
 export const Route = createFileRoute("/academic/grades/$level")({
-  parseParams: (params) => {
-    const level = parseGradeLevel(params.level);
-    if (level === null) throw notFound();
-    return { level };
+  params: {
+    parse: (raw: Record<string, string>) => {
+      const level = parseGradeLevel(raw.level);
+      if (level === null) throw notFound();
+      return { level };
+    },
+    stringify: ({ level }: { level: number }) => ({ level: String(level) }),
   },
-  stringifyParams: ({ level }) => ({ level: String(level) }),
   head: ({ params }) => {
     const g = getGrade(params.level);
     const title = g ? `${g.name_ar} | مدرسة الناصرية الابتدائية الجديدة` : "الصف الدراسي";
@@ -32,6 +34,16 @@ export const Route = createFileRoute("/academic/grades/$level")({
       ],
     };
   },
+  notFoundComponent: () => (
+    <div className="grid min-h-[60vh] place-items-center">
+      <p className="text-muted-foreground">الصف المطلوب غير موجود.</p>
+    </div>
+  ),
+  errorComponent: ({ error }) => (
+    <div className="grid min-h-[60vh] place-items-center">
+      <p className="text-muted-foreground">تعذّر تحميل الصفحة: {error.message}</p>
+    </div>
+  ),
   component: GradePage,
 });
 
