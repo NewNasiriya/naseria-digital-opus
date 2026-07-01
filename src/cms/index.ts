@@ -16,3 +16,7 @@ export * from "./media";
 export * from "./audit";
 export * from "./autosave";
 export * from "./registry";
+export * from "./env";
+export * from "./realtime";
+export * from "./versions";
+export * from "./services";
