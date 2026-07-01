@@ -482,5 +482,3 @@ function ShareBar({ title }: { title: string }) {
   );
 }
 
-// Ensure imported symbols we conditionally reference are considered used.
-export const _icons = { Trophy, Download, EmptyPanel, notFound };
