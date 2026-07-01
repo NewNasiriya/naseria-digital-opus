@@ -78,13 +78,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#0b2a5b" },
-      { title: "مدرسة النصيرية الابتدائية الجديدة" },
+      { title: "مدرسة الناصرية الابتدائية الجديدة" },
       {
         name: "description",
         content:
-          "الموقع الرسمي لمدرسة النصيرية الابتدائية الجديدة — أخبار، جداول، أنشطة، وإرشادات لأولياء الأمور والطلاب.",
+          "الموقع الرسمي لمدرسة الناصرية الابتدائية الجديدة — أخبار، جداول، أنشطة، وإرشادات لأولياء الأمور والطلاب.",
       },
-      { property: "og:title", content: "مدرسة النصيرية الابتدائية الجديدة" },
+      { property: "og:title", content: "مدرسة الناصرية الابتدائية الجديدة" },
       {
         property: "og:description",
         content:
