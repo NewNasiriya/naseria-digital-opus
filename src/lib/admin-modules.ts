@@ -29,6 +29,7 @@ export type AdminModuleId =
   | "activities"
   | "gallery"
   | "media"
+  | "documents"
   | "contact"
   | "users"
   | "settings"
