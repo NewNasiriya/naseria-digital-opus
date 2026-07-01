@@ -147,6 +147,16 @@ export const ADMIN_MODULES: AdminModule[] = [
     group: "media",
   },
   {
+    id: "documents",
+    slug: "documents",
+    title: "مركز المستندات",
+    short: "المستندات",
+    description: "ملفات PDF، التعميمات، السياسات، والنماذج القابلة للتنزيل.",
+    icon: FileText,
+    primaryAction: "رفع مستند",
+    group: "media",
+  },
+  {
     id: "contact",
     slug: "contact",
     title: "إدارة معلومات التواصل",
