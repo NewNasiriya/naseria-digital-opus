@@ -1,0 +1,1 @@
+UPDATE public.honor_boards SET image_url='/__l5e/assets-v1/476f75a9-de13-49af-aa8a-9796d71e5de1/grade-6-honor-2025-2026.png', updated_at=now() WHERE id='abb6240b-3257-4ae0-82e3-3c8bfa792fdf';
