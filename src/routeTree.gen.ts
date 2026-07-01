@@ -13,6 +13,7 @@ import { Route as NewsRouteImport } from './routes/news'
 import { Route as AcademicRouteImport } from './routes/academic'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as AcademicIndexRouteImport } from './routes/academic.index'
 import { Route as AcademicStudentGuidelinesRouteImport } from './routes/academic.student-guidelines'
 import { Route as AcademicParentGuidelinesRouteImport } from './routes/academic.parent-guidelines'
@@ -39,6 +40,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const NewsIndexRoute = NewsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => NewsRoute,
 } as any)
 const AcademicIndexRoute = AcademicIndexRouteImport.update({
   id: '/',
@@ -78,23 +84,24 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/academic': typeof AcademicRouteWithChildren
-  '/news': typeof NewsRoute
+  '/news': typeof NewsRouteWithChildren
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
   '/academic/calendar': typeof AcademicCalendarRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/academic/': typeof AcademicIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/news': typeof NewsRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
   '/academic/calendar': typeof AcademicCalendarRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/academic': typeof AcademicIndexRoute
+  '/news': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
 }
 export interface FileRoutesById {
@@ -102,12 +109,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/academic': typeof AcademicRouteWithChildren
-  '/news': typeof NewsRoute
+  '/news': typeof NewsRouteWithChildren
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
   '/academic/calendar': typeof AcademicCalendarRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/academic/': typeof AcademicIndexRoute
+  '/news/': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
 }
 export interface FileRouteTypes {
@@ -122,17 +130,18 @@ export interface FileRouteTypes {
     | '/academic/parent-guidelines'
     | '/academic/student-guidelines'
     | '/academic/'
+    | '/news/'
     | '/academic/grades/$level'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/news'
     | '/academic/attendance-behaviour'
     | '/academic/calendar'
     | '/academic/parent-guidelines'
     | '/academic/student-guidelines'
     | '/academic'
+    | '/news'
     | '/academic/grades/$level'
   id:
     | '__root__'
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
     | '/academic/parent-guidelines'
     | '/academic/student-guidelines'
     | '/academic/'
+    | '/news/'
     | '/academic/grades/$level'
   fileRoutesById: FileRoutesById
 }
@@ -152,7 +162,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AcademicRoute: typeof AcademicRouteWithChildren
-  NewsRoute: typeof NewsRoute
+  NewsRoute: typeof NewsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -184,6 +194,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/news/': {
+      id: '/news/'
+      path: '/'
+      fullPath: '/news/'
+      preLoaderRoute: typeof NewsIndexRouteImport
+      parentRoute: typeof NewsRoute
     }
     '/academic/': {
       id: '/academic/'
@@ -252,11 +269,21 @@ const AcademicRouteWithChildren = AcademicRoute._addFileChildren(
   AcademicRouteChildren,
 )
 
+interface NewsRouteChildren {
+  NewsIndexRoute: typeof NewsIndexRoute
+}
+
+const NewsRouteChildren: NewsRouteChildren = {
+  NewsIndexRoute: NewsIndexRoute,
+}
+
+const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AcademicRoute: AcademicRouteWithChildren,
-  NewsRoute: NewsRoute,
+  NewsRoute: NewsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
