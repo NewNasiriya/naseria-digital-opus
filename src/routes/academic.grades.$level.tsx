@@ -148,6 +148,8 @@ function GradePage() {
             </section>
           </div>
 
+          <RelatedResources />
+
           <GradeNav currentLevel={level} />
         </Container>
       </Section>
@@ -158,14 +160,9 @@ function GradePage() {
 function GradeNav({ currentLevel }: { currentLevel: number }) {
   return (
     <nav
-          <RelatedResources />
-
-          <GradeNav currentLevel={level} />
-        </Container>
-      </Section>
-    </>
-  );
-}
+      aria-label="التنقل بين الصفوف"
+      className="mt-8 rounded-2xl border border-border bg-surface-muted p-6"
+    >
 
 interface ResourceLink {
   to: "/academic/calendar" | "/academic/student-guidelines" | "/academic/parent-guidelines" | "/academic/attendance-behaviour";
