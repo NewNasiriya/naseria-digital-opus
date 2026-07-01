@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
+import { SchoolLogo } from "@/components/brand/SchoolLogo";
 import { Container } from "@/components/layout/Container";
 import {
   DAY_NAMES_AR,
