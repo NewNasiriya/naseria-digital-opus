@@ -270,6 +270,13 @@
     letter-spacing: 0;         /* Never tighten Arabic */
   }
 
+  /* Safety-net: absolutely-positioned decorative bleeds must never create
+     a horizontal scrollbar on small viewports. `overflow-x: clip` keeps
+     `position: sticky` working (unlike `overflow-x: hidden`). */
+  html, body {
+    overflow-x: clip;
+  }
+
   /* Arabic-first typography scale (Alexandria) */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);

@@ -67,7 +67,7 @@ function HonorIndex() {
           </div>
 
           {isLoading ? (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
                   key={i}
@@ -82,7 +82,7 @@ function HonorIndex() {
               description="ستقوم إدارة المدرسة بنشر كشوف الأوائل الرسمية للعام الدراسي الحالي فور اعتمادها."
             />
           ) : (
-            <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {boards.map((b) => (
                 <li key={b.id}>
                   <HonorCard board={b} />
