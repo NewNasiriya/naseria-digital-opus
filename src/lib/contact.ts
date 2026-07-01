@@ -77,8 +77,8 @@ async function fetchContactInfo(): Promise<ContactInfo | null> {
   if (!data) return null;
   return {
     ...data,
-    emails: Array.isArray(data.emails) ? (data.emails as EmailEntry[]) : [],
-    phones: Array.isArray(data.phones) ? (data.phones as PhoneEntry[]) : [],
+    emails: Array.isArray(data.emails) ? (data.emails as unknown as EmailEntry[]) : [],
+    phones: Array.isArray(data.phones) ? (data.phones as unknown as PhoneEntry[]) : [],
   } as ContactInfo;
 }
 
