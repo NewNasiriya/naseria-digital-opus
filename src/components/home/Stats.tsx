@@ -134,6 +134,7 @@ export function Stats({ items }: StatsProps) {
         key: r.key,
         label: r.label_ar,
         value: r.value ?? 0,
+        suffix: r.key === "students" || r.key === "teachers" ? "+" : undefined,
         icon: resolveIcon(r.icon_key, r.key),
       }));
     },
