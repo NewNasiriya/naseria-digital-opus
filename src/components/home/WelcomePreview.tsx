@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
@@ -13,7 +14,7 @@ const DEFAULT_MESSAGE =
 
 export function WelcomePreview({ message }: WelcomePreviewProps) {
   return (
-    <Section id="about" tone="muted" spacing="default">
+    <Section tone="muted" spacing="default">
       <Container size="narrow" className="text-center">
         <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
           كلمة ترحيب
@@ -24,10 +25,10 @@ export function WelcomePreview({ message }: WelcomePreviewProps) {
         </p>
         <div className="mt-9">
           <Button asChild size="lg">
-            <a href="#about-more">
+            <Link to="/about">
               المزيد عن المدرسة
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            </a>
+            </Link>
           </Button>
         </div>
       </Container>

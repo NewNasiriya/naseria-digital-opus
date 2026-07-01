@@ -6,15 +6,16 @@ import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-type NavItem = { label: string; href: string };
+type NavItem = { label: string; to: string };
 
 const NAV: NavItem[] = [
-  { label: "عن المدرسة", href: "#about" },
-  { label: "الحياة الأكاديمية", href: "#academic" },
-  { label: "الأنشطة", href: "#activities" },
-  { label: "لوحة الشرف", href: "#honor" },
-  { label: "الأخبار", href: "#news" },
-  { label: "تواصل معنا", href: "#contact" },
+  { label: "عن المدرسة", to: "/about" },
+  { label: "الحياة الأكاديمية", to: "/academic" },
+  { label: "الإنجازات", to: "/achievements" },
+  { label: "لوحة الشرف", to: "/honor" },
+  { label: "الأنشطة", to: "/activities" },
+  { label: "الأخبار", to: "/news" },
+  { label: "تواصل معنا", to: "/contact" },
 ];
 
 export function SiteHeader() {
@@ -79,13 +80,20 @@ export function SiteHeader() {
           className="hidden items-center gap-1 lg:flex"
         >
           {NAV.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+            <Link
+              key={item.to}
+              to={item.to}
+              activeProps={{
+                className:
+                  "rounded-md px-3 py-2 text-sm font-semibold text-primary bg-primary-soft",
+              }}
+              inactiveProps={{
+                className:
+                  "rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+              }}
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -123,22 +131,27 @@ export function SiteHeader() {
       {open && (
         <div className="border-t border-border bg-background lg:hidden">
           <Container size="wide" className="py-3">
-            <nav
-              aria-label="التنقل المتنقل"
-              className="flex flex-col gap-1"
-            >
+            <nav aria-label="التنقل المتنقل" className="flex flex-col gap-1">
               {NAV.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
+                <Link
+                  key={item.to}
+                  to={item.to}
                   onClick={() => setOpen(false)}
-                  className="rounded-md px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+                  activeProps={{
+                    className:
+                      "rounded-md px-3 py-2.5 text-sm font-semibold text-primary bg-primary-soft",
+                  }}
+                  inactiveProps={{
+                    className:
+                      "rounded-md px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent",
+                  }}
                 >
                   {item.label}
-                </a>
+                </Link>
               ))}
               <a
                 href="/auth"
+                onClick={() => setOpen(false)}
                 className="mt-2 inline-flex items-center gap-2 rounded-md border border-border px-3 py-2.5 text-sm font-medium text-foreground hover:bg-accent"
               >
                 <LogIn className="h-4 w-4" aria-hidden="true" />

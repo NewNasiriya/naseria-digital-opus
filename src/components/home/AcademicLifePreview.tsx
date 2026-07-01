@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import {
   BookOpen,
   ClipboardList,
@@ -14,7 +15,7 @@ import { Section } from "@/components/layout/Section";
 interface AcademicCard {
   title: string;
   description: string;
-  href: string;
+  to: string;
   icon: LucideIcon;
 }
 
@@ -22,38 +23,38 @@ const CARDS: AcademicCard[] = [
   {
     title: "الجدول الدراسي",
     description: "الجدول الأسبوعي لكل مرحلة وفصل دراسي.",
-    href: "#academic-timetable",
+    to: "/academic",
     icon: BookOpen,
   },
   {
     title: "جداول الامتحانات",
     description: "مواعيد الاختبارات الشهرية والفصلية.",
-    href: "#exam-timetable",
+    to: "/academic",
     icon: ClipboardList,
   },
   {
     title: "التقويم الأكاديمي",
     description: "الفعاليات والإجازات الرسمية خلال العام.",
-    href: "#academic-calendar",
+    to: "/academic/calendar",
     icon: CalendarRange,
   },
   {
     title: "إرشادات الطلاب",
     description: "قواعد وتوجيهات تُعين الطالب على التميز.",
-    href: "#student-instructions",
+    to: "/academic/student-guidelines",
     icon: GraduationCap,
   },
   {
     title: "إرشادات أولياء الأمور",
     description: "دليل ولي الأمر للتواصل مع المدرسة ومتابعة أبنائه.",
-    href: "#parent-instructions",
+    to: "/academic/parent-guidelines",
     icon: Users,
   },
 ];
 
 export function AcademicLifePreview() {
   return (
-    <Section id="academic" tone="muted" spacing="default">
+    <Section tone="muted" spacing="default">
       <Container size="wide">
         <div className="text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
@@ -72,9 +73,9 @@ export function AcademicLifePreview() {
           {CARDS.map((c) => {
             const Icon = c.icon;
             return (
-              <a
+              <Link
                 key={c.title}
-                href={c.href}
+                to={c.to}
                 className="group flex h-full flex-col rounded-2xl border border-border bg-card p-6 elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:elevation-md"
               >
                 <span
@@ -93,9 +94,19 @@ export function AcademicLifePreview() {
                   الاطلاع
                   <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                 </span>
-              </a>
+              </Link>
             );
           })}
+        </div>
+
+        <div className="mt-12 flex justify-center">
+          <Link
+            to="/academic"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary-hover"
+          >
+            استعراض بوابة الحياة الأكاديمية كاملة
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          </Link>
         </div>
       </Container>
     </Section>

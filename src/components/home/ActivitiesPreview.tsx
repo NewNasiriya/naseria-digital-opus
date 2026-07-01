@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import {
   Trophy,
   BookMarked,
@@ -15,7 +16,6 @@ interface ActivityCard {
   title: string;
   description: string;
   icon: LucideIcon;
-  href: string;
 }
 
 const ACTIVITIES: ActivityCard[] = [
@@ -23,37 +23,32 @@ const ACTIVITIES: ActivityCard[] = [
     title: "الأنشطة الرياضية",
     description: "تنمية اللياقة وروح الفريق من خلال بطولات وتدريبات منتظمة.",
     icon: Trophy,
-    href: "#activities-sports",
   },
   {
     title: "الأنشطة الثقافية",
     description: "برامج تُثري ثقافة الطالب وتنمي مهارات القراءة والنقاش.",
     icon: BookMarked,
-    href: "#activities-cultural",
   },
   {
     title: "الأنشطة الفنية",
     description: "ورش الرسم والحرف اليدوية لاكتشاف المواهب وصقلها.",
     icon: Palette,
-    href: "#activities-arts",
   },
   {
     title: "الرحلات المدرسية",
     description: "رحلات تعليمية وترفيهية مُنظّمة تعزز التعلّم خارج الفصل.",
     icon: Bus,
-    href: "#activities-trips",
   },
   {
     title: "المسابقات",
     description: "مسابقات علمية وأدبية داخلية وخارجية تشجّع على التميز.",
     icon: Medal,
-    href: "#activities-competitions",
   },
 ];
 
 export function ActivitiesPreview() {
   return (
-    <Section id="activities" tone="muted" spacing="default">
+    <Section tone="muted" spacing="default">
       <Container size="wide">
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
           <div>
@@ -64,22 +59,22 @@ export function ActivitiesPreview() {
               حياة مدرسية غنية ومتوازنة
             </h2>
           </div>
-          <a
-            href="#activities-all"
+          <Link
+            to="/activities"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary-hover"
           >
             كل الأنشطة
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          </a>
+          </Link>
         </div>
 
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {ACTIVITIES.map((a) => {
             const Icon = a.icon;
             return (
-              <a
+              <Link
                 key={a.title}
-                href={a.href}
+                to="/activities"
                 className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:elevation-md"
               >
                 <span
@@ -94,7 +89,7 @@ export function ActivitiesPreview() {
                 <p className="mt-2 text-sm leading-loose text-muted-foreground">
                   {a.description}
                 </p>
-              </a>
+              </Link>
             );
           })}
         </div>

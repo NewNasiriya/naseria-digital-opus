@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as HonorRouteImport } from './routes/honor'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as AchievementsRouteImport } from './routes/achievements'
 import { Route as AcademicRouteImport } from './routes/academic'
 import { Route as AboutRouteImport } from './routes/about'
@@ -36,6 +38,16 @@ const NewsRoute = NewsRouteImport.update({
 const HonorRoute = HonorRouteImport.update({
   id: '/honor',
   path: '/honor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ActivitiesRoute = ActivitiesRouteImport.update({
+  id: '/activities',
+  path: '/activities',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AchievementsRoute = AchievementsRouteImport.update({
@@ -127,6 +139,8 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/academic': typeof AcademicRouteWithChildren
   '/achievements': typeof AchievementsRouteWithChildren
+  '/activities': typeof ActivitiesRoute
+  '/contact': typeof ContactRoute
   '/honor': typeof HonorRouteWithChildren
   '/news': typeof NewsRouteWithChildren
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
@@ -145,6 +159,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/activities': typeof ActivitiesRoute
+  '/contact': typeof ContactRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
   '/academic/calendar': typeof AcademicCalendarRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
@@ -164,6 +180,8 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/academic': typeof AcademicRouteWithChildren
   '/achievements': typeof AchievementsRouteWithChildren
+  '/activities': typeof ActivitiesRoute
+  '/contact': typeof ContactRoute
   '/honor': typeof HonorRouteWithChildren
   '/news': typeof NewsRouteWithChildren
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
@@ -186,6 +204,8 @@ export interface FileRouteTypes {
     | '/about'
     | '/academic'
     | '/achievements'
+    | '/activities'
+    | '/contact'
     | '/honor'
     | '/news'
     | '/academic/attendance-behaviour'
@@ -204,6 +224,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/activities'
+    | '/contact'
     | '/academic/attendance-behaviour'
     | '/academic/calendar'
     | '/academic/parent-guidelines'
@@ -222,6 +244,8 @@ export interface FileRouteTypes {
     | '/about'
     | '/academic'
     | '/achievements'
+    | '/activities'
+    | '/contact'
     | '/honor'
     | '/news'
     | '/academic/attendance-behaviour'
@@ -243,6 +267,8 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AcademicRoute: typeof AcademicRouteWithChildren
   AchievementsRoute: typeof AchievementsRouteWithChildren
+  ActivitiesRoute: typeof ActivitiesRoute
+  ContactRoute: typeof ContactRoute
   HonorRoute: typeof HonorRouteWithChildren
   NewsRoute: typeof NewsRouteWithChildren
 }
@@ -261,6 +287,20 @@ declare module '@tanstack/react-router' {
       path: '/honor'
       fullPath: '/honor'
       preLoaderRoute: typeof HonorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/activities': {
+      id: '/activities'
+      path: '/activities'
+      fullPath: '/activities'
+      preLoaderRoute: typeof ActivitiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/achievements': {
@@ -443,9 +483,21 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AcademicRoute: AcademicRouteWithChildren,
   AchievementsRoute: AchievementsRouteWithChildren,
+  ActivitiesRoute: ActivitiesRoute,
+  ContactRoute: ContactRoute,
   HonorRoute: HonorRouteWithChildren,
   NewsRoute: NewsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

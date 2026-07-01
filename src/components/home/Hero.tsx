@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { ArrowLeft, CalendarDays, ChevronDown } from "lucide-react";
 
 import schoolBuilding from "@/assets/school-building.png.asset.json";
@@ -73,10 +74,10 @@ export function Hero({ intro }: HeroProps) {
               size="lg"
               className="bg-white text-primary hover:bg-white/90"
             >
-              <a href="#about">
+              <Link to="/about">
                 تعرف على المدرسة
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-              </a>
+              </Link>
             </Button>
             <Button
               asChild
@@ -84,10 +85,10 @@ export function Hero({ intro }: HeroProps) {
               variant="outline"
               className="border-white/40 bg-white/5 text-white backdrop-blur-sm hover:bg-white/15 hover:text-white"
             >
-              <a href="#academic">
+              <Link to="/academic">
                 <CalendarDays className="h-4 w-4" aria-hidden="true" />
                 الجداول الدراسية
-              </a>
+              </Link>
             </Button>
           </div>
         </div>

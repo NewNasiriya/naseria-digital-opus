@@ -1,19 +1,25 @@
+import { Link } from "@tanstack/react-router";
+
 import { Container } from "@/components/layout/Container";
 
-const QUICK_LINKS = [
-  { label: "الرئيسية", href: "/" },
-  { label: "عن المدرسة", href: "#about" },
-  { label: "الأخبار", href: "#news" },
-  { label: "الأنشطة", href: "#activities" },
-  { label: "لوحة الشرف", href: "#honor" },
+type FooterLink = { label: string; to: string };
+
+const BROWSE_LINKS: FooterLink[] = [
+  { label: "الرئيسية", to: "/" },
+  { label: "عن المدرسة", to: "/about" },
+  { label: "الإنجازات", to: "/achievements" },
+  { label: "لوحة الشرف", to: "/honor" },
+  { label: "الأنشطة", to: "/activities" },
+  { label: "الأخبار", to: "/news" },
+  { label: "تواصل معنا", to: "/contact" },
 ];
 
-const ACADEMIC_LINKS = [
-  { label: "الجدول الدراسي", href: "#academic" },
-  { label: "جداول الامتحانات", href: "#academic" },
-  { label: "التقويم الأكاديمي", href: "#academic" },
-  { label: "إرشادات الطلاب", href: "#academic" },
-  { label: "إرشادات أولياء الأمور", href: "#academic" },
+const ACADEMIC_LINKS: FooterLink[] = [
+  { label: "الحياة الأكاديمية", to: "/academic" },
+  { label: "التقويم الأكاديمي", to: "/academic/calendar" },
+  { label: "إرشادات الطلاب", to: "/academic/student-guidelines" },
+  { label: "إرشادات أولياء الأمور", to: "/academic/parent-guidelines" },
+  { label: "الحضور والسلوك", to: "/academic/attendance-behaviour" },
 ];
 
 const WORKING_HOURS = [
@@ -26,12 +32,16 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border bg-surface-muted" id="contact">
+    <footer className="border-t border-border bg-surface-muted">
       <Container size="wide" className="py-14">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <div className="flex items-center gap-3">
+            <Link
+              to="/"
+              className="flex items-center gap-3"
+              aria-label="الصفحة الرئيسية"
+            >
               <span
                 aria-hidden="true"
                 className="grid h-11 w-11 place-items-center rounded-md bg-primary text-primary-foreground font-bold"
@@ -46,27 +56,27 @@ export function SiteFooter() {
                   New Al-Nasiriyah Primary School
                 </p>
               </div>
-            </div>
+            </Link>
             <p className="mt-5 text-sm leading-loose text-muted-foreground">
               مؤسسة تعليمية حكومية تسعى إلى تقديم تعليم متميز يبني شخصية الطالب
               ويعزز انتماءه لوطنه.
             </p>
           </div>
 
-          {/* Quick links */}
-          <nav aria-label="روابط سريعة">
+          {/* Browse */}
+          <nav aria-label="روابط الموقع">
             <h3 className="text-sm font-semibold text-foreground">
-              روابط سريعة
+              تصفح الموقع
             </h3>
             <ul className="mt-4 space-y-2.5">
-              {QUICK_LINKS.map((l) => (
-                <li key={l.label}>
-                  <a
-                    href={l.href}
+              {BROWSE_LINKS.map((l) => (
+                <li key={l.to}>
+                  <Link
+                    to={l.to}
                     className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     {l.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -79,13 +89,13 @@ export function SiteFooter() {
             </h3>
             <ul className="mt-4 space-y-2.5">
               {ACADEMIC_LINKS.map((l) => (
-                <li key={l.label}>
-                  <a
-                    href={l.href}
+                <li key={l.to}>
+                  <Link
+                    to={l.to}
                     className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     {l.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -107,6 +117,13 @@ export function SiteFooter() {
                 </li>
               ))}
             </ul>
+            <Link
+              to="/contact"
+              className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors hover:text-primary-hover"
+            >
+              معلومات التواصل الكاملة
+              <span aria-hidden="true">←</span>
+            </Link>
           </div>
         </div>
 

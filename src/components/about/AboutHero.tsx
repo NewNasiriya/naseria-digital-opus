@@ -1,4 +1,5 @@
-import { ArrowLeft, Phone } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ArrowLeft, ChevronLeft, Home, Phone } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
@@ -23,6 +24,23 @@ export function AboutHero({
   return (
     <Section tone="default" spacing="default" className="pt-10 sm:pt-16">
       <Container size="wide">
+        <nav
+          aria-label="مسار التنقل"
+          className="mb-6 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground"
+        >
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1 rounded px-1.5 py-1 hover:text-foreground"
+          >
+            <Home className="h-3.5 w-3.5" aria-hidden="true" />
+            الرئيسية
+          </Link>
+          <span className="inline-flex items-center gap-1.5">
+            <ChevronLeft className="h-3.5 w-3.5" aria-hidden="true" />
+            <span className="px-1.5 py-1 text-foreground">عن المدرسة</span>
+          </span>
+        </nav>
+
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="order-2 lg:order-1">
             <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
@@ -36,10 +54,10 @@ export function AboutHero({
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
-                <a href="#contact">
+                <Link to="/contact">
                   <Phone className="h-4 w-4" aria-hidden="true" />
                   تواصل مع الإدارة
-                </a>
+                </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
                 <a href="#principal">
