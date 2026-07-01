@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as HonorRouteImport } from './routes/honor'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -42,6 +43,11 @@ import { Route as AcademicAttendanceRouteImport } from './routes/academic.attend
 import { Route as HonorGradesLevelRouteImport } from './routes/honor.grades.$level'
 import { Route as AcademicGradesLevelRouteImport } from './routes/academic.grades.$level'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
@@ -217,6 +223,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/honor': typeof HonorRouteWithChildren
   '/news': typeof NewsRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
   '/academic/behaviour': typeof AcademicBehaviourRoute
@@ -246,6 +253,7 @@ export interface FileRoutesByTo {
   '/activities': typeof ActivitiesRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
   '/academic/behaviour': typeof AcademicBehaviourRoute
@@ -281,6 +289,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/honor': typeof HonorRouteWithChildren
   '/news': typeof NewsRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
   '/academic/behaviour': typeof AcademicBehaviourRoute
@@ -317,6 +326,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/honor'
     | '/news'
+    | '/sitemap.xml'
     | '/academic/attendance'
     | '/academic/attendance-behaviour'
     | '/academic/behaviour'
@@ -346,6 +356,7 @@ export interface FileRouteTypes {
     | '/activities'
     | '/auth'
     | '/contact'
+    | '/sitemap.xml'
     | '/academic/attendance'
     | '/academic/attendance-behaviour'
     | '/academic/behaviour'
@@ -380,6 +391,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/honor'
     | '/news'
+    | '/sitemap.xml'
     | '/academic/attendance'
     | '/academic/attendance-behaviour'
     | '/academic/behaviour'
@@ -415,10 +427,18 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   HonorRoute: typeof HonorRouteWithChildren
   NewsRoute: typeof NewsRouteWithChildren
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/news': {
       id: '/news'
       path: '/news'
@@ -745,6 +765,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   HonorRoute: HonorRouteWithChildren,
   NewsRoute: NewsRouteWithChildren,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

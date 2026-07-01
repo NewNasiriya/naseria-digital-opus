@@ -1,0 +1,1 @@
+UPDATE public.news SET status = 'published', published_at = COALESCE(published_at, now()) WHERE status = 'draft' AND slug IN ('receiving-new-student-files','new-academic-year-start','summer-activity-reading-knights','first-parent-consultative-meeting','kindergarten-accreditation-team-appreciation');
