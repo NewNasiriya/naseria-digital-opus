@@ -358,15 +358,16 @@
 /* Governmental "editorial rule" — subtle accent underline */
 @utility rule-accent {
   position: relative;
-}
-@utility rule-accent::after {
-  content: "";
-  display: block;
-  width: 2.5rem;
-  height: 3px;
-  margin-block-start: 0.75rem;
-  background: var(--primary);
-  border-radius: var(--radius-full);
+
+  &::after {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 3px;
+    margin-block-start: 0.75rem;
+    background: var(--primary);
+    border-radius: var(--radius-full);
+  }
 }
 
 /* Motion presets */
