@@ -15,6 +15,7 @@ import {
   Settings,
   Search,
   Activity,
+  CalendarClock,
   type LucideIcon,
 } from "lucide-react";
 
@@ -30,6 +31,7 @@ export type AdminModuleId =
   | "gallery"
   | "media"
   | "documents"
+  | "timeline"
   | "contact"
   | "users"
   | "settings"
@@ -155,6 +157,17 @@ export const ADMIN_MODULES: AdminModule[] = [
     icon: FileText,
     primaryAction: "رفع مستند",
     group: "media",
+  },
+  {
+    id: "timeline",
+    slug: "timeline",
+    title: "التقويم الأكاديمي الذكي",
+    short: "التقويم الذكي",
+    description: "إدارة فعاليات العام الدراسي، العدّاد التنازلي، والرسائل المعروضة على الصفحة الرئيسية.",
+    icon: CalendarClock,
+    primaryAction: "إضافة فعالية",
+    group: "content",
+    publicHref: "/academic/calendar",
   },
   {
     id: "contact",

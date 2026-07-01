@@ -25,6 +25,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AchievementsIndexRouteImport } from './routes/achievements.index'
 import { Route as AcademicIndexRouteImport } from './routes/academic.index'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
+import { Route as AdminTimelineRouteImport } from './routes/admin.timeline'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminDocumentsRouteImport } from './routes/admin.documents'
 import { Route as AdminContactRouteImport } from './routes/admin.contact'
@@ -117,6 +118,11 @@ const NewsSlugRoute = NewsSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => NewsRoute,
 } as any)
+const AdminTimelineRoute = AdminTimelineRouteImport.update({
+  id: '/timeline',
+  path: '/timeline',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminMediaRoute = AdminMediaRouteImport.update({
   id: '/media',
   path: '/media',
@@ -196,6 +202,7 @@ export interface FileRoutesByFullPath {
   '/admin/contact': typeof AdminContactRoute
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/media': typeof AdminMediaRoute
+  '/admin/timeline': typeof AdminTimelineRoute
   '/news/$slug': typeof NewsSlugRoute
   '/academic/': typeof AcademicIndexRoute
   '/achievements/': typeof AchievementsIndexRoute
@@ -220,6 +227,7 @@ export interface FileRoutesByTo {
   '/admin/contact': typeof AdminContactRoute
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/media': typeof AdminMediaRoute
+  '/admin/timeline': typeof AdminTimelineRoute
   '/news/$slug': typeof NewsSlugRoute
   '/academic': typeof AcademicIndexRoute
   '/achievements': typeof AchievementsIndexRoute
@@ -250,6 +258,7 @@ export interface FileRoutesById {
   '/admin/contact': typeof AdminContactRoute
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/media': typeof AdminMediaRoute
+  '/admin/timeline': typeof AdminTimelineRoute
   '/news/$slug': typeof NewsSlugRoute
   '/academic/': typeof AcademicIndexRoute
   '/achievements/': typeof AchievementsIndexRoute
@@ -281,6 +290,7 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/documents'
     | '/admin/media'
+    | '/admin/timeline'
     | '/news/$slug'
     | '/academic/'
     | '/achievements/'
@@ -305,6 +315,7 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/documents'
     | '/admin/media'
+    | '/admin/timeline'
     | '/news/$slug'
     | '/academic'
     | '/achievements'
@@ -334,6 +345,7 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/documents'
     | '/admin/media'
+    | '/admin/timeline'
     | '/news/$slug'
     | '/academic/'
     | '/achievements/'
@@ -471,6 +483,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsSlugRouteImport
       parentRoute: typeof NewsRoute
     }
+    '/admin/timeline': {
+      id: '/admin/timeline'
+      path: '/timeline'
+      fullPath: '/admin/timeline'
+      preLoaderRoute: typeof AdminTimelineRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/media': {
       id: '/admin/media'
       path: '/media'
@@ -592,6 +611,7 @@ interface AdminRouteChildren {
   AdminContactRoute: typeof AdminContactRoute
   AdminDocumentsRoute: typeof AdminDocumentsRoute
   AdminMediaRoute: typeof AdminMediaRoute
+  AdminTimelineRoute: typeof AdminTimelineRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -600,6 +620,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminContactRoute: AdminContactRoute,
   AdminDocumentsRoute: AdminDocumentsRoute,
   AdminMediaRoute: AdminMediaRoute,
+  AdminTimelineRoute: AdminTimelineRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -644,3 +665,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

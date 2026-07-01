@@ -76,6 +76,89 @@ export type Database = {
           },
         ]
       }
+      academic_timeline_events: {
+        Row: {
+          academic_year_id: string | null
+          countdown_enabled: boolean
+          created_at: string
+          created_by: string | null
+          cta_href: string | null
+          cta_text_ar: string | null
+          description_ar: string | null
+          ends_at: string | null
+          event_type: Database["public"]["Enums"]["academic_event_type"]
+          headline_ar: string
+          icon: string | null
+          id: string
+          priority: number
+          show_on_homepage: boolean
+          show_popup: boolean
+          sort_order: number
+          starts_at: string
+          status: Database["public"]["Enums"]["content_status"]
+          subtitle_ar: string | null
+          theme: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          academic_year_id?: string | null
+          countdown_enabled?: boolean
+          created_at?: string
+          created_by?: string | null
+          cta_href?: string | null
+          cta_text_ar?: string | null
+          description_ar?: string | null
+          ends_at?: string | null
+          event_type?: Database["public"]["Enums"]["academic_event_type"]
+          headline_ar: string
+          icon?: string | null
+          id?: string
+          priority?: number
+          show_on_homepage?: boolean
+          show_popup?: boolean
+          sort_order?: number
+          starts_at: string
+          status?: Database["public"]["Enums"]["content_status"]
+          subtitle_ar?: string | null
+          theme?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          academic_year_id?: string | null
+          countdown_enabled?: boolean
+          created_at?: string
+          created_by?: string | null
+          cta_href?: string | null
+          cta_text_ar?: string | null
+          description_ar?: string | null
+          ends_at?: string | null
+          event_type?: Database["public"]["Enums"]["academic_event_type"]
+          headline_ar?: string
+          icon?: string | null
+          id?: string
+          priority?: number
+          show_on_homepage?: boolean
+          show_popup?: boolean
+          sort_order?: number
+          starts_at?: string
+          status?: Database["public"]["Enums"]["content_status"]
+          subtitle_ar?: string | null
+          theme?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academic_timeline_events_academic_year_id_fkey"
+            columns: ["academic_year_id"]
+            isOneToOne: false
+            referencedRelation: "academic_years"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       academic_years: {
         Row: {
           created_at: string
@@ -2060,6 +2143,16 @@ export type Database = {
       is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
+      academic_event_type:
+        | "year_start"
+        | "semester_1"
+        | "exams_1"
+        | "mid_year_break"
+        | "semester_2"
+        | "exams_2"
+        | "year_end"
+        | "summer_break"
+        | "custom"
       app_role:
         | "admin"
         | "editor"
@@ -2199,6 +2292,17 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      academic_event_type: [
+        "year_start",
+        "semester_1",
+        "exams_1",
+        "mid_year_break",
+        "semester_2",
+        "exams_2",
+        "year_end",
+        "summer_break",
+        "custom",
+      ],
       app_role: [
         "admin",
         "editor",
