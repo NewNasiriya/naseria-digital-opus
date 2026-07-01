@@ -1,23 +1,54 @@
 import { useEffect, useRef, useState } from "react";
-import { GraduationCap, Users, School } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import {
+  GraduationCap,
+  Users,
+  School,
+  BookOpen,
+  Award,
+  Trophy,
+  Building2,
+  type LucideIcon,
+} from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
+import { supabase } from "@/integrations/supabase/client";
 
 interface StatItem {
   key: string;
   label: string;
   value: number;
   suffix?: string;
-  icon: typeof GraduationCap;
+  icon: LucideIcon;
 }
 
-// Defaults — overridden by CMS `statistics` rows when available.
+const ICON_MAP: Record<string, LucideIcon> = {
+  students: Users,
+  teachers: GraduationCap,
+  classrooms: School,
+  users: Users,
+  graduationcap: GraduationCap,
+  school: School,
+  book: BookOpen,
+  bookopen: BookOpen,
+  award: Award,
+  trophy: Trophy,
+  building: Building2,
+};
+
+// Defaults — used only when CMS `statistics` table has no visible rows.
 const DEFAULT_STATS: StatItem[] = [
   { key: "students", label: "طالب وطالبة", value: 850, suffix: "+", icon: Users },
   { key: "teachers", label: "معلم ومعلمة", value: 45, suffix: "+", icon: GraduationCap },
   { key: "classrooms", label: "فصلًا دراسيًا", value: 20, icon: School },
 ];
+
+function resolveIcon(key: string | null, statKey: string): LucideIcon {
+  if (key && ICON_MAP[key.toLowerCase()]) return ICON_MAP[key.toLowerCase()];
+  if (ICON_MAP[statKey.toLowerCase()]) return ICON_MAP[statKey.toLowerCase()];
+  return Award;
+}
 
 function useCountUp(target: number, active: boolean, duration = 1600) {
   const [value, setValue] = useState(0);
