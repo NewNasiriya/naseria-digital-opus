@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as NewsRouteImport } from './routes/news'
 import { Route as AcademicRouteImport } from './routes/academic'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -19,6 +20,11 @@ import { Route as AcademicCalendarRouteImport } from './routes/academic.calendar
 import { Route as AcademicAttendanceBehaviourRouteImport } from './routes/academic.attendance-behaviour'
 import { Route as AcademicGradesLevelRouteImport } from './routes/academic.grades.$level'
 
+const NewsRoute = NewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AcademicRoute = AcademicRouteImport.update({
   id: '/academic',
   path: '/academic',
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/academic': typeof AcademicRouteWithChildren
+  '/news': typeof NewsRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
   '/academic/calendar': typeof AcademicCalendarRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/news': typeof NewsRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
   '/academic/calendar': typeof AcademicCalendarRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/academic': typeof AcademicRouteWithChildren
+  '/news': typeof NewsRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
   '/academic/calendar': typeof AcademicCalendarRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/academic'
+    | '/news'
     | '/academic/attendance-behaviour'
     | '/academic/calendar'
     | '/academic/parent-guidelines'
@@ -117,6 +127,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/news'
     | '/academic/attendance-behaviour'
     | '/academic/calendar'
     | '/academic/parent-guidelines'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/academic'
+    | '/news'
     | '/academic/attendance-behaviour'
     | '/academic/calendar'
     | '/academic/parent-guidelines'
@@ -140,10 +152,18 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AcademicRoute: typeof AcademicRouteWithChildren
+  NewsRoute: typeof NewsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/academic': {
       id: '/academic'
       path: '/academic'
@@ -236,6 +256,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AcademicRoute: AcademicRouteWithChildren,
+  NewsRoute: NewsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
