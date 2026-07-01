@@ -44,8 +44,12 @@ export const PERMISSIONS = [
   "content.archive",
   "content.delete",
   // Media library
+  "media.view",
   "media.upload",
+  "media.replace",
   "media.delete",
+  "media.manage_folders",
+  "documents.download",
   // Administration
   "users.manage",
   "settings.manage",
