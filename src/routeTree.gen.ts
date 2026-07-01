@@ -20,6 +20,7 @@ import { Route as HonorIndexRouteImport } from './routes/honor.index'
 import { Route as AchievementsIndexRouteImport } from './routes/achievements.index'
 import { Route as AcademicIndexRouteImport } from './routes/academic.index'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
+import { Route as AchievementsSlugRouteImport } from './routes/achievements.$slug'
 import { Route as AcademicStudentGuidelinesRouteImport } from './routes/academic.student-guidelines'
 import { Route as AcademicParentGuidelinesRouteImport } from './routes/academic.parent-guidelines'
 import { Route as AcademicCalendarRouteImport } from './routes/academic.calendar'
@@ -82,6 +83,11 @@ const NewsSlugRoute = NewsSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => NewsRoute,
 } as any)
+const AchievementsSlugRoute = AchievementsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => AchievementsRoute,
+} as any)
 const AcademicStudentGuidelinesRoute =
   AcademicStudentGuidelinesRouteImport.update({
     id: '/student-guidelines',
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/academic/calendar': typeof AcademicCalendarRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
+  '/achievements/$slug': typeof AchievementsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/academic/': typeof AcademicIndexRoute
   '/achievements/': typeof AchievementsIndexRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/academic/calendar': typeof AcademicCalendarRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
+  '/achievements/$slug': typeof AchievementsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/academic': typeof AcademicIndexRoute
   '/achievements': typeof AchievementsIndexRoute
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   '/academic/calendar': typeof AcademicCalendarRoute
   '/academic/parent-guidelines': typeof AcademicParentGuidelinesRoute
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
+  '/achievements/$slug': typeof AchievementsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/academic/': typeof AcademicIndexRoute
   '/achievements/': typeof AchievementsIndexRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/academic/calendar'
     | '/academic/parent-guidelines'
     | '/academic/student-guidelines'
+    | '/achievements/$slug'
     | '/news/$slug'
     | '/academic/'
     | '/achievements/'
@@ -198,6 +208,7 @@ export interface FileRouteTypes {
     | '/academic/calendar'
     | '/academic/parent-guidelines'
     | '/academic/student-guidelines'
+    | '/achievements/$slug'
     | '/news/$slug'
     | '/academic'
     | '/achievements'
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/academic/calendar'
     | '/academic/parent-guidelines'
     | '/academic/student-guidelines'
+    | '/achievements/$slug'
     | '/news/$slug'
     | '/academic/'
     | '/achievements/'
@@ -314,6 +326,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsSlugRouteImport
       parentRoute: typeof NewsRoute
     }
+    '/achievements/$slug': {
+      id: '/achievements/$slug'
+      path: '/$slug'
+      fullPath: '/achievements/$slug'
+      preLoaderRoute: typeof AchievementsSlugRouteImport
+      parentRoute: typeof AchievementsRoute
+    }
     '/academic/student-guidelines': {
       id: '/academic/student-guidelines'
       path: '/student-guidelines'
@@ -382,10 +401,12 @@ const AcademicRouteWithChildren = AcademicRoute._addFileChildren(
 )
 
 interface AchievementsRouteChildren {
+  AchievementsSlugRoute: typeof AchievementsSlugRoute
   AchievementsIndexRoute: typeof AchievementsIndexRoute
 }
 
 const AchievementsRouteChildren: AchievementsRouteChildren = {
+  AchievementsSlugRoute: AchievementsSlugRoute,
   AchievementsIndexRoute: AchievementsIndexRoute,
 }
 

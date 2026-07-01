@@ -1,24 +1,21 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, createFileRoute, notFound } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import {
   ArrowLeft,
   ArrowRight,
   CalendarDays,
   CheckCircle2,
-  Download,
   Facebook,
   Link2,
   Pin,
   Printer,
   Share2,
   Sparkles,
-  Trophy,
   Twitter,
 } from "lucide-react";
 
 import { PageHero } from "@/components/academic/PageHero";
-import { EmptyPanel } from "@/components/academic/EmptyPanel";
 import { AchievementCard } from "@/components/achievements/AchievementCard";
 import { AchievementGallery } from "@/components/achievements/AchievementGallery";
 import { Button } from "@/components/ui/button";
