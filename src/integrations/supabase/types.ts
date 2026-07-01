@@ -1609,8 +1609,10 @@ export type Database = {
           created_at: string
           full_name: string | null
           id: string
+          last_login_at: string | null
           locale: string
           phone: string | null
+          status: string
           updated_at: string
         }
         Insert: {
@@ -1618,8 +1620,10 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id: string
+          last_login_at?: string | null
           locale?: string
           phone?: string | null
+          status?: string
           updated_at?: string
         }
         Update: {
@@ -1627,8 +1631,10 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          last_login_at?: string | null
           locale?: string
           phone?: string | null
+          status?: string
           updated_at?: string
         }
         Relationships: [
@@ -2021,7 +2027,15 @@ export type Database = {
       is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      app_role: "admin" | "editor" | "viewer"
+      app_role:
+        | "admin"
+        | "editor"
+        | "viewer"
+        | "super_admin"
+        | "principal"
+        | "vice_principal"
+        | "media_coordinator"
+        | "academic_coordinator"
       content_status: "draft" | "published" | "archived"
       instruction_audience: "student" | "parent"
       timetable_kind: "academic" | "exam"
@@ -2152,7 +2166,16 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "editor", "viewer"],
+      app_role: [
+        "admin",
+        "editor",
+        "viewer",
+        "super_admin",
+        "principal",
+        "vice_principal",
+        "media_coordinator",
+        "academic_coordinator",
+      ],
       content_status: ["draft", "published", "archived"],
       instruction_audience: ["student", "parent"],
       timetable_kind: ["academic", "exam"],
