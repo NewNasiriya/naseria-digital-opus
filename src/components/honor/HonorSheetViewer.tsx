@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Download, Maximize2, Minus, Plus, Printer, RotateCcw, X } from "lucide-react";
+import { Download, Maximize2, Minus, Plus, Printer, RotateCcw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
