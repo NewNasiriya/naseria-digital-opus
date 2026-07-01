@@ -906,6 +906,79 @@ export type Database = {
         }
         Relationships: []
       }
+      honor_boards: {
+        Row: {
+          academic_year_id: string
+          created_at: string
+          created_by: string | null
+          description_ar: string | null
+          display_order: number
+          grade_id: string
+          id: string
+          image_url: string | null
+          media_id: string | null
+          published_at: string | null
+          status: Database["public"]["Enums"]["content_status"]
+          title_ar: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          academic_year_id: string
+          created_at?: string
+          created_by?: string | null
+          description_ar?: string | null
+          display_order?: number
+          grade_id: string
+          id?: string
+          image_url?: string | null
+          media_id?: string | null
+          published_at?: string | null
+          status?: Database["public"]["Enums"]["content_status"]
+          title_ar?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          academic_year_id?: string
+          created_at?: string
+          created_by?: string | null
+          description_ar?: string | null
+          display_order?: number
+          grade_id?: string
+          id?: string
+          image_url?: string | null
+          media_id?: string | null
+          published_at?: string | null
+          status?: Database["public"]["Enums"]["content_status"]
+          title_ar?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "honor_boards_academic_year_id_fkey"
+            columns: ["academic_year_id"]
+            isOneToOne: false
+            referencedRelation: "academic_years"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "honor_boards_grade_id_fkey"
+            columns: ["grade_id"]
+            isOneToOne: false
+            referencedRelation: "grades"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "honor_boards_media_id_fkey"
+            columns: ["media_id"]
+            isOneToOne: false
+            referencedRelation: "media"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       honor_categories: {
         Row: {
           created_at: string
