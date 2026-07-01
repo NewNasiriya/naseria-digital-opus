@@ -158,8 +158,104 @@ function GradePage() {
 function GradeNav({ currentLevel }: { currentLevel: number }) {
   return (
     <nav
+          <RelatedResources />
+
+          <GradeNav currentLevel={level} />
+        </Container>
+      </Section>
+    </>
+  );
+}
+
+interface ResourceLink {
+  to: "/academic/calendar" | "/academic/student-guidelines" | "/academic/parent-guidelines" | "/academic/attendance-behaviour";
+  label: string;
+  description: string;
+  icon: LucideIcon;
+}
+
+const RELATED_RESOURCES: ResourceLink[] = [
+  {
+    to: "/academic/calendar",
+    label: "التقويم الأكاديمي",
+    description: "المواعيد الرسمية للفصول الدراسية والإجازات والامتحانات.",
+    icon: CalendarDays,
+  },
+  {
+    to: "/academic/student-guidelines",
+    label: "إرشادات الطلاب",
+    description: "التوجيهات الرسمية للطلاب داخل الفصل والمدرسة.",
+    icon: GraduationCap,
+  },
+  {
+    to: "/academic/parent-guidelines",
+    label: "إرشادات أولياء الأمور",
+    description: "توجيهات لمتابعة الأبناء وتعزيز التعاون مع المدرسة.",
+    icon: HeartHandshake,
+  },
+  {
+    to: "/academic/attendance-behaviour",
+    label: "الحضور والسلوك",
+    description: "سياسات الحضور والانضباط ومعايير السلوك المدرسي.",
+    icon: ShieldCheck,
+  },
+];
+
+function RelatedResources() {
+  return (
+    <section
+      aria-labelledby="related-resources"
+      className="mt-16 rounded-2xl border border-border bg-surface-muted p-6 sm:p-8"
+    >
+      <div className="flex items-center gap-3">
+        <Users className="h-5 w-5 text-primary" aria-hidden="true" />
+        <h3 id="related-resources" className="text-sm font-semibold text-foreground">
+          مصادر أكاديمية ذات صلة
+        </h3>
+      </div>
+      <ul className="mt-5 grid gap-3 sm:grid-cols-2">
+        {RELATED_RESOURCES.map((r) => {
+          const Icon = r.icon;
+          return (
+            <li key={r.to}>
+              <Link
+                to={r.to}
+                className="group flex h-full items-start gap-4 rounded-xl border border-border bg-card p-4 transition-colors hover:border-border-strong hover:bg-background"
+              >
+                <span
+                  aria-hidden="true"
+                  className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-primary-soft text-primary"
+                >
+                  <Icon className="h-5 w-5" />
+                </span>
+                <span className="flex-1">
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-semibold text-foreground">
+                      {r.label}
+                    </span>
+                    <ArrowLeft
+                      className="h-4 w-4 text-muted-foreground transition-transform group-hover:-translate-x-0.5 group-hover:text-primary"
+                      aria-hidden="true"
+                    />
+                  </span>
+                  <span className="mt-1 block text-xs leading-loose text-muted-foreground">
+                    {r.description}
+                  </span>
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
+function GradeNav({ currentLevel }: { currentLevel: number }) {
+  return (
+    <nav
       aria-label="التنقل بين الصفوف"
-      className="mt-16 rounded-2xl border border-border bg-surface-muted p-6"
+      className="mt-8 rounded-2xl border border-border bg-surface-muted p-6"
     >
       <div className="flex items-center gap-3">
         <BookOpen className="h-5 w-5 text-primary" aria-hidden="true" />
