@@ -9,6 +9,7 @@ import {
   Sparkles,
   Images,
   FolderOpen,
+  FileText,
   Phone,
   Users,
   Settings,
