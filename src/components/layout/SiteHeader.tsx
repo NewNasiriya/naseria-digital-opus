@@ -4,6 +4,7 @@ import { Menu, X, LogIn } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
+import { SchoolLogo } from "@/components/brand/SchoolLogo";
 import { cn } from "@/lib/utils";
 
 type NavItem = { label: string; to: string };
