@@ -5,6 +5,9 @@ import {
   GraduationCap,
   Users,
   ShieldCheck,
+  CalendarCheck,
+  Shield,
+  HelpCircle,
   type LucideIcon,
 } from "lucide-react";
 
@@ -38,10 +41,28 @@ const CARDS: ResourceCard[] = [
     icon: Users,
   },
   {
-    title: "الحضور والسلوك",
-    description: "سياسات الحضور والانضباط داخل الحرم المدرسي.",
-    to: "/academic/attendance-behaviour",
+    title: "الحضور المدرسي",
+    description: "أهمية الحضور المنتظم ودوره في دعم التحصيل الأكاديمي.",
+    to: "/academic/attendance",
+    icon: CalendarCheck,
+  },
+  {
+    title: "القيم السلوكية",
+    description: "القيم التربوية التي تحرص المدرسة على غرسها في طلابها.",
+    to: "/academic/behaviour",
     icon: ShieldCheck,
+  },
+  {
+    title: "السياسات المدرسية",
+    description: "الإطار الرسمي المنظِّم للعمل التربوي والتعليمي في المدرسة.",
+    to: "/academic/policies",
+    icon: Shield,
+  },
+  {
+    title: "الأسئلة الشائعة",
+    description: "إجابات الأسئلة الأكثر تكرارًا من الطلاب وأولياء الأمور.",
+    to: "/academic/faq",
+    icon: HelpCircle,
   },
 ];
 

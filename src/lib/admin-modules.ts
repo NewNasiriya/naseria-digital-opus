@@ -16,6 +16,8 @@ import {
   Search,
   Activity,
   CalendarClock,
+  Shield,
+  HelpCircle,
   type LucideIcon,
 } from "lucide-react";
 
@@ -32,6 +34,8 @@ export type AdminModuleId =
   | "media"
   | "documents"
   | "timeline"
+  | "policies"
+  | "faq"
   | "contact"
   | "users"
   | "settings"
@@ -168,6 +172,28 @@ export const ADMIN_MODULES: AdminModule[] = [
     primaryAction: "إضافة فعالية",
     group: "content",
     publicHref: "/academic/calendar",
+  },
+  {
+    id: "policies",
+    slug: "policies",
+    title: "السياسات المدرسية",
+    short: "السياسات",
+    description: "إدارة السياسات الرسمية المعتمدة من المدرسة ومرفقاتها.",
+    icon: Shield,
+    primaryAction: "إضافة سياسة",
+    group: "content",
+    publicHref: "/academic/policies",
+  },
+  {
+    id: "faq",
+    slug: "faq",
+    title: "الأسئلة الشائعة",
+    short: "الأسئلة الشائعة",
+    description: "إدارة تصنيفات الأسئلة والأسئلة والإجابات المنشورة.",
+    icon: HelpCircle,
+    primaryAction: "إضافة سؤال",
+    group: "content",
+    publicHref: "/academic/faq",
   },
   {
     id: "contact",
