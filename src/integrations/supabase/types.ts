@@ -76,6 +76,126 @@ export type Database = {
           },
         ]
       }
+      academic_notes: {
+        Row: {
+          attachment_media_id: string | null
+          body_ar: string | null
+          created_at: string
+          created_by: string | null
+          display_order: number
+          grade_id: string
+          id: string
+          published_at: string | null
+          status: Database["public"]["Enums"]["content_status"]
+          title_ar: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          attachment_media_id?: string | null
+          body_ar?: string | null
+          created_at?: string
+          created_by?: string | null
+          display_order?: number
+          grade_id: string
+          id?: string
+          published_at?: string | null
+          status?: Database["public"]["Enums"]["content_status"]
+          title_ar: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          attachment_media_id?: string | null
+          body_ar?: string | null
+          created_at?: string
+          created_by?: string | null
+          display_order?: number
+          grade_id?: string
+          id?: string
+          published_at?: string | null
+          status?: Database["public"]["Enums"]["content_status"]
+          title_ar?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academic_notes_attachment_media_id_fkey"
+            columns: ["attachment_media_id"]
+            isOneToOne: false
+            referencedRelation: "media"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "academic_notes_grade_id_fkey"
+            columns: ["grade_id"]
+            isOneToOne: false
+            referencedRelation: "grades"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      academic_resources: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description_ar: string | null
+          display_order: number
+          grade_id: string
+          id: string
+          media_id: string | null
+          published_at: string | null
+          status: Database["public"]["Enums"]["content_status"]
+          title_ar: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description_ar?: string | null
+          display_order?: number
+          grade_id: string
+          id?: string
+          media_id?: string | null
+          published_at?: string | null
+          status?: Database["public"]["Enums"]["content_status"]
+          title_ar: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description_ar?: string | null
+          display_order?: number
+          grade_id?: string
+          id?: string
+          media_id?: string | null
+          published_at?: string | null
+          status?: Database["public"]["Enums"]["content_status"]
+          title_ar?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academic_resources_grade_id_fkey"
+            columns: ["grade_id"]
+            isOneToOne: false
+            referencedRelation: "grades"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "academic_resources_media_id_fkey"
+            columns: ["media_id"]
+            isOneToOne: false
+            referencedRelation: "media"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       academic_timeline_events: {
         Row: {
           academic_year_id: string | null

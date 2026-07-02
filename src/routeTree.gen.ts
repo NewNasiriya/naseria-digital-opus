@@ -37,6 +37,7 @@ import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
 import { Route as AdminDocumentsRouteImport } from './routes/admin.documents'
 import { Route as AdminContactRouteImport } from './routes/admin.contact'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
+import { Route as AdminAcademicRouteImport } from './routes/admin.academic'
 import { Route as AdminModuleRouteImport } from './routes/admin.$module'
 import { Route as AchievementsSlugRouteImport } from './routes/achievements.$slug'
 import { Route as AcademicStudentGuidelinesRouteImport } from './routes/academic.student-guidelines'
@@ -47,8 +48,12 @@ import { Route as AcademicCalendarRouteImport } from './routes/academic.calendar
 import { Route as AcademicBehaviourRouteImport } from './routes/academic.behaviour'
 import { Route as AcademicAttendanceBehaviourRouteImport } from './routes/academic.attendance-behaviour'
 import { Route as AcademicAttendanceRouteImport } from './routes/academic.attendance'
+import { Route as AdminAcademicIndexRouteImport } from './routes/admin.academic.index'
 import { Route as HonorGradesLevelRouteImport } from './routes/honor.grades.$level'
+import { Route as AdminAcademicLevelRouteImport } from './routes/admin.academic.$level'
 import { Route as AcademicGradesLevelRouteImport } from './routes/academic.grades.$level'
+import { Route as AdminAcademicLevelIndexRouteImport } from './routes/admin.academic.$level.index'
+import { Route as AdminAcademicLevelSectionRouteImport } from './routes/admin.academic.$level.$section'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -190,6 +195,11 @@ const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAcademicRoute = AdminAcademicRouteImport.update({
+  id: '/academic',
+  path: '/academic',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminModuleRoute = AdminModuleRouteImport.update({
   id: '/$module',
   path: '/$module',
@@ -243,16 +253,37 @@ const AcademicAttendanceRoute = AcademicAttendanceRouteImport.update({
   path: '/attendance',
   getParentRoute: () => AcademicRoute,
 } as any)
+const AdminAcademicIndexRoute = AdminAcademicIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminAcademicRoute,
+} as any)
 const HonorGradesLevelRoute = HonorGradesLevelRouteImport.update({
   id: '/grades/$level',
   path: '/grades/$level',
   getParentRoute: () => HonorRoute,
+} as any)
+const AdminAcademicLevelRoute = AdminAcademicLevelRouteImport.update({
+  id: '/$level',
+  path: '/$level',
+  getParentRoute: () => AdminAcademicRoute,
 } as any)
 const AcademicGradesLevelRoute = AcademicGradesLevelRouteImport.update({
   id: '/grades/$level',
   path: '/grades/$level',
   getParentRoute: () => AcademicRoute,
 } as any)
+const AdminAcademicLevelIndexRoute = AdminAcademicLevelIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminAcademicLevelRoute,
+} as any)
+const AdminAcademicLevelSectionRoute =
+  AdminAcademicLevelSectionRouteImport.update({
+    id: '/$section',
+    path: '/$section',
+    getParentRoute: () => AdminAcademicLevelRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -278,6 +309,7 @@ export interface FileRoutesByFullPath {
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/achievements/$slug': typeof AchievementsSlugRoute
   '/admin/$module': typeof AdminModuleRoute
+  '/admin/academic': typeof AdminAcademicRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/contact': typeof AdminContactRoute
   '/admin/documents': typeof AdminDocumentsRoute
@@ -294,7 +326,11 @@ export interface FileRoutesByFullPath {
   '/honor/': typeof HonorIndexRoute
   '/news/': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
+  '/admin/academic/$level': typeof AdminAcademicLevelRouteWithChildren
   '/honor/grades/$level': typeof HonorGradesLevelRoute
+  '/admin/academic/': typeof AdminAcademicIndexRoute
+  '/admin/academic/$level/$section': typeof AdminAcademicLevelSectionRoute
+  '/admin/academic/$level/': typeof AdminAcademicLevelIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -331,6 +367,9 @@ export interface FileRoutesByTo {
   '/news': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
   '/honor/grades/$level': typeof HonorGradesLevelRoute
+  '/admin/academic': typeof AdminAcademicIndexRoute
+  '/admin/academic/$level/$section': typeof AdminAcademicLevelSectionRoute
+  '/admin/academic/$level': typeof AdminAcademicLevelIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -357,6 +396,7 @@ export interface FileRoutesById {
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/achievements/$slug': typeof AchievementsSlugRoute
   '/admin/$module': typeof AdminModuleRoute
+  '/admin/academic': typeof AdminAcademicRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/contact': typeof AdminContactRoute
   '/admin/documents': typeof AdminDocumentsRoute
@@ -373,7 +413,11 @@ export interface FileRoutesById {
   '/honor/': typeof HonorIndexRoute
   '/news/': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
+  '/admin/academic/$level': typeof AdminAcademicLevelRouteWithChildren
   '/honor/grades/$level': typeof HonorGradesLevelRoute
+  '/admin/academic/': typeof AdminAcademicIndexRoute
+  '/admin/academic/$level/$section': typeof AdminAcademicLevelSectionRoute
+  '/admin/academic/$level/': typeof AdminAcademicLevelIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -401,6 +445,7 @@ export interface FileRouteTypes {
     | '/academic/student-guidelines'
     | '/achievements/$slug'
     | '/admin/$module'
+    | '/admin/academic'
     | '/admin/analytics'
     | '/admin/contact'
     | '/admin/documents'
@@ -417,7 +462,11 @@ export interface FileRouteTypes {
     | '/honor/'
     | '/news/'
     | '/academic/grades/$level'
+    | '/admin/academic/$level'
     | '/honor/grades/$level'
+    | '/admin/academic/'
+    | '/admin/academic/$level/$section'
+    | '/admin/academic/$level/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -454,6 +503,9 @@ export interface FileRouteTypes {
     | '/news'
     | '/academic/grades/$level'
     | '/honor/grades/$level'
+    | '/admin/academic'
+    | '/admin/academic/$level/$section'
+    | '/admin/academic/$level'
   id:
     | '__root__'
     | '/'
@@ -479,6 +531,7 @@ export interface FileRouteTypes {
     | '/academic/student-guidelines'
     | '/achievements/$slug'
     | '/admin/$module'
+    | '/admin/academic'
     | '/admin/analytics'
     | '/admin/contact'
     | '/admin/documents'
@@ -495,7 +548,11 @@ export interface FileRouteTypes {
     | '/honor/'
     | '/news/'
     | '/academic/grades/$level'
+    | '/admin/academic/$level'
     | '/honor/grades/$level'
+    | '/admin/academic/'
+    | '/admin/academic/$level/$section'
+    | '/admin/academic/$level/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -712,6 +769,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/academic': {
+      id: '/admin/academic'
+      path: '/academic'
+      fullPath: '/admin/academic'
+      preLoaderRoute: typeof AdminAcademicRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/$module': {
       id: '/admin/$module'
       path: '/$module'
@@ -782,6 +846,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcademicAttendanceRouteImport
       parentRoute: typeof AcademicRoute
     }
+    '/admin/academic/': {
+      id: '/admin/academic/'
+      path: '/'
+      fullPath: '/admin/academic/'
+      preLoaderRoute: typeof AdminAcademicIndexRouteImport
+      parentRoute: typeof AdminAcademicRoute
+    }
     '/honor/grades/$level': {
       id: '/honor/grades/$level'
       path: '/grades/$level'
@@ -789,12 +860,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HonorGradesLevelRouteImport
       parentRoute: typeof HonorRoute
     }
+    '/admin/academic/$level': {
+      id: '/admin/academic/$level'
+      path: '/$level'
+      fullPath: '/admin/academic/$level'
+      preLoaderRoute: typeof AdminAcademicLevelRouteImport
+      parentRoute: typeof AdminAcademicRoute
+    }
     '/academic/grades/$level': {
       id: '/academic/grades/$level'
       path: '/grades/$level'
       fullPath: '/academic/grades/$level'
       preLoaderRoute: typeof AcademicGradesLevelRouteImport
       parentRoute: typeof AcademicRoute
+    }
+    '/admin/academic/$level/': {
+      id: '/admin/academic/$level/'
+      path: '/'
+      fullPath: '/admin/academic/$level/'
+      preLoaderRoute: typeof AdminAcademicLevelIndexRouteImport
+      parentRoute: typeof AdminAcademicLevelRoute
+    }
+    '/admin/academic/$level/$section': {
+      id: '/admin/academic/$level/$section'
+      path: '/$section'
+      fullPath: '/admin/academic/$level/$section'
+      preLoaderRoute: typeof AdminAcademicLevelSectionRouteImport
+      parentRoute: typeof AdminAcademicLevelRoute
     }
   }
 }
@@ -843,8 +935,36 @@ const AchievementsRouteWithChildren = AchievementsRoute._addFileChildren(
   AchievementsRouteChildren,
 )
 
+interface AdminAcademicLevelRouteChildren {
+  AdminAcademicLevelSectionRoute: typeof AdminAcademicLevelSectionRoute
+  AdminAcademicLevelIndexRoute: typeof AdminAcademicLevelIndexRoute
+}
+
+const AdminAcademicLevelRouteChildren: AdminAcademicLevelRouteChildren = {
+  AdminAcademicLevelSectionRoute: AdminAcademicLevelSectionRoute,
+  AdminAcademicLevelIndexRoute: AdminAcademicLevelIndexRoute,
+}
+
+const AdminAcademicLevelRouteWithChildren =
+  AdminAcademicLevelRoute._addFileChildren(AdminAcademicLevelRouteChildren)
+
+interface AdminAcademicRouteChildren {
+  AdminAcademicLevelRoute: typeof AdminAcademicLevelRouteWithChildren
+  AdminAcademicIndexRoute: typeof AdminAcademicIndexRoute
+}
+
+const AdminAcademicRouteChildren: AdminAcademicRouteChildren = {
+  AdminAcademicLevelRoute: AdminAcademicLevelRouteWithChildren,
+  AdminAcademicIndexRoute: AdminAcademicIndexRoute,
+}
+
+const AdminAcademicRouteWithChildren = AdminAcademicRoute._addFileChildren(
+  AdminAcademicRouteChildren,
+)
+
 interface AdminRouteChildren {
   AdminModuleRoute: typeof AdminModuleRoute
+  AdminAcademicRoute: typeof AdminAcademicRouteWithChildren
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminContactRoute: typeof AdminContactRoute
   AdminDocumentsRoute: typeof AdminDocumentsRoute
@@ -857,6 +977,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminModuleRoute: AdminModuleRoute,
+  AdminAcademicRoute: AdminAcademicRouteWithChildren,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminContactRoute: AdminContactRoute,
   AdminDocumentsRoute: AdminDocumentsRoute,

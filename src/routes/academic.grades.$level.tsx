@@ -16,7 +16,8 @@ import {
 
 import { PageHero } from "@/components/academic/PageHero";
 import { TimetableSection } from "@/components/academic/TimetableSection";
-import { EmptyPanel } from "@/components/academic/EmptyPanel";
+import { NotesSection, ResourcesSection } from "@/components/academic/GradeContentSections";
+
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { supabase } from "@/integrations/supabase/client";
@@ -121,11 +122,7 @@ function GradePage() {
                   الملاحظات الأكاديمية
                 </h2>
               </div>
-              <EmptyPanel
-                title="لا توجد ملاحظات منشورة حالياً"
-                description="سيقوم المعلمون والإدارة بنشر التنبيهات والملاحظات الأكاديمية المتعلقة بهذا الصف من خلال لوحة التحكم."
-                icon={StickyNote}
-              />
+              <NotesSection gradeId={gradeId} />
             </section>
 
             <section aria-labelledby="grade-downloads" className="scroll-mt-24">
@@ -140,11 +137,7 @@ function GradePage() {
                   المرفقات والتنزيلات
                 </h2>
               </div>
-              <EmptyPanel
-                title="لا توجد ملفات للتنزيل بعد"
-                description="سيتم توفير المذكرات والمستندات الرسمية للتنزيل من هذا القسم فور نشرها من الإدارة."
-                icon={Download}
-              />
+              <ResourcesSection gradeId={gradeId} />
             </section>
           </div>
 
