@@ -29,6 +29,8 @@ import {
   type NewsDetail,
 } from "@/lib/news";
 import { mediaPublicUrl } from "@/lib/media";
+import { trackContentView } from "@/lib/analytics";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/news/$slug")({
