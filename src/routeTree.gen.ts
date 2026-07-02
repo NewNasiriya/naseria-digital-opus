@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as HonorRouteImport } from './routes/honor'
+import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -56,6 +57,11 @@ const NewsRoute = NewsRouteImport.update({
 const HonorRoute = HonorRouteImport.update({
   id: '/honor',
   path: '/honor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -221,6 +227,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/gallery': typeof GalleryRoute
   '/honor': typeof HonorRouteWithChildren
   '/news': typeof NewsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -253,6 +260,7 @@ export interface FileRoutesByTo {
   '/activities': typeof ActivitiesRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/gallery': typeof GalleryRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
@@ -287,6 +295,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/gallery': typeof GalleryRoute
   '/honor': typeof HonorRouteWithChildren
   '/news': typeof NewsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -324,6 +333,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/contact'
+    | '/gallery'
     | '/honor'
     | '/news'
     | '/sitemap.xml'
@@ -356,6 +366,7 @@ export interface FileRouteTypes {
     | '/activities'
     | '/auth'
     | '/contact'
+    | '/gallery'
     | '/sitemap.xml'
     | '/academic/attendance'
     | '/academic/attendance-behaviour'
@@ -389,6 +400,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/contact'
+    | '/gallery'
     | '/honor'
     | '/news'
     | '/sitemap.xml'
@@ -425,6 +437,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
+  GalleryRoute: typeof GalleryRoute
   HonorRoute: typeof HonorRouteWithChildren
   NewsRoute: typeof NewsRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -451,6 +464,13 @@ declare module '@tanstack/react-router' {
       path: '/honor'
       fullPath: '/honor'
       preLoaderRoute: typeof HonorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -763,6 +783,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
+  GalleryRoute: GalleryRoute,
   HonorRoute: HonorRouteWithChildren,
   NewsRoute: NewsRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
