@@ -210,10 +210,6 @@ export function EntityEditor<T extends EntityMeta>({
   };
 
   const handlePublish = async () => {
-    if (!id) {
-      toast.error("احفظ المسودة أولًا ثم انشرها.");
-      return;
-    }
     const errs = runValidation();
     setErrors(errs);
     if (Object.keys(errs).length > 0) {
@@ -221,13 +217,24 @@ export function EntityEditor<T extends EntityMeta>({
       return;
     }
     try {
-      await service.saveDraft({ ...values, id });
-      await mutations.publish.mutateAsync(id);
+      const saved = await service.saveDraft({ ...values, id });
+      const publishId = id ?? saved.id;
+      await mutations.publish.mutateAsync(publishId);
       toast.success("تم نشر المحتوى على الموقع.");
+      if (!id) {
+        setRestoringId(saved.id);
+        navigate({
+          to: ".",
+          search: (prev: Record<string, unknown>) => ({ ...prev, id: saved.id }),
+          replace: true,
+        });
+      }
+      router.invalidate();
     } catch (e) {
       toast.error(messageFor(e as never));
     }
   };
+
 
   const handleUnpublish = async () => {
     if (!id) return;
