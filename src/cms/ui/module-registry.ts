@@ -67,10 +67,10 @@ export function registerCmsModule<T extends EntityMeta>(
   const service = input.service ?? createContentService<T>(repository);
   REGISTRY.set(input.id, {
     id: input.id,
-    repository: repository as Repository<EntityMeta>,
-    service: service as ContentService<EntityMeta>,
-    list: input.list as EntityListConfig<EntityMeta>,
-    editor: input.editor as EntityEditorConfig<EntityMeta>,
+    repository: repository as unknown as Repository<EntityMeta>,
+    service: service as unknown as ContentService<EntityMeta>,
+    list: input.list as unknown as EntityListConfig<EntityMeta>,
+    editor: input.editor as unknown as EntityEditorConfig<EntityMeta>,
   });
 }
 
