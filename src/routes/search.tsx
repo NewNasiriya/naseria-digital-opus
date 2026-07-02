@@ -9,7 +9,6 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
-import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { Filter, Loader2, Search, Star, X } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
