@@ -238,7 +238,7 @@ export async function runSearch(
   // ---- News --------------------------------------------------------------
   if (wants("news")) {
     jobs.push(
-      supabase
+      Promise.resolve(supabase
         .from("news")
         .select(
           "id,slug,title_ar,summary_ar,published_at,is_featured,is_pinned,tags,category:news_categories!news_category_id_fkey(name_ar),featured_media:media!news_featured_image_media_id_fkey(bucket,storage_path,alt_ar)",
@@ -265,14 +265,14 @@ export async function runSearch(
             tags: r.tags ?? undefined,
             score: scoreOf(q, r.title_ar, r.summary_ar) + (r.is_pinned ? 30 : 0) + (r.is_featured ? 15 : 0),
           })),
-        ),
+        )),
     );
   }
 
   // ---- Achievements ------------------------------------------------------
   if (wants("achievements")) {
     jobs.push(
-      supabase
+      Promise.resolve(supabase
         .from("achievements")
         .select(
           "id,slug,title_ar,description_ar,published_at,is_featured,is_pinned,cover:cover_media_id(bucket,storage_path,alt_ar),category:achievement_categories!achievements_category_id_fkey(name_ar)",
@@ -298,14 +298,14 @@ export async function runSearch(
             pinned: !!r.is_pinned,
             score: scoreOf(q, r.title_ar, r.description_ar) + (r.is_pinned ? 30 : 0) + (r.is_featured ? 15 : 0),
           })),
-        ),
+        )),
     );
   }
 
   // ---- Activities --------------------------------------------------------
   if (wants("activities")) {
     jobs.push(
-      supabase
+      Promise.resolve(supabase
         .from("activities")
         .select(
           "id,slug,title_ar,summary_ar,published_at,is_featured,cover:cover_image_media_id(bucket,storage_path,alt_ar),category:activity_categories!activities_category_id_fkey(name_ar)",
@@ -329,14 +329,14 @@ export async function runSearch(
             featured: !!r.is_featured,
             score: scoreOf(q, r.title_ar, r.summary_ar) + (r.is_featured ? 15 : 0),
           })),
-        ),
+        )),
     );
   }
 
   // ---- Gallery albums ----------------------------------------------------
   if (wants("gallery")) {
     jobs.push(
-      supabase
+      Promise.resolve(supabase
         .from("gallery_albums")
         .select(
           "id,slug,title_ar,description_ar,category,published_at,is_featured,cover:cover_media_id(bucket,storage_path,alt_ar)",
@@ -359,14 +359,14 @@ export async function runSearch(
             featured: !!r.is_featured,
             score: scoreOf(q, r.title_ar, r.description_ar) + (r.is_featured ? 15 : 0),
           })),
-        ),
+        )),
     );
   }
 
   // ---- Media library (public alt / captions) -----------------------------
   if (wants("media") || filters.mediaOnly) {
     jobs.push(
-      supabase
+      Promise.resolve(supabase
         .from("media")
         .select("id,bucket,storage_path,alt_ar,alt_en,title_ar,file_name,tags,created_at")
         .or(
@@ -386,14 +386,14 @@ export async function runSearch(
             tags: r.tags ?? undefined,
             score: scoreOf(q, r.title_ar, r.alt_ar, r.file_name),
           })),
-        ),
+        )),
     );
   }
 
   // ---- Honor boards ------------------------------------------------------
   if (wants("honor")) {
     jobs.push(
-      supabase
+      Promise.resolve(supabase
         .from("honor_boards")
         .select(
           "id,title_ar,description_ar,published_at,grade:grade_id(level),academic_year:academic_year_id(label)",
@@ -416,11 +416,11 @@ export async function runSearch(
               score: scoreOf(q, r.title_ar, r.description_ar),
             } satisfies SearchHit;
           }),
-        ),
+        )),
     );
 
     jobs.push(
-      supabase
+      Promise.resolve(supabase
         .from("honor_entries")
         .select(
           "id,student_name,description_ar,grade:grade_id(level),academic_year:academic_year_id(label)",
@@ -442,14 +442,14 @@ export async function runSearch(
               score: scoreOf(q, r.student_name, r.description_ar),
             } satisfies SearchHit;
           }),
-        ),
+        )),
     );
   }
 
   // ---- Academic calendar + timeline + FAQ + policies ---------------------
   if (wants("academic")) {
     jobs.push(
-      supabase
+      Promise.resolve(supabase
         .from("academic_calendar_events")
         .select("id,title_ar,description_ar,starts_on,category")
         .eq("status", "published")
@@ -466,11 +466,11 @@ export async function runSearch(
             updatedAt: r.starts_on,
             score: scoreOf(q, r.title_ar, r.description_ar),
           })),
-        ),
+        )),
     );
 
     jobs.push(
-      supabase
+      Promise.resolve(supabase
         .from("academic_timeline_events")
         .select("id,headline_ar,subtitle_ar,description_ar,starts_at")
         .eq("status", "published")
@@ -487,14 +487,14 @@ export async function runSearch(
             updatedAt: r.starts_at,
             score: scoreOf(q, r.headline_ar, r.subtitle_ar, r.description_ar),
           })),
-        ),
+        )),
     );
   }
 
   // ---- FAQ ---------------------------------------------------------------
   if (wants("faq")) {
     jobs.push(
-      supabase
+      Promise.resolve(supabase
         .from("faq_items")
         .select("id,question_ar,answer_ar")
         .eq("status", "published")
@@ -510,7 +510,7 @@ export async function runSearch(
             to: "/academic/faq",
             score: scoreOf(q, r.question_ar, r.answer_ar),
           })),
-        ),
+        )),
     );
   }
 
