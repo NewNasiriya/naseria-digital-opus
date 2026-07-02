@@ -96,6 +96,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "ar_EG" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "مدرسة الناصرية الابتدائية الجديدة" },
+      { name: "description", content: "Al-Nasiriyah Digital Gateway is a premium Arabic-first website and CMS for a primary school." },
+      { property: "og:description", content: "Al-Nasiriyah Digital Gateway is a premium Arabic-first website and CMS for a primary school." },
+      { name: "twitter:description", content: "Al-Nasiriyah Digital Gateway is a premium Arabic-first website and CMS for a primary school." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9ce541da-c4f7-4b04-93b9-e3f1cc05614c/id-preview-88e0e46c--e64ef7e7-ce1d-4850-928a-668c52bc2c68.lovable.app-1782957439968.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9ce541da-c4f7-4b04-93b9-e3f1cc05614c/id-preview-88e0e46c--e64ef7e7-ce1d-4850-928a-668c52bc2c68.lovable.app-1782957439968.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
