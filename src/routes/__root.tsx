@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { trackPageView } from "../lib/analytics";
+import { ThemeProvider, THEME_INIT_SCRIPT } from "../lib/theme";
 import schoolLogo from "../assets/brand/school-logo.png.asset.json";
 
 function NotFoundComponent() {
@@ -138,6 +139,8 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="ar" dir="rtl">
       <head>
         <HeadContent />
+        {/* Pre-hydration theme init — prevents FOUC on refresh. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
       <body>
         {children}
@@ -152,9 +155,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <PageViewTracker />
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <ThemeProvider>
+        <PageViewTracker />
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

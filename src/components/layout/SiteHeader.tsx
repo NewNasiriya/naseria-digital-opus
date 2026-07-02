@@ -6,6 +6,7 @@ import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { SchoolLogo } from "@/components/brand/SchoolLogo";
 import { SearchTrigger } from "@/components/search/SearchTrigger";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { cn } from "@/lib/utils";
 
 type NavItem = { label: string; to: string };
@@ -102,6 +103,7 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2">
           <SearchTrigger />
+          <ThemeToggle />
           <Button
             asChild
             variant="outline"
