@@ -36,13 +36,13 @@ const GROUPS: SearchGroup[] = [
 ];
 
 const schema = z.object({
-  q: fallback(z.string(), "").default(""),
-  g: fallback(z.array(z.enum(GROUPS as [SearchGroup, ...SearchGroup[]])), []).default([]),
-  featured: fallback(z.boolean(), false).default(false),
+  q: z.string().optional().default(""),
+  g: z.array(z.enum(GROUPS as [SearchGroup, ...SearchGroup[]])).optional().default([]),
+  featured: z.coerce.boolean().optional().default(false),
 });
 
 export const Route = createFileRoute("/search")({
-  validateSearch: zodValidator(schema),
+  validateSearch: (raw) => schema.parse(raw ?? {}),
   head: ({ match }) => ({
     meta: [
       { title: match.search.q ? `نتائج البحث عن «${match.search.q}»` : "البحث في الموقع" },
