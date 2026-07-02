@@ -500,8 +500,8 @@ function noteEditorConfig(scope: Scope): EntityEditorConfig<AcademicNoteRow> {
     } as Partial<AcademicNoteRow>,
     sections: [
       {
-        id: "content",
-        title: "الملاحظة",
+        id: "essentials",
+        title: "الأساسيات",
         columns: 1,
         fields: [
           { kind: "text", name: "title_ar", label: "عنوان الملاحظة", required: true, dir: "rtl" },
@@ -513,6 +513,14 @@ function noteEditorConfig(scope: Scope): EntityEditorConfig<AcademicNoteRow> {
             dir: "rtl",
             required: true,
           },
+        ],
+      },
+      {
+        id: "advanced",
+        title: "خيارات متقدمة",
+        collapsed: true,
+        columns: 1,
+        fields: [
           {
             kind: "media",
             name: "attachment_media_id",
@@ -524,6 +532,7 @@ function noteEditorConfig(scope: Scope): EntityEditorConfig<AcademicNoteRow> {
         ],
       },
     ],
+
     publicPathFor: () => `/academic/grades/${scope.level}`,
   };
 }
