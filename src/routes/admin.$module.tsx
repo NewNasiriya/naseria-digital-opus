@@ -1,5 +1,4 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { z } from "zod";
 import { ChevronRight, Plus, Search, Sparkles } from "lucide-react";
 
@@ -12,12 +11,16 @@ import { EntityListView } from "@/cms/ui/EntityListView";
 import { EntityEditor } from "@/cms/ui/EntityEditor";
 
 const searchSchema = z.object({
-  id: fallback(z.string().optional(), undefined),
-  new: fallback(z.boolean().optional(), undefined),
+  id: z.string().optional().catch(undefined),
+  new: z
+    .union([z.boolean(), z.string()])
+    .optional()
+    .transform((v) => (v === true || v === "1" || v === "true" ? true : undefined))
+    .catch(undefined),
 });
 
 export const Route = createFileRoute("/admin/$module")({
-  validateSearch: zodValidator(searchSchema),
+  validateSearch: (raw) => searchSchema.parse(raw ?? {}),
   head: ({ params }) => {
     const mod = params ? ADMIN_MODULE_BY_SLUG[params.module] : undefined;
     return {
