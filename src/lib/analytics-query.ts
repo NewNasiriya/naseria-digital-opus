@@ -320,7 +320,7 @@ export async function fetchSearchAnalytics(days: number, limit = 10): Promise<{
   const buckets = new Map<string, { term: string; count: number; results: number[]; noResults: number }>();
   for (const row of (data ?? []) as any[]) {
     const norm = row.normalized_term as string;
-    const cur = buckets.get(norm) ?? { term: row.term, count: 0, results: [], noResults: 0 };
+    const cur = buckets.get(norm) ?? { term: row.term as string, count: 0, results: [] as number[], noResults: 0 };
     cur.count += 1;
     cur.results.push(Number(row.result_count ?? 0));
     if ((row.result_count ?? 0) === 0) cur.noResults += 1;
