@@ -90,6 +90,9 @@ const WRITABLE_COLUMNS: Array<keyof NewsRow> = [
   "reading_minutes",
   "status",
   "author_id",
+  "updated_at",
+  "created_by",
+  "updated_by",
 ];
 
 function stripJoins(input: Partial<NewsRow>): Partial<NewsRow> {
