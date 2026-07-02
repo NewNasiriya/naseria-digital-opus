@@ -123,7 +123,7 @@ function SearchPage() {
 
   return (
     <>
-      <Section spacing="compact" tone="muted">
+      <Section spacing="sm" tone="muted">
         <Container size="wide">
           <div className="mx-auto max-w-3xl">
             <label htmlFor="search-page-input" className="sr-only">
