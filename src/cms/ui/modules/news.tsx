@@ -62,12 +62,50 @@ const LIST_SELECT = `
 /* Repository with joined select for list + editor rows                       */
 /* -------------------------------------------------------------------------- */
 
-const newsRepository = createSupabaseRepository<NewsRow>("news", {
+const baseRepo = createSupabaseRepository<NewsRow>("news", {
   slugColumn: "slug",
   searchColumns: ["title_ar", "title_en", "summary_ar"],
   defaultOrderBy: "updated_at",
   select: LIST_SELECT,
 });
+
+/** Whitelist of writable columns on the `news` table. */
+const WRITABLE_COLUMNS: Array<keyof NewsRow> = [
+  "title_ar",
+  "title_en",
+  "slug",
+  "summary_ar",
+  "summary_en",
+  "body_ar",
+  "body_en",
+  "category_id",
+  "featured_image_media_id",
+  "og_image_id",
+  "is_featured",
+  "is_pinned",
+  "published_at",
+  "scheduled_at",
+  "seo_title",
+  "seo_description",
+  "reading_minutes",
+  "status",
+  "author_id",
+];
+
+function stripJoins(input: Partial<NewsRow>): Partial<NewsRow> {
+  const out: Record<string, unknown> = {};
+  for (const key of WRITABLE_COLUMNS) {
+    if (key in input) out[key as string] = input[key];
+  }
+  return out as Partial<NewsRow>;
+}
+
+const newsRepository = {
+  ...baseRepo,
+  create: (input: Partial<NewsRow>) => baseRepo.create(stripJoins(input)),
+  update: (id: string, patch: Partial<NewsRow>) =>
+    baseRepo.update(id, stripJoins(patch)),
+};
 
 /* -------------------------------------------------------------------------- */
 /* List columns                                                               */
