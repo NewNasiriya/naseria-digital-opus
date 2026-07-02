@@ -1,25 +1,33 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
-import { Filter, ListFilter, Plus, Search } from "lucide-react";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { z } from "zod";
+import { ChevronRight, Plus, Search, Sparkles } from "lucide-react";
 
 import { AdminSectionHeader } from "@/components/admin/AdminSectionHeader";
 import { EmptyState } from "@/components/admin/EmptyState";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ADMIN_MODULE_BY_SLUG } from "@/lib/admin-modules";
+import { getCmsUiModule } from "@/cms/ui";
+import { EntityListView } from "@/cms/ui/EntityListView";
+import { EntityEditor } from "@/cms/ui/EntityEditor";
+
+const searchSchema = z.object({
+  id: fallback(z.string().optional(), undefined),
+  new: fallback(z.boolean().optional(), undefined),
+});
 
 export const Route = createFileRoute("/admin/$module")({
+  validateSearch: zodValidator(searchSchema),
   head: ({ params }) => {
     const mod = params ? ADMIN_MODULE_BY_SLUG[params.module] : undefined;
     return {
       meta: [
-        {
-          title: mod ? `${mod.short} · لوحة الإدارة` : "لوحة الإدارة",
-        },
+        { title: mod ? `${mod.short} · لوحة الإدارة` : "لوحة الإدارة" },
         { name: "robots", content: "noindex, nofollow" },
       ],
     };
   },
-  component: ModuleLanding,
+  component: ModuleRoute,
   notFoundComponent: () => (
     <EmptyState
       icon={Search}
@@ -29,12 +37,77 @@ export const Route = createFileRoute("/admin/$module")({
   ),
 });
 
-function ModuleLanding() {
+function ModuleRoute() {
   const { module: slug } = Route.useParams();
+  const search = Route.useSearch();
   const mod = ADMIN_MODULE_BY_SLUG[slug];
   if (!mod) throw notFound();
-  const Icon = mod.icon;
 
+  const ui = getCmsUiModule(mod.id);
+  const isEditing = Boolean(search.id) || Boolean(search.new);
+  const listHref = `/admin/${slug}`;
+  const newHref = `/admin/${slug}?new=1`;
+
+  // If the module has a UI registration, render the shared list or editor.
+  if (ui) {
+    if (isEditing) {
+      return (
+        <>
+          <AdminSectionHeader
+            eyebrow="تحرير المحتوى"
+            title={search.id ? `تحرير ${ui.editor.entityLabel}` : `إضافة ${ui.editor.entityLabel}`}
+            crumbs={[
+              { label: "لوحة التحكم", to: "/admin" },
+              { label: mod.short, to: listHref },
+              { label: search.id ? "تحرير" : "جديد" },
+            ]}
+          />
+          <EntityEditor
+            config={ui.editor}
+            repository={ui.repository}
+            service={ui.service}
+            id={search.id}
+            listHref={listHref}
+          />
+        </>
+      );
+    }
+
+    return (
+      <>
+        <AdminSectionHeader
+          eyebrow="إدارة القسم"
+          title={mod.title}
+          description={mod.description}
+          crumbs={[
+            { label: "لوحة التحكم", to: "/admin" },
+            { label: mod.short },
+          ]}
+          publicHref={mod.publicHref}
+          action={
+            <Button size="sm" className="gap-1.5" asChild>
+              <Link to={newHref}>
+                <Plus className="h-4 w-4" />
+                إضافة {ui.list.entityLabel}
+              </Link>
+            </Button>
+          }
+        />
+        <EntityListView
+          config={ui.list}
+          repository={ui.repository}
+          service={ui.service}
+          editHrefFor={(id) => `${listHref}?id=${id}`}
+          newHref={newHref}
+        />
+      </>
+    );
+  }
+
+  // No UI registration yet — show a helpful "coming soon" state that still
+  // links to any dedicated route (e.g. /admin/media, /admin/contact) that
+  // already exists as a bespoke page.
+  const Icon = mod.icon;
   return (
     <>
       <AdminSectionHeader
@@ -46,48 +119,21 @@ function ModuleLanding() {
           { label: mod.short },
         ]}
         publicHref={mod.publicHref}
-        action={
-          <Button size="sm" className="gap-2">
-            <Plus className="h-4 w-4" />
-            {mod.primaryAction}
-          </Button>
-        }
       />
-
-      <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
-          <Search
-            className="pointer-events-none absolute inset-y-0 end-3 my-auto h-4 w-4 text-muted-foreground"
-            aria-hidden="true"
-          />
-          <Input
-            type="search"
-            placeholder={`بحث داخل ${mod.short}…`}
-            aria-label={`بحث داخل ${mod.short}`}
-            className="h-10 ps-3 pe-10 text-sm"
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="gap-2">
-            <Filter className="h-4 w-4" />
-            تصفية
-          </Button>
-          <Button variant="outline" size="sm" className="gap-2">
-            <ListFilter className="h-4 w-4" />
-            الترتيب
-          </Button>
-        </div>
-      </div>
-
       <EmptyState
         icon={Icon}
-        title="لا يوجد محتوى هنا بعد"
-        description="ستظهر هنا قائمة العناصر مع خيارات التحرير والنشر. ابدأ بإنشاء أول عنصر في هذا القسم."
+        title="قيد التفعيل ضمن الموجات القادمة"
+        description="تم إعداد بنية الإدارة الموحّدة (قائمة، محرّر، حفظ تلقائي، سجل إصدارات، نشر) وسيتم توصيل هذا القسم بها في الموجة التالية."
         action={
-          <Button size="sm" className="gap-2">
-            <Plus className="h-4 w-4" />
-            {mod.primaryAction}
-          </Button>
+          mod.publicHref ? (
+            <Button asChild variant="outline" size="sm" className="gap-1.5">
+              <a href={mod.publicHref} target="_blank" rel="noreferrer">
+                <Sparkles className="h-4 w-4" />
+                عرض القسم العام
+                <ChevronRight className="h-3.5 w-3.5" />
+              </a>
+            </Button>
+          ) : null
         }
       />
     </>
