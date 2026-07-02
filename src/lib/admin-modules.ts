@@ -240,6 +240,16 @@ export const ADMIN_MODULES: AdminModule[] = [
     group: "system",
   },
   {
+    id: "analytics",
+    slug: "analytics",
+    title: "التحليلات والرؤى",
+    short: "التحليلات",
+    description: "الزيارات، المحتوى الأكثر مشاهدة، وتحليلات البحث.",
+    icon: BarChart3,
+    primaryAction: "عرض التقرير",
+    group: "system",
+  },
+  {
     id: "status",
     slug: "status",
     title: "حالة الموقع",
