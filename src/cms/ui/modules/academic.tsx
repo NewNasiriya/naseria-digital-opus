@@ -367,11 +367,27 @@ function resourceEditorConfig(scope: Scope): EntityEditorConfig<AcademicResource
     } as Partial<AcademicResourceRow>,
     sections: [
       {
-        id: "content",
-        title: "المرفق",
+        id: "essentials",
+        title: "الأساسيات",
+        description: "اكتب عنوان الملف واختر الملف من المكتبة، ثم انشر.",
         columns: 1,
         fields: [
-          { kind: "text", name: "title_ar", label: "عنوان الملف", required: true, dir: "rtl" },
+          { kind: "text", name: "title_ar", label: "عنوان الملف", required: true, dir: "rtl", placeholder: "مثال: كتاب اللغة العربية — الفصل الأول" },
+          {
+            kind: "media",
+            name: "media_id",
+            label: "الملف",
+            bucket: "documents",
+            helpText: "PDF، Word، Excel، ZIP أو صورة.",
+          },
+        ],
+      },
+      {
+        id: "advanced",
+        title: "خيارات متقدمة",
+        collapsed: true,
+        columns: 1,
+        fields: [
           {
             kind: "textarea",
             name: "description_ar",
@@ -379,17 +395,11 @@ function resourceEditorConfig(scope: Scope): EntityEditorConfig<AcademicResource
             rows: 2,
             dir: "rtl",
           },
-          {
-            kind: "media",
-            name: "media_id",
-            label: "الملف",
-            bucket: "documents",
-            helpText: "اختر ملفًا من مكتبة الوسائط (PDF، Word، Excel، ZIP، صور، إلخ).",
-          },
           { kind: "number", name: "display_order", label: "ترتيب العرض", min: 0, step: 1 },
         ],
       },
     ],
+
     publicPathFor: () => `/academic/grades/${scope.level}`,
     validate: (v) => {
       if (!v.media_id) return { media_id: "اختر الملف من مكتبة الوسائط." };
