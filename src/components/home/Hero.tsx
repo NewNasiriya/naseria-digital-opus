@@ -49,16 +49,14 @@ export function Hero({ intro }: HeroProps) {
   useEffect(() => {
     if (secondaryReady) return;
     const w = window as IdleWindow;
-    const schedule = w.requestIdleCallback
-      ? (cb: () => void) => w.requestIdleCallback!(cb, { timeout: 2000 })
-      : (cb: () => void) => window.setTimeout(cb, 1200);
-    const id = schedule(() => setSecondaryReady(true));
+    const ric = w.requestIdleCallback;
+    const cic = (w as unknown as { cancelIdleCallback?: (h: number) => void }).cancelIdleCallback;
+    const id = ric
+      ? ric(() => setSecondaryReady(true), { timeout: 2000 })
+      : window.setTimeout(() => setSecondaryReady(true), 1200);
     return () => {
-      if (w.requestIdleCallback && "cancelIdleCallback" in w) {
-        (w as unknown as { cancelIdleCallback: (h: number) => void }).cancelIdleCallback(id);
-      } else {
-        window.clearTimeout(id);
-      }
+      if (ric && cic) cic(id);
+      else window.clearTimeout(id);
     };
   }, [secondaryReady]);
 
