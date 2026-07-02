@@ -248,6 +248,29 @@ export function FieldRenderer({
         />
       );
     }
+    case "reference": {
+      return (
+        <ReferenceField
+          field={field}
+          value={(value as string | null | undefined) ?? null}
+          onChange={(v) => onChange(field.name, v)}
+          disabled={disabled}
+          describedBy={describedBy}
+          errorBlock={errorBlock}
+          helpBlock={helpBlock}
+        />
+      );
+    }
+    case "custom": {
+      return (
+        <div>
+          {field.label && (
+            <Label className="mb-1.5 block text-sm">{field.label}</Label>
+          )}
+          {field.render({ values, onChange, disabled })}
+        </div>
+      );
+    }
     case "readonly": {
       return (
         <div>
@@ -259,6 +282,87 @@ export function FieldRenderer({
       );
     }
   }
+}
+
+function ReferenceField({
+  field,
+  value,
+  onChange,
+  disabled,
+  describedBy,
+  errorBlock,
+  helpBlock,
+}: {
+  field: Extract<FieldDef, { kind: "reference" }>;
+  value: string | null;
+  onChange: (v: string | null) => void;
+  disabled?: boolean;
+  describedBy?: string;
+  errorBlock: React.ReactNode;
+  helpBlock: React.ReactNode;
+}) {
+  const [options, setOptions] = useState<{ value: string; label: string }[]>([]);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { supabase } = await import("@/integrations/supabase/client");
+        const valueField = field.valueField ?? "id";
+        let q = (supabase as any)
+          .from(field.table)
+          .select(`${valueField}, ${field.labelField}`);
+        if (field.orderBy) q = q.order(field.orderBy, { ascending: true });
+        const { data } = await q;
+        if (cancelled || !Array.isArray(data)) return;
+        setOptions(
+          data.map((row: Record<string, unknown>) => ({
+            value: String(row[valueField]),
+            label: String(row[field.labelField] ?? ""),
+          })),
+        );
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [field.table, field.labelField, field.valueField, field.orderBy]);
+
+  return (
+    <div>
+      <Label htmlFor={field.name} className="mb-1.5 block text-sm">
+        {field.label}
+        {field.required && <span className="ms-1 text-destructive">*</span>}
+      </Label>
+      <Select
+        value={value ?? undefined}
+        onValueChange={(v) => onChange(v)}
+        disabled={disabled}
+      >
+        <SelectTrigger id={field.name} aria-describedby={describedBy}>
+          <SelectValue placeholder="اختر…" />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((o) => (
+            <SelectItem key={o.value} value={o.value}>
+              {o.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      {field.allowClear && value && (
+        <button
+          type="button"
+          onClick={() => onChange(null)}
+          className="mt-1 text-xs text-muted-foreground underline"
+        >
+          إزالة الاختيار
+        </button>
+      )}
+      {errorBlock ?? helpBlock}
+    </div>
+  );
 }
 
 function MediaField({
