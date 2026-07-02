@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import schoolDay from "@/assets/school-day.png.asset.json";
+import schoolNight from "@/assets/school-night.png.asset.json";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Hero } from "@/components/home/Hero";
@@ -34,7 +36,11 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:url", content: "/" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [
+      { rel: "canonical", href: "/" },
+      { rel: "preload", as: "image", href: schoolDay.url, fetchpriority: "high" },
+      { rel: "preload", as: "image", href: schoolNight.url },
+    ],
   }),
   component: HomePage,
 });

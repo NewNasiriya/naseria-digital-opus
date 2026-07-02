@@ -1,9 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, CalendarDays, ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
 
-import schoolBuilding from "@/assets/school-building.png.asset.json";
+import schoolDay from "@/assets/school-day.png.asset.json";
+import schoolNight from "@/assets/school-night.png.asset.json";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/lib/theme";
 
 interface HeroProps {
   intro?: string | null;
@@ -12,18 +15,57 @@ interface HeroProps {
 const DEFAULT_INTRO =
   "مؤسسة تعليمية حكومية تجمع بين أصالة القيم وحداثة التعليم، لبناء جيل واعٍ ومتميز يخدم مجتمعه ووطنه.";
 
+// Approximate sunrise/sunset — good enough for a cinematic day/night flip.
+// (Egypt: sunrise ~6, sunset ~18 year-round within an hour.)
+const DAY_START_HOUR = 6;
+const NIGHT_START_HOUR = 18;
+
+function isDaytimeNow(): boolean {
+  const h = new Date().getHours();
+  return h >= DAY_START_HOUR && h < NIGHT_START_HOUR;
+}
+
 export function Hero({ intro }: HeroProps) {
+  const { mode, resolved } = useTheme();
+
+  // For Auto mode, Hero picks by local time (independent of OS color scheme).
+  // For explicit light/dark, follow the resolved theme.
+  const [autoDay, setAutoDay] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (mode !== "auto") return;
+    setAutoDay(isDaytimeNow());
+    // Re-check every minute so the Hero flips at sunrise/sunset while open.
+    const id = window.setInterval(() => {
+      setAutoDay(isDaytimeNow());
+    }, 60_000);
+    return () => window.clearInterval(id);
+  }, [mode]);
+
+  const showNight = mode === "auto" ? !autoDay : resolved === "dark";
+
   return (
     <section
       aria-labelledby="hero-heading"
       className="relative isolate overflow-hidden"
     >
-      {/* Background image */}
+      {/* Background — both images mounted, crossfaded via opacity */}
       <div className="absolute inset-0 -z-10">
         <img
-          src={schoolBuilding.url}
-          alt="مبنى مدرسة الناصرية الابتدائية الجديدة"
-          className="h-full w-full object-cover object-center"
+          src={schoolDay.url}
+          alt="مبنى مدرسة الناصرية الابتدائية الجديدة في وضح النهار"
+          className="absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-[400ms] ease-in-out motion-reduce:transition-none"
+          style={{ opacity: showNight ? 0 : 1 }}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
+        <img
+          src={schoolNight.url}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-[400ms] ease-in-out motion-reduce:transition-none"
+          style={{ opacity: showNight ? 1 : 0 }}
           loading="eager"
           fetchPriority="high"
           decoding="async"
