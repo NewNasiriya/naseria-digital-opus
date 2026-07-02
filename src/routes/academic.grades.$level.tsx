@@ -17,7 +17,7 @@ import {
 import { PageHero } from "@/components/academic/PageHero";
 import { TimetableSection } from "@/components/academic/TimetableSection";
 import { NotesSection, ResourcesSection } from "@/components/academic/GradeContentSections";
-import { EmptyPanel } from "@/components/academic/EmptyPanel";
+
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { supabase } from "@/integrations/supabase/client";
