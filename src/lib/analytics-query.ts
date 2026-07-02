@@ -376,7 +376,7 @@ export async function fetchAcademicResourceUsage(days: number): Promise<Resource
   const { data } = await supabase
     .from("analytics_page_views")
     .select("path")
-    .in("path", all)
+    .in("path", all as any)
     .gte("day", toDayStart(from));
 
   const counts = new Map<string, number>();
