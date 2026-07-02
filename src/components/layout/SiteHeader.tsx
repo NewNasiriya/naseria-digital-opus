@@ -5,6 +5,7 @@ import { Menu, X, LogIn } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { SchoolLogo } from "@/components/brand/SchoolLogo";
+import { SearchTrigger } from "@/components/search/SearchTrigger";
 import { cn } from "@/lib/utils";
 
 type NavItem = { label: string; to: string };
@@ -100,6 +101,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <SearchTrigger />
           <Button
             asChild
             variant="outline"
