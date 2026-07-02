@@ -113,8 +113,11 @@ export interface FieldSection {
   title?: string;
   description?: string;
   columns?: 1 | 2;
+  /** When true, section renders collapsed by default (advanced options). */
+  collapsed?: boolean;
   fields: FieldDef[];
 }
+
 
 export function fieldKey(field: FieldDef): string {
   return field.name;

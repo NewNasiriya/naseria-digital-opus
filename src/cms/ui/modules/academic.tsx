@@ -200,12 +200,37 @@ function timetableEditorConfig(scope: Scope, section: "study" | "exam"): EntityE
   const kind = section === "study" ? "academic" : "exam";
   const sections: FieldSection[] = [
     {
-      id: "content",
-      title: "المحتوى",
+      id: "essentials",
+      title: "الأساسيات",
+      description: "املأ العنوان وارفع صورة الجدول أو ملف PDF. هذا كل ما يلزم للنشر.",
+      columns: 1,
+      fields: [
+        { kind: "text", name: "title_ar", label: "العنوان", required: true, dir: "rtl", placeholder: "مثال: جدول الصف الأول — الفصل الدراسي الأول" },
+        {
+          kind: "media",
+          name: "cover_image_media_id",
+          label: "صورة الجدول",
+          bucket: "media",
+          mediaKind: "image",
+          helpText: "الصورة التي تظهر للطلاب وأولياء الأمور.",
+        },
+        {
+          kind: "media",
+          name: "document_media_id",
+          label: "ملف PDF للتنزيل (اختياري)",
+          bucket: "documents",
+          helpText: "أضفه إذا أردت تمكين تنزيل نسخة PDF.",
+        },
+      ],
+    },
+    {
+      id: "advanced",
+      title: "خيارات متقدمة",
+      collapsed: true,
       columns: 2,
       fields: [
-        { kind: "text", name: "title_ar", label: "العنوان بالعربية", required: true, dir: "rtl" },
         { kind: "text", name: "title_en", label: "العنوان بالإنجليزية", dir: "ltr" },
+        { kind: "number", name: "display_order", label: "ترتيب العرض", min: 0, step: 1 },
         {
           kind: "textarea",
           name: "description_ar",
@@ -216,36 +241,8 @@ function timetableEditorConfig(scope: Scope, section: "study" | "exam"): EntityE
         },
       ],
     },
-    {
-      id: "media",
-      title: "الملفات",
-      columns: 2,
-      fields: [
-        {
-          kind: "media",
-          name: "cover_image_media_id",
-          label: "صورة الجدول",
-          bucket: "media",
-          mediaKind: "image",
-          helpText: "الصورة التي تظهر للطلاب وأولياء الأمور على الصفحة.",
-        },
-        {
-          kind: "media",
-          name: "document_media_id",
-          label: "ملف الجدول للتنزيل (اختياري)",
-          bucket: "documents",
-          helpText: "نسخة PDF أو Word للتنزيل.",
-        },
-      ],
-    },
-    {
-      id: "ordering",
-      title: "الترتيب",
-      fields: [
-        { kind: "number", name: "display_order", label: "ترتيب العرض", min: 0, step: 1 },
-      ],
-    },
   ];
+
 
   return {
     module: `academic-${section}-${scope.level}`,
@@ -370,11 +367,27 @@ function resourceEditorConfig(scope: Scope): EntityEditorConfig<AcademicResource
     } as Partial<AcademicResourceRow>,
     sections: [
       {
-        id: "content",
-        title: "المرفق",
+        id: "essentials",
+        title: "الأساسيات",
+        description: "اكتب عنوان الملف واختر الملف من المكتبة، ثم انشر.",
         columns: 1,
         fields: [
-          { kind: "text", name: "title_ar", label: "عنوان الملف", required: true, dir: "rtl" },
+          { kind: "text", name: "title_ar", label: "عنوان الملف", required: true, dir: "rtl", placeholder: "مثال: كتاب اللغة العربية — الفصل الأول" },
+          {
+            kind: "media",
+            name: "media_id",
+            label: "الملف",
+            bucket: "documents",
+            helpText: "PDF، Word، Excel، ZIP أو صورة.",
+          },
+        ],
+      },
+      {
+        id: "advanced",
+        title: "خيارات متقدمة",
+        collapsed: true,
+        columns: 1,
+        fields: [
           {
             kind: "textarea",
             name: "description_ar",
@@ -382,17 +395,11 @@ function resourceEditorConfig(scope: Scope): EntityEditorConfig<AcademicResource
             rows: 2,
             dir: "rtl",
           },
-          {
-            kind: "media",
-            name: "media_id",
-            label: "الملف",
-            bucket: "documents",
-            helpText: "اختر ملفًا من مكتبة الوسائط (PDF، Word، Excel، ZIP، صور، إلخ).",
-          },
           { kind: "number", name: "display_order", label: "ترتيب العرض", min: 0, step: 1 },
         ],
       },
     ],
+
     publicPathFor: () => `/academic/grades/${scope.level}`,
     validate: (v) => {
       if (!v.media_id) return { media_id: "اختر الملف من مكتبة الوسائط." };
@@ -493,8 +500,8 @@ function noteEditorConfig(scope: Scope): EntityEditorConfig<AcademicNoteRow> {
     } as Partial<AcademicNoteRow>,
     sections: [
       {
-        id: "content",
-        title: "الملاحظة",
+        id: "essentials",
+        title: "الأساسيات",
         columns: 1,
         fields: [
           { kind: "text", name: "title_ar", label: "عنوان الملاحظة", required: true, dir: "rtl" },
@@ -506,6 +513,14 @@ function noteEditorConfig(scope: Scope): EntityEditorConfig<AcademicNoteRow> {
             dir: "rtl",
             required: true,
           },
+        ],
+      },
+      {
+        id: "advanced",
+        title: "خيارات متقدمة",
+        collapsed: true,
+        columns: 1,
+        fields: [
           {
             kind: "media",
             name: "attachment_media_id",
@@ -517,6 +532,7 @@ function noteEditorConfig(scope: Scope): EntityEditorConfig<AcademicNoteRow> {
         ],
       },
     ],
+
     publicPathFor: () => `/academic/grades/${scope.level}`,
   };
 }

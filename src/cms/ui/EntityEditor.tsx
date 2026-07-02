@@ -210,10 +210,6 @@ export function EntityEditor<T extends EntityMeta>({
   };
 
   const handlePublish = async () => {
-    if (!id) {
-      toast.error("احفظ المسودة أولًا ثم انشرها.");
-      return;
-    }
     const errs = runValidation();
     setErrors(errs);
     if (Object.keys(errs).length > 0) {
@@ -221,13 +217,24 @@ export function EntityEditor<T extends EntityMeta>({
       return;
     }
     try {
-      await service.saveDraft({ ...values, id });
-      await mutations.publish.mutateAsync(id);
+      const saved = await service.saveDraft({ ...values, id });
+      const publishId = id ?? saved.id;
+      await mutations.publish.mutateAsync(publishId);
       toast.success("تم نشر المحتوى على الموقع.");
+      if (!id) {
+        setRestoringId(saved.id);
+        navigate({
+          to: ".",
+          search: (prev: Record<string, unknown>) => ({ ...prev, id: saved.id }),
+          replace: true,
+        });
+      }
+      router.invalidate();
     } catch (e) {
       toast.error(messageFor(e as never));
     }
   };
+
 
   const handleUnpublish = async () => {
     if (!id) return;
@@ -433,34 +440,18 @@ export function EntityEditor<T extends EntityMeta>({
             {canPublish && currentStatus !== "published" && (
               <Button size="sm" className="gap-1.5" onClick={handlePublish}>
                 <Send className="h-3.5 w-3.5" />
-                {id ? "نشر" : "نشر بعد الحفظ"}
+                نشر مباشرة
               </Button>
             )}
+
           </div>
         </div>
       </div>
 
       {/* Sections */}
       <div className="space-y-6 pb-16">
-        {config.sections.map((section) => (
-          <section
-            key={section.id}
-            className="rounded-2xl border border-border bg-card p-5"
-          >
-            {(section.title || section.description) && (
-              <header className="mb-4 border-b border-border pb-3">
-                {section.title && (
-                  <h2 className="text-base font-semibold text-foreground">
-                    {section.title}
-                  </h2>
-                )}
-                {section.description && (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {section.description}
-                  </p>
-                )}
-              </header>
-            )}
+        {config.sections.map((section) => {
+          const body = (
             <div
               className={
                 section.columns === 2
@@ -480,9 +471,55 @@ export function EntityEditor<T extends EntityMeta>({
                 />
               ))}
             </div>
-          </section>
-        ))}
+          );
+
+          if (section.collapsed) {
+            return (
+              <details
+                key={section.id}
+                className="group rounded-2xl border border-border bg-card p-5 [&_summary::-webkit-details-marker]:hidden"
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+                  <span>{section.title ?? "خيارات متقدمة"}</span>
+                  <span className="text-xs text-muted-foreground/70 transition-transform group-open:rotate-180">
+                    ▾
+                  </span>
+                </summary>
+                {section.description && (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    {section.description}
+                  </p>
+                )}
+                <div className="mt-4 border-t border-border pt-4">{body}</div>
+              </details>
+            );
+          }
+
+          return (
+            <section
+              key={section.id}
+              className="rounded-2xl border border-border bg-card p-5"
+            >
+              {(section.title || section.description) && (
+                <header className="mb-4 border-b border-border pb-3">
+                  {section.title && (
+                    <h2 className="text-base font-semibold text-foreground">
+                      {section.title}
+                    </h2>
+                  )}
+                  {section.description && (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {section.description}
+                    </p>
+                  )}
+                </header>
+              )}
+              {body}
+            </section>
+          );
+        })}
       </div>
+
 
       <VersionHistoryPanel
         open={historyOpen}
