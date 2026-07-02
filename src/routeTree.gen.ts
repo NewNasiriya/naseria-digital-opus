@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as HonorRouteImport } from './routes/honor'
 import { Route as GalleryRouteImport } from './routes/gallery'
@@ -50,6 +51,11 @@ import { Route as AcademicGradesLevelRouteImport } from './routes/academic.grade
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewsRoute = NewsRouteImport.update({
@@ -248,6 +254,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRouteWithChildren
   '/honor': typeof HonorRouteWithChildren
   '/news': typeof NewsRouteWithChildren
+  '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
@@ -281,6 +288,7 @@ export interface FileRoutesByTo {
   '/activities': typeof ActivitiesRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
@@ -321,6 +329,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRouteWithChildren
   '/honor': typeof HonorRouteWithChildren
   '/news': typeof NewsRouteWithChildren
+  '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
@@ -362,6 +371,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/honor'
     | '/news'
+    | '/search'
     | '/sitemap.xml'
     | '/academic/attendance'
     | '/academic/attendance-behaviour'
@@ -395,6 +405,7 @@ export interface FileRouteTypes {
     | '/activities'
     | '/auth'
     | '/contact'
+    | '/search'
     | '/sitemap.xml'
     | '/academic/attendance'
     | '/academic/attendance-behaviour'
@@ -434,6 +445,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/honor'
     | '/news'
+    | '/search'
     | '/sitemap.xml'
     | '/academic/attendance'
     | '/academic/attendance-behaviour'
@@ -474,6 +486,7 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRouteWithChildren
   HonorRoute: typeof HonorRouteWithChildren
   NewsRoute: typeof NewsRouteWithChildren
+  SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
@@ -484,6 +497,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/news': {
@@ -856,6 +876,7 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRouteWithChildren,
   HonorRoute: HonorRouteWithChildren,
   NewsRoute: NewsRouteWithChildren,
+  SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
