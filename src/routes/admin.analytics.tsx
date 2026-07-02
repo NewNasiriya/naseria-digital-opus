@@ -527,7 +527,7 @@ function TopList({
         <Icon className="h-4 w-4 text-primary" aria-hidden="true" /> {title}
       </h3>
       {items.length === 0 ? (
-        <EmptyState icon={Icon} title="لا توجد بيانات بعد" description={emptyText} className="border-none py-6" />
+        <EmptyState icon={Icon} title="لا توجد بيانات بعد" description={emptyText} />
       ) : (
         <ol className="space-y-1.5">
           {items.map((it, i) => {
