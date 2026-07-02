@@ -96,6 +96,10 @@ function AlbumPage() {
 
   const otherAlbums = (related ?? []).filter((a) => a.id !== album.id).slice(0, 3);
 
+  useEffect(() => {
+    trackContentView("gallery_albums", album.id, album.slug);
+  }, [album.id, album.slug]);
+
   const share = async () => {
     if (typeof window === "undefined") return;
     const url = window.location.href;
