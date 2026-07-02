@@ -1,4 +1,4 @@
-# Al-Nasiriya Digital Opus
+# New Al-Nasiriya Primary School
 
 > **The official website and enterprise CMS for New Al-Nasiriya Primary School**
 >
