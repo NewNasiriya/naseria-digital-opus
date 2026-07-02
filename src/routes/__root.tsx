@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { trackPageView } from "../lib/analytics";
 import schoolLogo from "../assets/brand/school-logo.png.asset.json";
 
 function NotFoundComponent() {
