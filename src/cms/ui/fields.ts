@@ -80,6 +80,28 @@ export type FieldDef =
       helpText?: string;
     }
   | {
+      kind: "reference";
+      name: string;
+      label: string;
+      table: string;
+      valueField?: string;   // default "id"
+      labelField: string;    // e.g. "name_ar"
+      orderBy?: string;      // e.g. "display_order"
+      required?: boolean;
+      allowClear?: boolean;
+      helpText?: string;
+    }
+  | {
+      kind: "custom";
+      name: string;
+      label?: string;
+      render: (ctx: {
+        values: Record<string, unknown>;
+        onChange: (name: string, value: unknown) => void;
+        disabled?: boolean;
+      }) => ReactNode;
+    }
+  | {
       kind: "readonly";
       name: string;
       label: string;
