@@ -55,7 +55,7 @@ export function Hero({ intro }: HeroProps) {
       ? ric(() => setSecondaryReady(true), { timeout: 2000 })
       : window.setTimeout(() => setSecondaryReady(true), 1200);
     return () => {
-      if (ric && cic) cic(id);
+      if (typeof ric === "function" && typeof cic === "function") cic(id);
       else window.clearTimeout(id);
     };
   }, [secondaryReady]);
