@@ -23,10 +23,12 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as HonorIndexRouteImport } from './routes/honor.index'
+import { Route as GalleryIndexRouteImport } from './routes/gallery.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AchievementsIndexRouteImport } from './routes/achievements.index'
 import { Route as AcademicIndexRouteImport } from './routes/academic.index'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
+import { Route as GallerySlugRouteImport } from './routes/gallery.$slug'
 import { Route as AdminTimelineRouteImport } from './routes/admin.timeline'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminDocumentsRouteImport } from './routes/admin.documents'
@@ -114,6 +116,11 @@ const HonorIndexRoute = HonorIndexRouteImport.update({
   path: '/',
   getParentRoute: () => HonorRoute,
 } as any)
+const GalleryIndexRoute = GalleryIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GalleryRoute,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -133,6 +140,11 @@ const NewsSlugRoute = NewsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => NewsRoute,
+} as any)
+const GallerySlugRoute = GallerySlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => GalleryRoute,
 } as any)
 const AdminTimelineRoute = AdminTimelineRouteImport.update({
   id: '/timeline',
@@ -227,7 +239,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
-  '/gallery': typeof GalleryRoute
+  '/gallery': typeof GalleryRouteWithChildren
   '/honor': typeof HonorRouteWithChildren
   '/news': typeof NewsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -245,10 +257,12 @@ export interface FileRoutesByFullPath {
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/timeline': typeof AdminTimelineRoute
+  '/gallery/$slug': typeof GallerySlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/academic/': typeof AcademicIndexRoute
   '/achievements/': typeof AchievementsIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/gallery/': typeof GalleryIndexRoute
   '/honor/': typeof HonorIndexRoute
   '/news/': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
@@ -260,7 +274,6 @@ export interface FileRoutesByTo {
   '/activities': typeof ActivitiesRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
-  '/gallery': typeof GalleryRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
@@ -276,10 +289,12 @@ export interface FileRoutesByTo {
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/timeline': typeof AdminTimelineRoute
+  '/gallery/$slug': typeof GallerySlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/academic': typeof AcademicIndexRoute
   '/achievements': typeof AchievementsIndexRoute
   '/admin': typeof AdminIndexRoute
+  '/gallery': typeof GalleryIndexRoute
   '/honor': typeof HonorIndexRoute
   '/news': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
@@ -295,7 +310,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
-  '/gallery': typeof GalleryRoute
+  '/gallery': typeof GalleryRouteWithChildren
   '/honor': typeof HonorRouteWithChildren
   '/news': typeof NewsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -313,10 +328,12 @@ export interface FileRoutesById {
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/timeline': typeof AdminTimelineRoute
+  '/gallery/$slug': typeof GallerySlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/academic/': typeof AcademicIndexRoute
   '/achievements/': typeof AchievementsIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/gallery/': typeof GalleryIndexRoute
   '/honor/': typeof HonorIndexRoute
   '/news/': typeof NewsIndexRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
@@ -351,10 +368,12 @@ export interface FileRouteTypes {
     | '/admin/documents'
     | '/admin/media'
     | '/admin/timeline'
+    | '/gallery/$slug'
     | '/news/$slug'
     | '/academic/'
     | '/achievements/'
     | '/admin/'
+    | '/gallery/'
     | '/honor/'
     | '/news/'
     | '/academic/grades/$level'
@@ -366,7 +385,6 @@ export interface FileRouteTypes {
     | '/activities'
     | '/auth'
     | '/contact'
-    | '/gallery'
     | '/sitemap.xml'
     | '/academic/attendance'
     | '/academic/attendance-behaviour'
@@ -382,10 +400,12 @@ export interface FileRouteTypes {
     | '/admin/documents'
     | '/admin/media'
     | '/admin/timeline'
+    | '/gallery/$slug'
     | '/news/$slug'
     | '/academic'
     | '/achievements'
     | '/admin'
+    | '/gallery'
     | '/honor'
     | '/news'
     | '/academic/grades/$level'
@@ -418,10 +438,12 @@ export interface FileRouteTypes {
     | '/admin/documents'
     | '/admin/media'
     | '/admin/timeline'
+    | '/gallery/$slug'
     | '/news/$slug'
     | '/academic/'
     | '/achievements/'
     | '/admin/'
+    | '/gallery/'
     | '/honor/'
     | '/news/'
     | '/academic/grades/$level'
@@ -437,7 +459,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
-  GalleryRoute: typeof GalleryRoute
+  GalleryRoute: typeof GalleryRouteWithChildren
   HonorRoute: typeof HonorRouteWithChildren
   NewsRoute: typeof NewsRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -543,6 +565,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HonorIndexRouteImport
       parentRoute: typeof HonorRoute
     }
+    '/gallery/': {
+      id: '/gallery/'
+      path: '/'
+      fullPath: '/gallery/'
+      preLoaderRoute: typeof GalleryIndexRouteImport
+      parentRoute: typeof GalleryRoute
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
@@ -570,6 +599,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/news/$slug'
       preLoaderRoute: typeof NewsSlugRouteImport
       parentRoute: typeof NewsRoute
+    }
+    '/gallery/$slug': {
+      id: '/gallery/$slug'
+      path: '/$slug'
+      fullPath: '/gallery/$slug'
+      preLoaderRoute: typeof GallerySlugRouteImport
+      parentRoute: typeof GalleryRoute
     }
     '/admin/timeline': {
       id: '/admin/timeline'
@@ -750,6 +786,19 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface GalleryRouteChildren {
+  GallerySlugRoute: typeof GallerySlugRoute
+  GalleryIndexRoute: typeof GalleryIndexRoute
+}
+
+const GalleryRouteChildren: GalleryRouteChildren = {
+  GallerySlugRoute: GallerySlugRoute,
+  GalleryIndexRoute: GalleryIndexRoute,
+}
+
+const GalleryRouteWithChildren =
+  GalleryRoute._addFileChildren(GalleryRouteChildren)
+
 interface HonorRouteChildren {
   HonorIndexRoute: typeof HonorIndexRoute
   HonorGradesLevelRoute: typeof HonorGradesLevelRoute
@@ -783,7 +832,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
-  GalleryRoute: GalleryRoute,
+  GalleryRoute: GalleryRouteWithChildren,
   HonorRoute: HonorRouteWithChildren,
   NewsRoute: NewsRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

@@ -84,7 +84,7 @@ export const Route = createFileRoute("/gallery/$slug")({
 });
 
 function AlbumPage() {
-  const { album } = Route.useLoaderData();
+  const { album } = Route.useLoaderData() as { album: AlbumDetail };
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const { data: related } = useQuery({
