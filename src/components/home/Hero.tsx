@@ -16,7 +16,6 @@ const DEFAULT_INTRO =
   "مؤسسة تعليمية حكومية تجمع بين أصالة القيم وحداثة التعليم، لبناء جيل واعٍ ومتميز يخدم مجتمعه ووطنه.";
 
 // Approximate sunrise/sunset — good enough for a cinematic day/night flip.
-// (Egypt: sunrise ~6, sunset ~18 year-round within an hour.)
 const DAY_START_HOUR = 6;
 const NIGHT_START_HOUR = 18;
 
@@ -25,24 +24,46 @@ function isDaytimeNow(): boolean {
   return h >= DAY_START_HOUR && h < NIGHT_START_HOUR;
 }
 
+type IdleWindow = Window & {
+  requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+};
+
 export function Hero({ intro }: HeroProps) {
   const { mode, resolved } = useTheme();
 
-  // For Auto mode, Hero picks by local time (independent of OS color scheme).
-  // For explicit light/dark, follow the resolved theme.
+  // Auto mode → time-based; explicit modes → theme-based.
   const [autoDay, setAutoDay] = useState<boolean>(true);
-
   useEffect(() => {
     if (mode !== "auto") return;
     setAutoDay(isDaytimeNow());
-    // Re-check every minute so the Hero flips at sunrise/sunset while open.
-    const id = window.setInterval(() => {
-      setAutoDay(isDaytimeNow());
-    }, 60_000);
+    const id = window.setInterval(() => setAutoDay(isDaytimeNow()), 60_000);
     return () => window.clearInterval(id);
   }, [mode]);
 
   const showNight = mode === "auto" ? !autoDay : resolved === "dark";
+
+  // Defer mounting the secondary image until the browser is idle so it does
+  // not compete with the LCP hero image download. Once mounted it stays
+  // loaded, giving instant future crossfades with zero extra network work.
+  const [secondaryReady, setSecondaryReady] = useState(false);
+  useEffect(() => {
+    if (secondaryReady) return;
+    const w = window as IdleWindow;
+    const ric = w.requestIdleCallback;
+    const cic = (w as unknown as { cancelIdleCallback?: (h: number) => void }).cancelIdleCallback;
+    const id = ric
+      ? ric(() => setSecondaryReady(true), { timeout: 2000 })
+      : window.setTimeout(() => setSecondaryReady(true), 1200);
+    return () => {
+      if (typeof ric === "function" && typeof cic === "function") cic(id);
+      else window.clearTimeout(id);
+    };
+  }, [secondaryReady]);
+
+  // If the user flips to the not-yet-loaded image before idle fires, mount it now.
+  useEffect(() => {
+    if (showNight && !secondaryReady) setSecondaryReady(true);
+  }, [showNight, secondaryReady]);
 
   return (
     <section
@@ -60,16 +81,18 @@ export function Hero({ intro }: HeroProps) {
           fetchPriority="high"
           decoding="async"
         />
-        <img
-          src={schoolNight.url}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-[400ms] ease-in-out motion-reduce:transition-none"
-          style={{ opacity: showNight ? 1 : 0 }}
-          loading="eager"
-          fetchPriority="high"
-          decoding="async"
-        />
+        {secondaryReady ? (
+          <img
+            src={schoolNight.url}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-[400ms] ease-in-out motion-reduce:transition-none"
+            style={{ opacity: showNight ? 1 : 0 }}
+            loading="eager"
+            fetchPriority="low"
+            decoding="async"
+          />
+        ) : null}
         {/* Readability overlays — subtle, keeps warm tones */}
         <div
           aria-hidden="true"
