@@ -144,14 +144,16 @@ function EmptyState() {
 async function fetchLatestNews(): Promise<NewsRow[]> {
   const { data, error } = await supabase
     .from("news")
-    .select("id,title_ar,slug,summary_ar,published_at,featured_image_media_id,is_pinned,is_featured")
+    .select(
+      "id,title_ar,slug,summary_ar,published_at,featured_image_media_id,is_pinned,is_featured,featured_media:media!news_featured_image_media_id_fkey(bucket,storage_path,alt_ar,alt_en)"
+    )
     .eq("status", "published")
     .order("is_pinned", { ascending: false })
     .order("is_featured", { ascending: false })
     .order("published_at", { ascending: false })
     .limit(3);
   if (error) throw error;
-  return (data ?? []) as NewsRow[];
+  return (data ?? []) as unknown as NewsRow[];
 }
 
 export function LatestNews() {
