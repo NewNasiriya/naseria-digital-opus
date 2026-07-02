@@ -6,6 +6,7 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { mediaPublicUrl } from "@/lib/media";
 
 interface NewsRow {
   id: string;
@@ -14,6 +15,12 @@ interface NewsRow {
   summary_ar: string | null;
   published_at: string | null;
   featured_image_media_id: string | null;
+  featured_media: {
+    bucket: string | null;
+    storage_path: string | null;
+    alt_ar: string | null;
+    alt_en: string | null;
+  } | null;
 }
 
 function formatDate(iso: string | null) {
