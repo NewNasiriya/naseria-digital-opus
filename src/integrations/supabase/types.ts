@@ -576,6 +576,87 @@ export type Database = {
           },
         ]
       }
+      analytics_content_views: {
+        Row: {
+          created_at: string
+          day: string
+          entity_id: string
+          entity_table: string
+          id: string
+          slug: string | null
+        }
+        Insert: {
+          created_at?: string
+          day?: string
+          entity_id: string
+          entity_table: string
+          id?: string
+          slug?: string | null
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          entity_id?: string
+          entity_table?: string
+          id?: string
+          slug?: string | null
+        }
+        Relationships: []
+      }
+      analytics_page_views: {
+        Row: {
+          created_at: string
+          day: string
+          device: string | null
+          id: string
+          path: string
+          referrer_domain: string | null
+        }
+        Insert: {
+          created_at?: string
+          day?: string
+          device?: string | null
+          id?: string
+          path: string
+          referrer_domain?: string | null
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          device?: string | null
+          id?: string
+          path?: string
+          referrer_domain?: string | null
+        }
+        Relationships: []
+      }
+      analytics_search_queries: {
+        Row: {
+          created_at: string
+          day: string
+          id: string
+          normalized_term: string
+          result_count: number
+          term: string
+        }
+        Insert: {
+          created_at?: string
+          day?: string
+          id?: string
+          normalized_term: string
+          result_count?: number
+          term: string
+        }
+        Update: {
+          created_at?: string
+          day?: string
+          id?: string
+          normalized_term?: string
+          result_count?: number
+          term?: string
+        }
+        Relationships: []
+      }
       attendance_info: {
         Row: {
           content_ar: string | null
