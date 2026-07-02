@@ -40,6 +40,7 @@ export type AdminModuleId =
   | "users"
   | "settings"
   | "seo"
+  | "analytics"
   | "status";
 
 export type AdminModule = {
