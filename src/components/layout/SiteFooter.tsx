@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
+import capsorixLogo from "@/assets/capsorix-logo.webp.asset.json";
 import { SchoolLogo } from "@/components/brand/SchoolLogo";
 import { Container } from "@/components/layout/Container";
 import {
@@ -164,6 +165,31 @@ export function SiteFooter() {
           </a>
         </div>
       </Container>
+
+      <div className="border-t border-border/60">
+        <Container size="wide" className="py-8">
+          <a
+            href="https://capsorix.tech"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Crafted with precision by Capsorix — visit capsorix.tech (opens in a new tab)"
+            className="group mx-auto flex w-fit flex-col items-center gap-3 rounded-lg px-4 py-2 outline-none transition-opacity duration-300 ease-out hover:opacity-100 focus-visible:ring-2 focus-visible:ring-primary/40"
+          >
+            <span className="text-[10px] font-medium uppercase tracking-[0.32em] text-muted-foreground/70 transition-colors duration-300 group-hover:text-muted-foreground">
+              Crafted with precision by
+            </span>
+            <img
+              src={capsorixLogo.url}
+              alt="Capsorix"
+              width={160}
+              height={38}
+              loading="lazy"
+              decoding="async"
+              className="h-8 w-auto opacity-70 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100 sm:h-9"
+            />
+          </a>
+        </Container>
+      </div>
     </footer>
   );
 }
