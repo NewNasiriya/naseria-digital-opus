@@ -151,8 +151,25 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <PageViewTracker />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>
   );
 }
+
+function PageViewTracker() {
+  const router = useRouter();
+  useEffect(() => {
+    // Log the initial page render.
+    trackPageView(router.state.location.pathname);
+    const unsub = router.subscribe("onResolved", (event) => {
+      const path = event.toLocation?.pathname ?? router.state.location.pathname;
+      trackPageView(path);
+    });
+    return () => unsub();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return null;
+}
+
