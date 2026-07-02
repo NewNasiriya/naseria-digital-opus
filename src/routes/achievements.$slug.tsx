@@ -92,6 +92,7 @@ function AchievementDetailPage() {
     if (!data) return;
     const title = data.seo_title ?? `${data.title_ar} | مدرسة الناصرية الابتدائية الجديدة`;
     if (typeof document !== "undefined") document.title = title;
+    trackContentView("achievements", data.id, data.slug);
   }, [data]);
 
   if (error) throw error;
