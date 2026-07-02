@@ -49,7 +49,7 @@ function SectionRoute() {
   const { level, section } = Route.useParams();
   const search = Route.useSearch();
   const grade = getGrade(level)!;
-  const meta = ACADEMIC_SECTION_META[section];
+  const meta = ACADEMIC_SECTION_META[section as AcademicSection];
 
   const { data: gradeId, isLoading: gradeLoading } = useQuery({
     queryKey: ["academic", "grade-id", level],
