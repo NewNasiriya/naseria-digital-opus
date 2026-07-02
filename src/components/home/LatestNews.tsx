@@ -56,16 +56,26 @@ function SectionHeader() {
 }
 
 function NewsCard({ item }: { item: NewsRow }) {
+  const imageUrl = mediaPublicUrl(item.featured_media);
+  const imageAlt = item.featured_media?.alt_ar ?? item.title_ar;
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:elevation-md">
       <div className="aspect-[16/10] w-full overflow-hidden bg-surface-muted">
-        {/* Media integration wires in via CMS media pipeline (Phase 4). */}
-        <div
-          aria-hidden="true"
-          className="grid h-full w-full place-items-center text-muted-foreground/40"
-        >
-          <Newspaper className="h-10 w-10" />
-        </div>
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={imageAlt}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+        ) : (
+          <div
+            aria-hidden="true"
+            className="grid h-full w-full place-items-center text-muted-foreground/40"
+          >
+            <Newspaper className="h-10 w-10" />
+          </div>
+        )}
       </div>
       <div className="flex flex-1 flex-col p-6">
         {item.published_at && (
