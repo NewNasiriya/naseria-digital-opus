@@ -22,6 +22,7 @@ import {
 
 import { PageHero } from "@/components/academic/PageHero";
 import { AchievementCard } from "@/components/achievements/AchievementCard";
+import { trackContentView } from "@/lib/analytics";
 import { AchievementGallery } from "@/components/achievements/AchievementGallery";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/layout/Container";
