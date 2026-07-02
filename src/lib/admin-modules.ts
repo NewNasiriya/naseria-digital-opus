@@ -141,6 +141,7 @@ export const ADMIN_MODULES: AdminModule[] = [
     icon: Images,
     primaryAction: "إضافة ألبوم",
     group: "media",
+    publicHref: "/gallery",
   },
   {
     id: "media",

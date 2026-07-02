@@ -16,6 +16,7 @@ const NAV: NavItem[] = [
   { label: "لوحة الشرف", to: "/honor" },
   { label: "الأنشطة", to: "/activities" },
   { label: "الأخبار", to: "/news" },
+  { label: "المعرض", to: "/gallery" },
   { label: "تواصل معنا", to: "/contact" },
 ];
 
