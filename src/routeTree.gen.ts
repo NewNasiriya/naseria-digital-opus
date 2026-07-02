@@ -35,6 +35,7 @@ import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
 import { Route as AdminDocumentsRouteImport } from './routes/admin.documents'
 import { Route as AdminContactRouteImport } from './routes/admin.contact'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminModuleRouteImport } from './routes/admin.$module'
 import { Route as AchievementsSlugRouteImport } from './routes/achievements.$slug'
 import { Route as AcademicStudentGuidelinesRouteImport } from './routes/academic.student-guidelines'
@@ -178,6 +179,11 @@ const AdminContactRoute = AdminContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminModuleRoute = AdminModuleRouteImport.update({
   id: '/$module',
   path: '/$module',
@@ -266,6 +272,7 @@ export interface FileRoutesByFullPath {
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/achievements/$slug': typeof AchievementsSlugRoute
   '/admin/$module': typeof AdminModuleRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/contact': typeof AdminContactRoute
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/gallery': typeof AdminGalleryRoute
@@ -300,6 +307,7 @@ export interface FileRoutesByTo {
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/achievements/$slug': typeof AchievementsSlugRoute
   '/admin/$module': typeof AdminModuleRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/contact': typeof AdminContactRoute
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/gallery': typeof AdminGalleryRoute
@@ -341,6 +349,7 @@ export interface FileRoutesById {
   '/academic/student-guidelines': typeof AcademicStudentGuidelinesRoute
   '/achievements/$slug': typeof AchievementsSlugRoute
   '/admin/$module': typeof AdminModuleRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/contact': typeof AdminContactRoute
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/gallery': typeof AdminGalleryRoute
@@ -383,6 +392,7 @@ export interface FileRouteTypes {
     | '/academic/student-guidelines'
     | '/achievements/$slug'
     | '/admin/$module'
+    | '/admin/analytics'
     | '/admin/contact'
     | '/admin/documents'
     | '/admin/gallery'
@@ -417,6 +427,7 @@ export interface FileRouteTypes {
     | '/academic/student-guidelines'
     | '/achievements/$slug'
     | '/admin/$module'
+    | '/admin/analytics'
     | '/admin/contact'
     | '/admin/documents'
     | '/admin/gallery'
@@ -457,6 +468,7 @@ export interface FileRouteTypes {
     | '/academic/student-guidelines'
     | '/achievements/$slug'
     | '/admin/$module'
+    | '/admin/analytics'
     | '/admin/contact'
     | '/admin/documents'
     | '/admin/gallery'
@@ -674,6 +686,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminContactRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/$module': {
       id: '/admin/$module'
       path: '/$module'
@@ -807,6 +826,7 @@ const AchievementsRouteWithChildren = AchievementsRoute._addFileChildren(
 
 interface AdminRouteChildren {
   AdminModuleRoute: typeof AdminModuleRoute
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminContactRoute: typeof AdminContactRoute
   AdminDocumentsRoute: typeof AdminDocumentsRoute
   AdminGalleryRoute: typeof AdminGalleryRoute
@@ -817,6 +837,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminModuleRoute: AdminModuleRoute,
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminContactRoute: AdminContactRoute,
   AdminDocumentsRoute: AdminDocumentsRoute,
   AdminGalleryRoute: AdminGalleryRoute,

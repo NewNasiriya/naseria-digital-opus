@@ -29,6 +29,8 @@ import {
   type NewsDetail,
 } from "@/lib/news";
 import { mediaPublicUrl } from "@/lib/media";
+import { trackContentView } from "@/lib/analytics";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/news/$slug")({
@@ -111,6 +113,10 @@ function NewsDetailPage() {
     queryFn: () => fetchAdjacentNews(item.published_at),
     staleTime: 60_000,
   });
+
+  useEffect(() => {
+    trackContentView("news", item.id, item.slug);
+  }, [item.id, item.slug]);
 
   const paragraphs = (item.body_ar ?? "").split(/\n{2,}/).filter(Boolean);
 

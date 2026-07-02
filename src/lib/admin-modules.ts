@@ -17,6 +17,7 @@ import {
   Activity,
   CalendarClock,
   Shield,
+  BarChart3,
   HelpCircle,
   type LucideIcon,
 } from "lucide-react";
@@ -40,6 +41,7 @@ export type AdminModuleId =
   | "users"
   | "settings"
   | "seo"
+  | "analytics"
   | "status";
 
 export type AdminModule = {
@@ -235,6 +237,16 @@ export const ADMIN_MODULES: AdminModule[] = [
     description: "عناوين ووصف الصفحات لمحركات البحث.",
     icon: Search,
     primaryAction: "تحرير البيانات الوصفية",
+    group: "system",
+  },
+  {
+    id: "analytics",
+    slug: "analytics",
+    title: "التحليلات والرؤى",
+    short: "التحليلات",
+    description: "الزيارات، المحتوى الأكثر مشاهدة، وتحليلات البحث.",
+    icon: BarChart3,
+    primaryAction: "عرض التقرير",
     group: "system",
   },
   {

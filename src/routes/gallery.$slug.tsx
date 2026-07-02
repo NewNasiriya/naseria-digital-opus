@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, notFound } from "@tanstack/react-router";
 import { ArrowRight, CalendarDays, ImageIcon, Images, Share2 } from "lucide-react";
@@ -9,6 +9,7 @@ import { PageHero } from "@/components/academic/PageHero";
 import { Button } from "@/components/ui/button";
 import { Lightbox } from "@/components/gallery/Lightbox";
 import { mediaPublicUrl } from "@/lib/media";
+import { trackContentView } from "@/lib/analytics";
 import {
   albumCoverUrl,
   categoryLabel,
@@ -94,6 +95,10 @@ function AlbumPage() {
   });
 
   const otherAlbums = (related ?? []).filter((a) => a.id !== album.id).slice(0, 3);
+
+  useEffect(() => {
+    trackContentView("gallery_albums", album.id, album.slug);
+  }, [album.id, album.slug]);
 
   const share = async () => {
     if (typeof window === "undefined") return;

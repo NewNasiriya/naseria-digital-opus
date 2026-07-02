@@ -540,6 +540,13 @@ export async function runSearch(
     return bt - at;
   });
 
+  // Fire-and-forget search analytics ingestion. Safe on server (no-op).
+  try {
+    const { trackSearch } = await import("./analytics");
+    trackSearch(q, merged.length);
+  } catch {
+    // ignore
+  }
   return merged;
 }
 

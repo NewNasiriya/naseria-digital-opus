@@ -22,6 +22,7 @@ import {
 
 import { PageHero } from "@/components/academic/PageHero";
 import { AchievementCard } from "@/components/achievements/AchievementCard";
+import { trackContentView } from "@/lib/analytics";
 import { AchievementGallery } from "@/components/achievements/AchievementGallery";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/layout/Container";
@@ -92,6 +93,7 @@ function AchievementDetailPage() {
     if (!data) return;
     const title = data.seo_title ?? `${data.title_ar} | مدرسة الناصرية الابتدائية الجديدة`;
     if (typeof document !== "undefined") document.title = title;
+    trackContentView("achievements", data.id, data.slug);
   }, [data]);
 
   if (error) throw error;
