@@ -9,6 +9,7 @@ import { PageHero } from "@/components/academic/PageHero";
 import { Button } from "@/components/ui/button";
 import { Lightbox } from "@/components/gallery/Lightbox";
 import { mediaPublicUrl } from "@/lib/media";
+import { trackContentView } from "@/lib/analytics";
 import {
   albumCoverUrl,
   categoryLabel,
