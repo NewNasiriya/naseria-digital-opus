@@ -11,6 +11,7 @@ import { AcademicLifePreview } from "@/components/home/AcademicLifePreview";
 import { HonorBoardPreview } from "@/components/home/HonorBoardPreview";
 import { AchievementsPreview } from "@/components/home/AchievementsPreview";
 import { ActivitiesPreview } from "@/components/home/ActivitiesPreview";
+import { GalleryPreview } from "@/components/home/GalleryPreview";
 import { CallToAction } from "@/components/home/CallToAction";
 
 export const Route = createFileRoute("/")({
@@ -52,6 +53,7 @@ function HomePage() {
         <AchievementsPreview />
         <HonorBoardPreview />
         <ActivitiesPreview />
+        <GalleryPreview />
         <CallToAction />
       </main>
       <SiteFooter />
