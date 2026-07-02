@@ -517,6 +517,3 @@ export function EntityEditor<T extends EntityMeta>({
   );
 }
 
-// Silence "declared but never read" for pattern-bind convenience.
-const _useMemo = useMemo;
-void _useMemo;
