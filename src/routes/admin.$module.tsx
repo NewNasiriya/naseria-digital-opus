@@ -9,6 +9,8 @@ import { ADMIN_MODULE_BY_SLUG } from "@/lib/admin-modules";
 import { getCmsUiModule } from "@/cms/ui";
 import { EntityListView } from "@/cms/ui/EntityListView";
 import { EntityEditor } from "@/cms/ui/EntityEditor";
+// Side-effect: register every CMS module with the shared UI registry.
+import "@/cms/ui/modules";
 
 const searchSchema = z.object({
   id: z.string().optional().catch(undefined),
