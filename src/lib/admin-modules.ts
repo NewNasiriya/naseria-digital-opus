@@ -17,6 +17,7 @@ import {
   Activity,
   CalendarClock,
   Shield,
+  BarChart3,
   HelpCircle,
   type LucideIcon,
 } from "lucide-react";
