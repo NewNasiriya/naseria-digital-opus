@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { buildSeo } from "@/lib/seo";
 import { Sparkles, Trophy } from "lucide-react";
 
 import { PageHero } from "@/components/academic/PageHero";

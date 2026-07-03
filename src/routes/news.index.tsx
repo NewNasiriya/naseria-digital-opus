@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { buildSeo } from "@/lib/seo";
 import { Megaphone, Newspaper, Pin } from "lucide-react";
 import { z } from "zod";
 

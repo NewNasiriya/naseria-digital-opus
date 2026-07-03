@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
+import { buildSeo } from "@/lib/seo";
 import { ArrowLeft, ImageIcon, Images, Search } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";

@@ -48,6 +48,7 @@ interface MetaEntry {
   content?: string;
   title?: string;
   charSet?: string;
+  httpEquiv?: string;
 }
 
 interface LinkEntry {
@@ -56,7 +57,8 @@ interface LinkEntry {
   sizes?: string;
   type?: string;
   color?: string;
-  crossOrigin?: string;
+  crossOrigin?: "" | "anonymous" | "use-credentials";
+  fetchpriority?: "high" | "low" | "auto";
 }
 
 export interface SeoHead {

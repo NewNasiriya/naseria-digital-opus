@@ -1,4 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
+import { buildSeo } from "@/lib/seo";
 import {
   ArrowLeft,
   BookMarked,
