@@ -14,6 +14,15 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { trackPageView } from "../lib/analytics";
 import { ThemeProvider, THEME_INIT_SCRIPT } from "../lib/theme";
 import schoolLogo from "../assets/brand/school-logo.png.asset.json";
+import {
+  SITE_URL,
+  SITE_NAME_AR,
+  SITE_NAME_EN,
+  SITE_LOCALE,
+  SITE_THEME_COLOR,
+  SITE_DEFAULT_OG_IMAGE,
+  SITE_DEFAULT_DESCRIPTION,
+} from "../lib/seo";
 
 function NotFoundComponent() {
   return (
@@ -75,40 +84,47 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
+const LOGO_ABSOLUTE = /^https?:\/\//.test(schoolLogo.url)
+  ? schoolLogo.url
+  : `${SITE_URL}${schoolLogo.url}`;
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "theme-color", content: "#0b2a5b" },
-      { title: "مدرسة الناصرية الابتدائية الجديدة" },
-      {
-        name: "description",
-        content:
-          "الموقع الرسمي لمدرسة الناصرية الابتدائية الجديدة — أخبار، جداول، أنشطة، وإرشادات لأولياء الأمور والطلاب.",
-      },
-      { property: "og:title", content: "مدرسة الناصرية الابتدائية الجديدة" },
-      {
-        property: "og:description",
-        content:
-          "الموقع الرسمي للمدرسة: الأخبار، الجداول الدراسية، الأنشطة، والإرشادات.",
-      },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
+      { name: "theme-color", content: SITE_THEME_COLOR },
+      { name: "color-scheme", content: "light dark" },
+      { name: "application-name", content: SITE_NAME_AR },
+
+      // Sitewide OG defaults. Per-route head() overrides title/description/image.
+      { property: "og:site_name", content: SITE_NAME_AR },
+      { property: "og:locale", content: SITE_LOCALE },
       { property: "og:type", content: "website" },
-      { property: "og:locale", content: "ar_EG" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "مدرسة الناصرية الابتدائية الجديدة" },
-      { name: "description", content: "Al-Nasiriyah Digital Gateway is a premium Arabic-first website and CMS for a primary school." },
-      { property: "og:description", content: "Al-Nasiriyah Digital Gateway is a premium Arabic-first website and CMS for a primary school." },
-      { name: "twitter:description", content: "Al-Nasiriyah Digital Gateway is a premium Arabic-first website and CMS for a primary school." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9ce541da-c4f7-4b04-93b9-e3f1cc05614c/id-preview-88e0e46c--e64ef7e7-ce1d-4850-928a-668c52bc2c68.lovable.app-1782957439968.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9ce541da-c4f7-4b04-93b9-e3f1cc05614c/id-preview-88e0e46c--e64ef7e7-ce1d-4850-928a-668c52bc2c68.lovable.app-1782957439968.png" },
+
+      // Apple / mobile web app defaults.
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: SITE_NAME_AR },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "format-detection", content: "telephone=no" },
+
+      // Authorship / language.
+      { name: "author", content: SITE_NAME_AR },
+      { httpEquiv: "content-language", content: "ar" } as never,
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/png", href: schoolLogo.url },
-      { rel: "shortcut icon", type: "image/png", href: schoolLogo.url },
-      { rel: "apple-touch-icon", href: schoolLogo.url },
-      { rel: "mask-icon", href: schoolLogo.url, color: "#0b2a5b" },
+
+      // Favicons + PWA manifest.
+      { rel: "icon", href: "/favicon.ico", sizes: "any" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+      { rel: "mask-icon", href: "/favicon.png", color: SITE_THEME_COLOR },
+      { rel: "manifest", href: "/site.webmanifest" },
+
+      // Font preconnects.
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       {
         rel: "preconnect",
@@ -126,10 +142,37 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "EducationalOrganization",
-          name: "مدرسة الناصرية الابتدائية الجديدة",
-          alternateName: "New Al-Nasiriya Primary School",
-          logo: schoolLogo.url,
-          image: schoolLogo.url,
+          "@id": `${SITE_URL}/#organization`,
+          name: SITE_NAME_AR,
+          alternateName: SITE_NAME_EN,
+          url: SITE_URL,
+          logo: LOGO_ABSOLUTE,
+          image: SITE_DEFAULT_OG_IMAGE,
+          description: SITE_DEFAULT_DESCRIPTION,
+          inLanguage: "ar",
+          areaServed: "EG",
+          address: {
+            "@type": "PostalAddress",
+            addressCountry: "EG",
+          },
+          sameAs: [] as string[],
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "@id": `${SITE_URL}/#website`,
+          url: SITE_URL,
+          name: SITE_NAME_AR,
+          inLanguage: "ar",
+          publisher: { "@id": `${SITE_URL}/#organization` },
+          potentialAction: {
+            "@type": "SearchAction",
+            target: `${SITE_URL}/search?q={search_term_string}`,
+            "query-input": "required name=search_term_string",
+          },
         }),
       },
     ],
@@ -184,4 +227,3 @@ function PageViewTracker() {
   }, []);
   return null;
 }
-
