@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { buildSeo } from "@/lib/seo";
 import { Sparkles, Trophy } from "lucide-react";
 
 import { PageHero } from "@/components/academic/PageHero";
@@ -15,24 +16,11 @@ import {
 } from "@/lib/achievements";
 
 export const Route = createFileRoute("/achievements/")({
-  head: () => ({
-    meta: [
-      { title: "الإنجازات | مدرسة الناصرية الابتدائية الجديدة" },
-      {
-        name: "description",
-        content:
-          "الإنجازات الرسمية لمدرسة الناصرية الابتدائية الجديدة — مشاريع التطوير، البنية التحتية، والأنشطة التعليمية الموثقة.",
-      },
-      { property: "og:title", content: "الإنجازات | مدرسة الناصرية الابتدائية الجديدة" },
-      {
-        property: "og:description",
-        content:
-          "توثيق رسمي لإنجازات المدرسة وتطويرها المستمر لتوفير بيئة تعليمية آمنة ومحفزة.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: "/achievements" },
-    ],
-    links: [{ rel: "canonical", href: "/achievements" }],
+  head: () => buildSeo({
+    path: "/achievements",
+    title: "الإنجازات | مدرسة الناصرية الابتدائية الجديدة",
+    description:
+      "الإنجازات الرسمية لمدرسة الناصرية الابتدائية الجديدة — مشاريع التطوير، البنية التحتية، والأنشطة التعليمية الموثقة.",
   }),
   component: AchievementsIndex,
   errorComponent: ({ error }) => (

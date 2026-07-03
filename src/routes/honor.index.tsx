@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { buildSeo } from "@/lib/seo";
 import { Award } from "lucide-react";
 
 import { PageHero } from "@/components/academic/PageHero";
@@ -10,21 +11,11 @@ import { Section } from "@/components/layout/Section";
 import { fetchPublishedHonorBoards } from "@/lib/honor";
 
 export const Route = createFileRoute("/honor/")({
-  head: () => ({
-    meta: [
-      { title: "لوحة الشرف | مدرسة الناصرية الابتدائية الجديدة" },
-      {
-        name: "description",
-        content:
-          "لوحة الشرف الرسمية لمدرسة الناصرية الابتدائية الجديدة — تكريم الطلاب المتفوقين لكل صف دراسي على مستوى العام الأكاديمي.",
-      },
-      { property: "og:title", content: "لوحة الشرف | مدرسة الناصرية الابتدائية الجديدة" },
-      {
-        property: "og:description",
-        content: "كشوف أوائل الطلاب لكل صف دراسي، معتمدة رسميًا من إدارة المدرسة.",
-      },
-    ],
-    links: [{ rel: "canonical", href: "/honor" }],
+  head: () => buildSeo({
+    path: "/honor",
+    title: "لوحة الشرف | مدرسة الناصرية الابتدائية الجديدة",
+    description:
+      "لوحة الشرف الرسمية لمدرسة الناصرية الابتدائية الجديدة — تكريم الطلاب المتفوقين لكل صف دراسي على مستوى العام الأكاديمي.",
   }),
   component: HonorIndex,
   errorComponent: ({ error }) => (

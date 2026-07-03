@@ -1,9 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
-// Relative paths are resolved by crawlers against the request host,
-// so this remains correct across preview/production/custom domains.
-const BASE_URL = "";
+// Production domain — used to emit absolute <loc> URLs per the sitemap spec.
+const BASE_URL = "https://newnasiriya.com";
 
 interface SitemapEntry {
   path: string;

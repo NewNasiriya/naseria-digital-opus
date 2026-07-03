@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
+import { buildSeo } from "@/lib/seo";
 import { ArrowLeft, ImageIcon, Images, Search } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
@@ -17,24 +18,11 @@ import {
 } from "@/lib/gallery";
 
 export const Route = createFileRoute("/gallery/")({
-  head: () => ({
-    meta: [
-      { title: "معرض الصور | مدرسة الناصرية الابتدائية الجديدة" },
-      {
-        name: "description",
-        content:
-          "أرشيف رسمي من صور المدرسة: الترميم والتجهيز، رياض الأطفال، الأنشطة، الفعاليات، والإنجازات.",
-      },
-      { property: "og:title", content: "معرض الصور" },
-      {
-        property: "og:description",
-        content:
-          "أرشيف رسمي من صور المدرسة: الترميم والتجهيز، رياض الأطفال، الأنشطة، الفعاليات، والإنجازات.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: "/gallery" },
-    ],
-    links: [{ rel: "canonical", href: "/gallery" }],
+  head: () => buildSeo({
+    path: "/gallery",
+    title: "معرض الصور | مدرسة الناصرية الابتدائية الجديدة",
+    description:
+      "أرشيف رسمي من صور المدرسة: الترميم والتجهيز، رياض الأطفال، الأنشطة، الفعاليات، والإنجازات.",
   }),
   component: GalleryIndex,
 });
