@@ -27,23 +27,11 @@ const searchSchema = z.object({
 
 export const Route = createFileRoute("/news/")({
   validateSearch: (raw) => searchSchema.parse(raw ?? {}),
-  head: () => ({
-    meta: [
-      { title: "الأخبار والإعلانات | مدرسة الناصرية الابتدائية الجديدة" },
-      {
-        name: "description",
-        content:
-          "أحدث أخبار وإعلانات مدرسة الناصرية الابتدائية الجديدة: الفعاليات، القرارات الإدارية، وإنجازات الطلاب.",
-      },
-      { property: "og:title", content: "الأخبار والإعلانات | مدرسة الناصرية الابتدائية الجديدة" },
-      {
-        property: "og:description",
-        content: "المركز الرسمي للتواصل بين المدرسة وأولياء الأمور والطلاب.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: "/news" },
-    ],
-    links: [{ rel: "canonical", href: "/news" }],
+  head: () => buildSeo({
+    path: "/news",
+    title: "الأخبار والإعلانات | مدرسة الناصرية الابتدائية الجديدة",
+    description:
+      "أحدث أخبار وإعلانات مدرسة الناصرية الابتدائية الجديدة: الفعاليات، القرارات الإدارية، وإنجازات الطلاب.",
   }),
   component: NewsIndexPage,
 });

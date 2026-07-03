@@ -15,33 +15,25 @@ import { AchievementsPreview } from "@/components/home/AchievementsPreview";
 import { ActivitiesPreview } from "@/components/home/ActivitiesPreview";
 import { GalleryPreview } from "@/components/home/GalleryPreview";
 import { CallToAction } from "@/components/home/CallToAction";
+import { buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "مدرسة الناصرية الابتدائية الجديدة" },
-      {
-        name: "description",
-        content:
-          "الموقع الرسمي لمدرسة الناصرية الابتدائية الجديدة — الأخبار، الجداول الدراسية، الأنشطة، لوحة الشرف، وإرشادات الطلاب وأولياء الأمور.",
-      },
-      {
-        property: "og:title",
-        content: "مدرسة الناصرية الابتدائية الجديدة",
-      },
-      {
-        property: "og:description",
-        content:
-          "الموقع الرسمي لمدرسة الناصرية الابتدائية الجديدة — تعليم متميز في بيئة حكومية آمنة ومحفزة.",
-      },
-      { property: "og:url", content: "/" },
-    ],
-    links: [
-      { rel: "canonical", href: "/" },
-      { rel: "preload", as: "image", href: schoolDay.url, fetchpriority: "high" },
-      { rel: "preload", as: "image", href: schoolNight.url },
-    ],
-  }),
+  head: () => {
+    const seo = buildSeo({
+      path: "/",
+      title: "مدرسة الناصرية الابتدائية الجديدة — الموقع الرسمي",
+      description:
+        "الموقع الرسمي لمدرسة الناصرية الابتدائية الجديدة — الأخبار، الجداول الدراسية، الأنشطة، لوحة الشرف، وإرشادات الطلاب وأولياء الأمور.",
+    });
+    return {
+      meta: seo.meta,
+      links: [
+        ...seo.links,
+        { rel: "preload", as: "image", href: schoolDay.url, fetchpriority: "high" },
+        { rel: "preload", as: "image", href: schoolNight.url },
+      ],
+    };
+  },
   component: HomePage,
 });
 

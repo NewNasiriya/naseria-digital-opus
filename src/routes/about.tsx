@@ -11,28 +11,14 @@ import { WhyChooseUs } from "@/components/about/WhyChooseUs";
 import { Stats } from "@/components/home/Stats";
 import { LocationPreview } from "@/components/about/LocationPreview";
 import { ExploreCTA } from "@/components/about/ExploreCTA";
+import { buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/about")({
-  head: () => ({
-    meta: [
-      { title: "عن المدرسة | مدرسة الناصرية الابتدائية الجديدة" },
-      {
-        name: "description",
-        content:
-          "تعرّف على مدرسة الناصرية الابتدائية الجديدة: رسالتنا، رؤيتنا، قيمنا التربوية، وأسباب تميّز التجربة التعليمية لدينا.",
-      },
-      {
-        property: "og:title",
-        content: "عن مدرسة الناصرية الابتدائية الجديدة",
-      },
-      {
-        property: "og:description",
-        content:
-          "بيئة تعليمية آمنة، كادر مؤهّل، وأنشطة متنوعة تحتفي بكل طالب.",
-      },
-      { property: "og:type", content: "website" },
-    ],
-    links: [{ rel: "canonical", href: "/about" }],
+  head: () => buildSeo({
+    path: "/about",
+    title: "عن المدرسة | مدرسة الناصرية الابتدائية الجديدة",
+    description:
+      "تعرّف على مدرسة الناصرية الابتدائية الجديدة: رسالتنا، رؤيتنا، قيمنا التربوية، وأسباب تميّز التجربة التعليمية لدينا.",
   }),
   component: AboutPage,
 });

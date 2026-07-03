@@ -18,26 +18,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useContactInfo, useWorkingHours } from "@/lib/contact";
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: "تواصل معنا | مدرسة الناصرية الابتدائية الجديدة" },
-      {
-        name: "description",
-        content:
-          "قنوات التواصل الرسمية مع إدارة مدرسة الناصرية الابتدائية الجديدة — العنوان، مواعيد العمل، البريد الإلكتروني، والموقع على الخريطة.",
-      },
-      {
-        property: "og:title",
-        content: "تواصل معنا | مدرسة الناصرية الابتدائية الجديدة",
-      },
-      {
-        property: "og:description",
-        content: "قنوات التواصل الرسمية مع إدارة المدرسة.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: "/contact" },
-    ],
-    links: [{ rel: "canonical", href: "/contact" }],
+  head: () => buildSeo({
+    path: "/contact",
+    title: "تواصل معنا | مدرسة الناصرية الابتدائية الجديدة",
+    description:
+      "قنوات التواصل الرسمية مع إدارة مدرسة الناصرية الابتدائية الجديدة — العنوان، مواعيد العمل، البريد الإلكتروني، والموقع على الخريطة.",
   }),
   component: ContactPage,
 });

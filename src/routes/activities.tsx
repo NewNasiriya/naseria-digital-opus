@@ -18,26 +18,11 @@ import { PageHero } from "@/components/academic/PageHero";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/activities")({
-  head: () => ({
-    meta: [
-      { title: "أنشطة المدرسة | مدرسة الناصرية الابتدائية الجديدة" },
-      {
-        name: "description",
-        content:
-          "نظرة عامة على الأنشطة الطلابية في مدرسة الناصرية الابتدائية الجديدة: الرياضة، الفنون، الثقافة، الرحلات، والمسابقات.",
-      },
-      {
-        property: "og:title",
-        content: "أنشطة المدرسة | مدرسة الناصرية الابتدائية الجديدة",
-      },
-      {
-        property: "og:description",
-        content: "حياة مدرسية غنية ومتوازنة تنمّي مواهب الطلاب وشخصياتهم.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: "/activities" },
-    ],
-    links: [{ rel: "canonical", href: "/activities" }],
+  head: () => buildSeo({
+    path: "/activities",
+    title: "أنشطة المدرسة | مدرسة الناصرية الابتدائية الجديدة",
+    description:
+      "نظرة عامة على الأنشطة الطلابية في مدرسة الناصرية الابتدائية الجديدة: الرياضة، الفنون، الثقافة، الرحلات، والمسابقات.",
   }),
   component: ActivitiesPage,
 });
