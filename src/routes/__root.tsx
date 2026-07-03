@@ -109,9 +109,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "format-detection", content: "telephone=no" },
 
-      // Authorship / language.
+      // Authorship.
       { name: "author", content: SITE_NAME_AR },
-      { httpEquiv: "content-language", content: "ar" } as never,
     ],
     links: [
       { rel: "stylesheet", href: appCss },
