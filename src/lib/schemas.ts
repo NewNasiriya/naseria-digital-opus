@@ -5,8 +5,6 @@
  * No duplicate schemas. Minimal bundle footprint. Strong TypeScript typing.
  */
 
-import type { ReactNode } from "react";
-
 export const SCHEMA_CONTEXT = "https://schema.org";
 
 /**
@@ -20,53 +18,74 @@ export interface OrganizationSchemaInput {
   logo_url: string;
   image_url: string;
   description_ar: string;
-  description_en: string;
+  description_en?: string;
   country_code: string;
   phone?: string;
   email?: string;
   address_street?: string;
   address_city?: string;
+  address_region?: string;
   address_postal_code?: string;
-  same_as?: string[]; // social links
+  same_as?: string[];
+  founding_date?: string;
+  /** ISO language codes the org communicates in. Defaults to ["ar","en"]. */
+  knows_language?: string[];
+  /** e.g. "Primary Education" */
+  educational_level?: string;
+  /** When true emits @type EducationalOrganization; otherwise Organization. */
+  educational?: boolean;
 }
 
 export function buildOrganizationSchema(
   input: OrganizationSchemaInput,
 ): Record<string, unknown> {
-  const contactPoint = input.phone || input.email ? {
-    "@type": "ContactPoint",
-    telephone: input.phone,
-    contactType: "Customer Service",
-    email: input.email,
-    areaServed: input.country_code,
-    availableLanguage: ["ar", "en"],
-  } : undefined;
+  const languages = input.knows_language ?? ["ar", "en"];
+  const contactPoint = input.phone || input.email
+    ? {
+        "@type": "ContactPoint",
+        ...(input.phone && { telephone: input.phone }),
+        ...(input.email && { email: input.email }),
+        contactType: "customer service",
+        areaServed: input.country_code,
+        availableLanguage: languages,
+      }
+    : undefined;
 
-  const address = input.address_city ? {
-    "@type": "PostalAddress",
-    addressCountry: input.country_code,
-    addressCity: input.address_city,
-    addressStreet: input.address_street,
-    postalCode: input.address_postal_code,
-  } : {
+  const address: Record<string, unknown> = {
     "@type": "PostalAddress",
     addressCountry: input.country_code,
   };
+  if (input.address_street) address.streetAddress = input.address_street;
+  if (input.address_city) address.addressLocality = input.address_city;
+  if (input.address_region) address.addressRegion = input.address_region;
+  if (input.address_postal_code) address.postalCode = input.address_postal_code;
+
+  const type = input.educational === false ? "Organization" : "EducationalOrganization";
 
   return {
     "@context": SCHEMA_CONTEXT,
-    "@type": "EducationalOrganization",
+    "@type": type,
     "@id": `${input.url}/#organization`,
     name: input.name_ar,
     alternateName: input.name_en,
     url: input.url,
-    logo: input.logo_url,
+    logo: {
+      "@type": "ImageObject",
+      url: input.logo_url,
+    },
     image: input.image_url,
     description: input.description_ar,
     inLanguage: "ar",
+    knowsLanguage: languages,
     areaServed: input.country_code,
     address,
     ...(contactPoint && { contactPoint }),
+    ...(input.phone && { telephone: input.phone }),
+    ...(input.email && { email: input.email }),
+    ...(input.founding_date && { foundingDate: input.founding_date }),
+    ...(type === "EducationalOrganization" && input.educational_level && {
+      educationalLevel: input.educational_level,
+    }),
     ...(input.same_as && input.same_as.length > 0 && { sameAs: input.same_as }),
   };
 }
@@ -251,10 +270,9 @@ export function buildImageObjectSchema(
 }
 
 /**
- * SchemaScript component.
- * Wraps a JSON-LD schema in a React component for injection into head.
+ * Build a TanStack head() script entry for a JSON-LD schema.
  */
-export function SchemaScript({ data }: { data: Record<string, unknown> }): ReactNode {
+export function schemaScript(data: Record<string, unknown>) {
   return {
     type: "application/ld+json" as const,
     children: JSON.stringify(data),

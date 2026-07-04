@@ -23,6 +23,11 @@ import {
   SITE_DEFAULT_OG_IMAGE,
   SITE_DEFAULT_DESCRIPTION,
 } from "../lib/seo";
+import {
+  buildOrganizationSchema,
+  buildWebsiteSchema,
+  schemaScript,
+} from "../lib/schemas";
 
 function NotFoundComponent() {
   return (
@@ -136,44 +141,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
     ],
     scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "EducationalOrganization",
-          "@id": `${SITE_URL}/#organization`,
-          name: SITE_NAME_AR,
-          alternateName: SITE_NAME_EN,
+      schemaScript(
+        buildOrganizationSchema({
+          name_ar: SITE_NAME_AR,
+          name_en: SITE_NAME_EN,
           url: SITE_URL,
-          logo: LOGO_ABSOLUTE,
-          image: SITE_DEFAULT_OG_IMAGE,
-          description: SITE_DEFAULT_DESCRIPTION,
-          inLanguage: "ar",
-          areaServed: "EG",
-          address: {
-            "@type": "PostalAddress",
-            addressCountry: "EG",
-          },
-          sameAs: [] as string[],
+          logo_url: LOGO_ABSOLUTE,
+          image_url: SITE_DEFAULT_OG_IMAGE,
+          description_ar: SITE_DEFAULT_DESCRIPTION,
+          country_code: "EG",
+          address_region: "Gharbia Governorate",
+          knows_language: ["ar", "en"],
+          educational_level: "Primary Education",
+          same_as: [],
         }),
-      },
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          "@id": `${SITE_URL}/#website`,
+      ),
+      schemaScript(
+        buildWebsiteSchema({
           url: SITE_URL,
-          name: SITE_NAME_AR,
-          inLanguage: "ar",
-          publisher: { "@id": `${SITE_URL}/#organization` },
-          potentialAction: {
-            "@type": "SearchAction",
-            target: `${SITE_URL}/search?q={search_term_string}`,
-            "query-input": "required name=search_term_string",
-          },
+          name_ar: SITE_NAME_AR,
+          language: "ar",
+          organization_id: `${SITE_URL}/#organization`,
+          search_url: `${SITE_URL}/search`,
         }),
-      },
+      ),
     ],
   }),
   shellComponent: RootShell,

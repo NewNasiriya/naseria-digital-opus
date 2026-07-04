@@ -32,6 +32,12 @@ import { mediaPublicUrl } from "@/lib/media";
 import { trackContentView } from "@/lib/analytics";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { SITE_URL, SITE_NAME_AR } from "@/lib/seo";
+import {
+  buildArticleSchema,
+  buildBreadcrumbListSchema,
+  schemaScript,
+} from "@/lib/schemas";
 
 export const Route = createFileRoute("/news/$slug")({
   loader: async ({ params }) => {
@@ -46,6 +52,31 @@ export const Route = createFileRoute("/news/$slug")({
       item.seo_title ?? `${item.title_ar} | مدرسة الناصرية الابتدائية الجديدة`;
     const desc = item.seo_description ?? item.summary_ar ?? undefined;
     const image = coverImageUrl(item);
+    const canonical = `${SITE_URL}/news/${item.slug}`;
+    const absImage = image
+      ? (/^https?:\/\//i.test(image) ? image : `${SITE_URL}${image}`)
+      : undefined;
+
+    const article = buildArticleSchema({
+      headline_ar: item.title_ar,
+      headline_en: item.title_en ?? undefined,
+      description: desc ?? SITE_NAME_AR,
+      image_url: absImage,
+      date_published: item.published_at ?? new Date().toISOString(),
+      date_modified: item.published_at ?? undefined,
+      publisher_name: SITE_NAME_AR,
+      url: canonical,
+      language: "ar",
+    });
+
+    const breadcrumbs = buildBreadcrumbListSchema({
+      items: [
+        { label: "الرئيسية", url: `${SITE_URL}/` },
+        { label: "الأخبار", url: `${SITE_URL}/news` },
+        { label: item.title_ar, url: canonical },
+      ],
+    });
+
     return {
       meta: [
         { title },
@@ -53,12 +84,16 @@ export const Route = createFileRoute("/news/$slug")({
         { property: "og:title", content: item.title_ar },
         ...(desc ? [{ property: "og:description", content: desc }] : []),
         { property: "og:type", content: "article" },
-        { property: "og:url", content: `/news/${item.slug}` },
-        ...(image ? [{ property: "og:image", content: image }] : []),
-        ...(image ? [{ name: "twitter:image", content: image }] : []),
-        { name: "twitter:card", content: image ? "summary_large_image" : "summary" },
+        { property: "og:url", content: canonical },
+        ...(absImage ? [{ property: "og:image", content: absImage }] : []),
+        ...(absImage ? [{ name: "twitter:image", content: absImage }] : []),
+        { name: "twitter:card", content: absImage ? "summary_large_image" : "summary" },
+        ...(item.published_at
+          ? [{ property: "article:published_time", content: item.published_at }]
+          : []),
       ],
-      links: [{ rel: "canonical", href: `/news/${item.slug}` }],
+      links: [{ rel: "canonical", href: canonical }],
+      scripts: [schemaScript(article), schemaScript(breadcrumbs)],
     };
   },
   errorComponent: ({ error }) => (
