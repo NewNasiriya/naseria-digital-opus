@@ -23,6 +23,11 @@ import {
   SITE_DEFAULT_OG_IMAGE,
   SITE_DEFAULT_DESCRIPTION,
 } from "../lib/seo";
+import {
+  buildOrganizationSchema,
+  buildWebsiteSchema,
+  schemaScript,
+} from "../lib/schemas";
 
 function NotFoundComponent() {
   return (
