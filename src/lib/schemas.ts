@@ -5,8 +5,6 @@
  * No duplicate schemas. Minimal bundle footprint. Strong TypeScript typing.
  */
 
-import type { ReactNode } from "react";
-
 export const SCHEMA_CONTEXT = "https://schema.org";
 
 /**
