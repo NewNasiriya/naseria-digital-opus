@@ -32,6 +32,12 @@ import { mediaPublicUrl } from "@/lib/media";
 import { trackContentView } from "@/lib/analytics";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { SITE_URL, SITE_NAME_AR } from "@/lib/seo";
+import {
+  buildArticleSchema,
+  buildBreadcrumbListSchema,
+  schemaScript,
+} from "@/lib/schemas";
 
 export const Route = createFileRoute("/news/$slug")({
   loader: async ({ params }) => {
