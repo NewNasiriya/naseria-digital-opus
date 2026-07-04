@@ -270,10 +270,9 @@ export function buildImageObjectSchema(
 }
 
 /**
- * SchemaScript component.
- * Wraps a JSON-LD schema in a React component for injection into head.
+ * Build a TanStack head() script entry for a JSON-LD schema.
  */
-export function SchemaScript({ data }: { data: Record<string, unknown> }): ReactNode {
+export function schemaScript(data: Record<string, unknown>) {
   return {
     type: "application/ld+json" as const,
     children: JSON.stringify(data),
