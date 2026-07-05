@@ -4,5 +4,7 @@ Allow: /
 Disallow: /admin
 Disallow: /admin/
 Disallow: /auth
+Disallow: /api/
+Disallow: /search
 
 Sitemap: https://newnasiriya.com/sitemap.xml
