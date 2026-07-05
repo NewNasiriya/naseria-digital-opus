@@ -22,7 +22,7 @@ export const Route = createFileRoute("/academic/faq")({
       },
       { property: "og:title", content: "الأسئلة الشائعة" },
     ],
-    links: [{ rel: "canonical", href: "/academic/faq" }],
+    links: [{ rel: "canonical", href: "https://newnasiriya.com/academic/faq" }],
   }),
   component: FaqPage,
 });
