@@ -38,7 +38,7 @@ import {
 
 export const Route = createFileRoute("/achievements/$slug")({
   head: ({ params }) => {
-    const path = `/achievements/${params.slug}`;
+    const path = `https://newnasiriya.com/achievements/${params.slug}`;
     return {
       meta: [
         { title: "إنجاز | مدرسة الناصرية الابتدائية الجديدة" },
