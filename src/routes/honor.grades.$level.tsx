@@ -34,7 +34,9 @@ export const Route = createFileRoute("/honor/grades/$level")({
         { name: "description", content: description },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
+        { property: "og:url", content: `https://newnasiriya.com/honor/grades/${params.level}` },
       ],
+      links: [{ rel: "canonical", href: `https://newnasiriya.com/honor/grades/${params.level}` }],
     };
   },
   notFoundComponent: () => (

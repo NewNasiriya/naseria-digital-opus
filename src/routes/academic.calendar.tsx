@@ -21,7 +21,7 @@ export const Route = createFileRoute("/academic/calendar")({
       },
       { property: "og:title", content: "التقويم الأكاديمي" },
     ],
-    links: [{ rel: "canonical", href: "/academic/calendar" }],
+    links: [{ rel: "canonical", href: "https://newnasiriya.com/academic/calendar" }],
   }),
   component: CalendarPage,
 });

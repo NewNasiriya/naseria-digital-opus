@@ -19,7 +19,7 @@ export const Route = createFileRoute("/academic/attendance-behaviour")({
       },
       { property: "og:title", content: "الحضور والسلوك" },
     ],
-    links: [{ rel: "canonical", href: "/academic/attendance-behaviour" }],
+    links: [{ rel: "canonical", href: "https://newnasiriya.com/academic/attendance-behaviour" }],
   }),
   component: AttendanceBehaviourPage,
 });
