@@ -39,12 +39,12 @@ export const Route = createFileRoute("/gallery/$slug")({
         { property: "og:title", content: album.title_ar },
         { property: "og:description", content: desc },
         { property: "og:type", content: "article" },
-        { property: "og:url", content: `/gallery/${album.slug}` },
+        { property: "og:url", content: `https://newnasiriya.com/gallery/${album.slug}` },
         ...(cover ? [{ property: "og:image", content: cover }] : []),
         ...(cover ? [{ name: "twitter:image", content: cover }] : []),
         { name: "twitter:card", content: cover ? "summary_large_image" : "summary" },
       ],
-      links: [{ rel: "canonical", href: `/gallery/${album.slug}` }],
+      links: [{ rel: "canonical", href: `https://newnasiriya.com/gallery/${album.slug}` }],
     };
   },
   errorComponent: ({ error }) => (
