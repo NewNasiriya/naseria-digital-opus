@@ -2044,6 +2044,8 @@ export type Database = {
       school_info: {
         Row: {
           created_at: string
+          educational_administration_ar: string | null
+          educational_level_ar: string | null
           history_ar: string | null
           history_en: string | null
           id: number
@@ -2053,15 +2055,22 @@ export type Database = {
           principal_message_en: string | null
           principal_name: string | null
           principal_photo_media_id: string | null
+          principal_position_ar: string | null
+          school_name_ar: string | null
+          school_name_en: string | null
+          school_type_ar: string | null
           updated_at: string
           updated_by: string | null
           vision_ar: string | null
           vision_en: string | null
           welcome_message_ar: string | null
           welcome_message_en: string | null
+          working_hours_summary_ar: string | null
         }
         Insert: {
           created_at?: string
+          educational_administration_ar?: string | null
+          educational_level_ar?: string | null
           history_ar?: string | null
           history_en?: string | null
           id?: number
@@ -2071,15 +2080,22 @@ export type Database = {
           principal_message_en?: string | null
           principal_name?: string | null
           principal_photo_media_id?: string | null
+          principal_position_ar?: string | null
+          school_name_ar?: string | null
+          school_name_en?: string | null
+          school_type_ar?: string | null
           updated_at?: string
           updated_by?: string | null
           vision_ar?: string | null
           vision_en?: string | null
           welcome_message_ar?: string | null
           welcome_message_en?: string | null
+          working_hours_summary_ar?: string | null
         }
         Update: {
           created_at?: string
+          educational_administration_ar?: string | null
+          educational_level_ar?: string | null
           history_ar?: string | null
           history_en?: string | null
           id?: number
@@ -2089,12 +2105,17 @@ export type Database = {
           principal_message_en?: string | null
           principal_name?: string | null
           principal_photo_media_id?: string | null
+          principal_position_ar?: string | null
+          school_name_ar?: string | null
+          school_name_en?: string | null
+          school_type_ar?: string | null
           updated_at?: string
           updated_by?: string | null
           vision_ar?: string | null
           vision_en?: string | null
           welcome_message_ar?: string | null
           welcome_message_en?: string | null
+          working_hours_summary_ar?: string | null
         }
         Relationships: [
           {

@@ -15,7 +15,15 @@ export interface MediaRef {
  */
 export function mediaPublicUrl(m: MediaRef | null | undefined): string | null {
   if (!m || !m.storage_path) return null;
-  const path = m.storage_path;
+  let path = m.storage_path;
+  // Legacy CDN prefix `/__l5e/assets-v1/` is only routed on Lovable-hosted
+  // subdomains. On custom production domains those URLs 404. The equivalent
+  // path served from the app's `public/lovable-assets/` mirror is
+  // `/lovable-assets/`. Normalize both at read time so historic CMS rows
+  // keep working even if the underlying data has not yet been migrated.
+  if (path.startsWith("/__l5e/assets-v1/")) {
+    path = path.replace("/__l5e/assets-v1/", "/lovable-assets/");
+  }
   if (m.bucket === "external" || /^(https?:)?\/\//.test(path) || path.startsWith("/")) {
     return path;
   }

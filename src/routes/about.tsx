@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -12,6 +13,7 @@ import { Stats } from "@/components/home/Stats";
 import { LocationPreview } from "@/components/about/LocationPreview";
 import { ExploreCTA } from "@/components/about/ExploreCTA";
 import { buildSeo } from "@/lib/seo";
+import { fetchAboutContent } from "@/lib/about";
 
 export const Route = createFileRoute("/about")({
   head: () => buildSeo({
@@ -24,14 +26,20 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
+  const { data } = useQuery({
+    queryKey: ["about", "school_info"],
+    queryFn: fetchAboutContent,
+    staleTime: 5 * 60 * 1000,
+  });
+
   return (
     <>
       <SiteHeader />
       <main id="main">
         <AboutHero />
-        <SchoolOverview />
-        <PrincipalWelcome />
-        <MissionVision />
+        <SchoolOverview data={data?.overview} />
+        <PrincipalWelcome data={data?.principal} />
+        <MissionVision mission={data?.mission} vision={data?.vision} />
         <EducationalValues />
         <WhyChooseUs />
         <Stats />
