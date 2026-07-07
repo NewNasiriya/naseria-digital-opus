@@ -62,14 +62,16 @@ export function LocationCard({ info }: { info: ContactInfo | null }) {
 }
 
 export function EmailCard({ info }: { info: ContactInfo | null }) {
-  const emails = info?.emails ?? [];
+  const all = info?.emails ?? [];
+  const regular = all.filter((e) => !e.fallback);
+  const fallback = all.find((e) => e.fallback);
   return (
     <ContactCard icon={Mail} title="البريد الإلكتروني">
-      {emails.length === 0 ? (
+      {regular.length === 0 ? (
         <p>سيتم تحديث بيانات التواصل قريبًا.</p>
       ) : (
-        <ul className="space-y-3">
-          {emails.map((e) => (
+        <ul className="space-y-4">
+          {regular.map((e) => (
             <li key={e.value} className="flex flex-col">
               <span className="text-xs text-muted-foreground">{e.label}</span>
               <a
@@ -79,13 +81,52 @@ export function EmailCard({ info }: { info: ContactInfo | null }) {
               >
                 {e.value}
               </a>
+              {e.description && (
+                <span className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  {e.description}
+                </span>
+              )}
             </li>
           ))}
         </ul>
       )}
+      {fallback && (
+        <div className="mt-5 flex gap-2.5 rounded-lg border border-border bg-surface-muted p-3 text-xs leading-relaxed text-foreground">
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+          <div>
+            <p>
+              {fallback.description ||
+                "في حال تعذر إرسال الرسائل أو تأخر الرد، يُرجى التواصل عبر البريد الإلكتروني الاحتياطي التالي:"}
+            </p>
+            <a
+              href={`mailto:${fallback.value}`}
+              className="mt-1 inline-block font-medium text-foreground transition-colors hover:text-primary"
+              dir="ltr"
+            >
+              {fallback.value}
+            </a>
+          </div>
+        </div>
+      )}
     </ContactCard>
   );
 }
+
+export function SocialCard({ links }: { links: SocialLink[] }) {
+  return (
+    <ContactCard icon={Share2} title="حسابات التواصل الاجتماعي">
+      {links.length === 0 ? (
+        <p>سيتم إضافة حسابات المدرسة الرسمية قريبًا.</p>
+      ) : (
+        <>
+          <p>تابع آخر أخبار وأنشطة المدرسة عبر الحسابات الرسمية.</p>
+          <SocialLinksRow links={links} className="mt-4" />
+        </>
+      )}
+    </ContactCard>
+  );
+}
+
 
 export function PhoneCard({ info }: { info: ContactInfo | null }) {
   const phones = info?.phones ?? [];
