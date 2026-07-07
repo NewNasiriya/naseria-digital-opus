@@ -65,7 +65,7 @@ function ContactPage() {
                 )}
                 <DirectionsCard info={info ?? null} />
                 <PhoneCard info={info ?? null} />
-                <FuturePhoneCard />
+                <SocialCard links={socials} />
               </div>
             )}
           </Container>
