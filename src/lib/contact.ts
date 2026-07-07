@@ -12,8 +12,11 @@ import { supabase } from "@/integrations/supabase/client";
 export interface EmailEntry {
   label: string;
   value: string;
+  description?: string;
   primary?: boolean;
+  fallback?: boolean;
 }
+
 
 export interface PhoneEntry {
   label: string;
