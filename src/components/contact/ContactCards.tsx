@@ -1,5 +1,15 @@
 import type { LucideIcon } from "lucide-react";
-import { Clock, Mail, MapPin, Navigation, Phone } from "lucide-react";
+import { Clock, Mail, MapPin, Navigation, Phone, Share2, Info } from "lucide-react";
+
+import {
+  DAY_NAMES_AR,
+  type ContactInfo,
+  type SocialLink,
+  type WorkingHour,
+  formatWorkingRange,
+} from "@/lib/contact";
+import { SocialLinksRow } from "@/components/contact/SocialLinks";
+
 
 import {
   DAY_NAMES_AR,
