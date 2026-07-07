@@ -3,14 +3,17 @@ import { Link } from "@tanstack/react-router";
 import capsorixLogo from "@/assets/capsorix-logo.webp.asset.json";
 import { SchoolLogo } from "@/components/brand/SchoolLogo";
 import { Container } from "@/components/layout/Container";
+import { SocialLinksRow } from "@/components/contact/SocialLinks";
 import {
   DAY_NAMES_AR,
   formatWorkingRange,
   primaryEmail,
   useContactInfo,
   useSiteSettings,
+  useSocialLinks,
   useWorkingHours,
 } from "@/lib/contact";
+
 
 type FooterLink = { label: string; to: string };
 
