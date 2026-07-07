@@ -3,14 +3,17 @@ import { Link } from "@tanstack/react-router";
 import capsorixLogo from "@/assets/capsorix-logo.webp.asset.json";
 import { SchoolLogo } from "@/components/brand/SchoolLogo";
 import { Container } from "@/components/layout/Container";
+import { SocialLinksRow } from "@/components/contact/SocialLinks";
 import {
   DAY_NAMES_AR,
   formatWorkingRange,
   primaryEmail,
   useContactInfo,
   useSiteSettings,
+  useSocialLinks,
   useWorkingHours,
 } from "@/lib/contact";
+
 
 type FooterLink = { label: string; to: string };
 
@@ -37,6 +40,8 @@ export function SiteFooter() {
   const { data: settings } = useSiteSettings();
   const { data: info } = useContactInfo();
   const { data: hours = [] } = useWorkingHours();
+  const { data: socials = [] } = useSocialLinks();
+
   const email = primaryEmail(info);
   const schoolAr = settings?.school_name_ar ?? "مدرسة الناصرية الابتدائية الجديدة";
   const schoolEn = settings?.school_name_en ?? "New Al-Nasiriyah Primary School";
@@ -64,7 +69,16 @@ export function SiteFooter() {
               مؤسسة تعليمية حكومية تسعى إلى تقديم تعليم متميز يبني شخصية الطالب
               ويعزز انتماءه لوطنه.
             </p>
+            {socials.length > 0 && (
+              <div className="mt-5">
+                <p className="mb-2.5 text-xs font-semibold text-foreground">
+                  تابعنا
+                </p>
+                <SocialLinksRow links={socials} size="sm" />
+              </div>
+            )}
           </div>
+
 
           {/* Browse */}
           <nav aria-label="روابط الموقع">

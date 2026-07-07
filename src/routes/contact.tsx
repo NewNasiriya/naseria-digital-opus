@@ -10,13 +10,14 @@ import { LocationMap } from "@/components/contact/LocationMap";
 import {
   DirectionsCard,
   EmailCard,
-  FuturePhoneCard,
   LocationCard,
   PhoneCard,
+  SocialCard,
   WorkingHoursCard,
 } from "@/components/contact/ContactCards";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useContactInfo, useWorkingHours } from "@/lib/contact";
+import { useContactInfo, useSocialLinks, useWorkingHours } from "@/lib/contact";
+
 
 export const Route = createFileRoute("/contact")({
   head: () => buildSeo({
@@ -31,6 +32,8 @@ export const Route = createFileRoute("/contact")({
 function ContactPage() {
   const { data: info, isLoading: infoLoading } = useContactInfo();
   const { data: hours = [], isLoading: hoursLoading } = useWorkingHours();
+  const { data: socials = [] } = useSocialLinks();
+
 
   return (
     <>
@@ -62,7 +65,7 @@ function ContactPage() {
                 )}
                 <DirectionsCard info={info ?? null} />
                 <PhoneCard info={info ?? null} />
-                <FuturePhoneCard />
+                <SocialCard links={socials} />
               </div>
             )}
           </Container>

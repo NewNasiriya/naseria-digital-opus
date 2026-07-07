@@ -12,8 +12,11 @@ import { supabase } from "@/integrations/supabase/client";
 export interface EmailEntry {
   label: string;
   value: string;
+  description?: string;
   primary?: boolean;
+  fallback?: boolean;
 }
+
 
 export interface PhoneEntry {
   label: string;
@@ -125,6 +128,34 @@ export function useWorkingHours() {
   });
 }
 
+export interface SocialLink {
+  id: string;
+  platform: string;
+  url: string;
+  label: string | null;
+  icon_key: string | null;
+  display_order: number;
+}
+
+async function fetchSocialLinks(): Promise<SocialLink[]> {
+  const { data, error } = await supabase
+    .from("social_links")
+    .select("id,platform,url,label,icon_key,display_order")
+    .eq("is_visible", true)
+    .order("display_order", { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as SocialLink[];
+}
+
+export function useSocialLinks() {
+  return useQuery({
+    queryKey: ["social-links"],
+    queryFn: fetchSocialLinks,
+    staleTime: 5 * 60_000,
+  });
+}
+
+
 /** Format `HH:MM:SS` (or `HH:MM`) into Arabic 12-hour label. */
 export function formatWorkingTime(value: string | null): string {
   if (!value) return "";
@@ -146,6 +177,8 @@ export function formatWorkingRange(day: WorkingHour): string {
 
 export function primaryEmail(info: ContactInfo | null | undefined): string | null {
   if (!info) return null;
-  const p = info.emails.find((e) => e.primary);
-  return p?.value ?? info.emails[0]?.value ?? info.email ?? null;
+  const regular = info.emails.filter((e) => !e.fallback);
+  const p = regular.find((e) => e.primary);
+  return p?.value ?? regular[0]?.value ?? info.email ?? null;
 }
+
