@@ -177,6 +177,8 @@ export function formatWorkingRange(day: WorkingHour): string {
 
 export function primaryEmail(info: ContactInfo | null | undefined): string | null {
   if (!info) return null;
-  const p = info.emails.find((e) => e.primary);
-  return p?.value ?? info.emails[0]?.value ?? info.email ?? null;
+  const regular = info.emails.filter((e) => !e.fallback);
+  const p = regular.find((e) => e.primary);
+  return p?.value ?? regular[0]?.value ?? info.email ?? null;
 }
+
