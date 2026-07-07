@@ -40,6 +40,8 @@ export function SiteFooter() {
   const { data: settings } = useSiteSettings();
   const { data: info } = useContactInfo();
   const { data: hours = [] } = useWorkingHours();
+  const { data: socials = [] } = useSocialLinks();
+
   const email = primaryEmail(info);
   const schoolAr = settings?.school_name_ar ?? "مدرسة الناصرية الابتدائية الجديدة";
   const schoolEn = settings?.school_name_en ?? "New Al-Nasiriyah Primary School";
