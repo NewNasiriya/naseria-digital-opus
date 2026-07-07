@@ -32,6 +32,8 @@ export const Route = createFileRoute("/contact")({
 function ContactPage() {
   const { data: info, isLoading: infoLoading } = useContactInfo();
   const { data: hours = [], isLoading: hoursLoading } = useWorkingHours();
+  const { data: socials = [] } = useSocialLinks();
+
 
   return (
     <>
