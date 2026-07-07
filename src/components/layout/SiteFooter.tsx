@@ -69,7 +69,16 @@ export function SiteFooter() {
               مؤسسة تعليمية حكومية تسعى إلى تقديم تعليم متميز يبني شخصية الطالب
               ويعزز انتماءه لوطنه.
             </p>
+            {socials.length > 0 && (
+              <div className="mt-5">
+                <p className="mb-2.5 text-xs font-semibold text-foreground">
+                  تابعنا
+                </p>
+                <SocialLinksRow links={socials} size="sm" />
+              </div>
+            )}
           </div>
+
 
           {/* Browse */}
           <nav aria-label="روابط الموقع">
