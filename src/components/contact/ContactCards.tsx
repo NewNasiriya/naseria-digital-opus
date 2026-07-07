@@ -10,14 +10,8 @@ import {
 } from "@/lib/contact";
 import { SocialLinksRow } from "@/components/contact/SocialLinks";
 
-
-import {
-  DAY_NAMES_AR,
-  type ContactInfo,
-  type WorkingHour,
-  formatWorkingRange,
-} from "@/lib/contact";
 import { Button } from "@/components/ui/button";
+
 
 interface CardProps {
   icon: LucideIcon;
