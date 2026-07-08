@@ -9,11 +9,11 @@ import { SearchTrigger } from "@/components/search/SearchTrigger";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { cn } from "@/lib/utils";
 
-type NavItem = { label: string; to: string };
+type NavItem = { label: string; to: string; accent?: "gold"; icon?: typeof CalendarDays };
 
 const NAV: NavItem[] = [
   { label: "عن المدرسة", to: "/about" },
-  { label: "الجداول الدراسية", to: "/academic" },
+  { label: "الجداول", to: "/academic", accent: "gold", icon: CalendarDays },
   { label: "الأخبار", to: "/news" },
   { label: "الإنجازات", to: "/achievements" },
   { label: "لوحة الشرف", to: "/honor" },
@@ -21,6 +21,7 @@ const NAV: NavItem[] = [
   { label: "المعرض", to: "/gallery" },
   { label: "تواصل معنا", to: "/contact" },
 ];
+
 
 
 
