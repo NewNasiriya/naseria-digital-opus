@@ -159,24 +159,37 @@ export function SiteHeader() {
         <div className="border-t border-border bg-background lg:hidden">
           <Container size="wide" className="py-3">
             <nav aria-label="التنقل المتنقل" className="flex flex-col gap-1">
-              {NAV.map((item) => (
-                <Link
-                  key={item.label}
-                  to={item.to}
+              {NAV.map((item) => {
+                const Icon = item.icon;
+                const isGold = item.accent === "gold";
+                return (
+                  <Link
+                    key={item.label}
+                    to={item.to}
+                    onClick={() => setOpen(false)}
+                    activeProps={{
+                      className: cn(
+                        "inline-flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-semibold",
+                        isGold
+                          ? "text-[color:var(--brand-gold)] bg-[color:var(--brand-gold-soft)]"
+                          : "text-primary bg-primary-soft",
+                      ),
+                    }}
+                    inactiveProps={{
+                      className: cn(
+                        "inline-flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
+                        isGold
+                          ? "text-[color:var(--brand-gold)] hover:bg-[color:var(--brand-gold-soft)]"
+                          : "text-foreground hover:bg-accent",
+                      ),
+                    }}
+                  >
+                    {Icon ? <Icon className="h-4 w-4" aria-hidden="true" /> : null}
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
 
-                  onClick={() => setOpen(false)}
-                  activeProps={{
-                    className:
-                      "rounded-md px-3 py-2.5 text-sm font-semibold text-primary bg-primary-soft",
-                  }}
-                  inactiveProps={{
-                    className:
-                      "rounded-md px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent",
-                  }}
-                >
-                  {item.label}
-                </Link>
-              ))}
               <a
                 href="/auth"
                 onClick={() => setOpen(false)}
