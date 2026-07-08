@@ -147,8 +147,9 @@ export function SiteHeader() {
             <nav aria-label="التنقل المتنقل" className="flex flex-col gap-1">
               {NAV.map((item) => (
                 <Link
-                  key={item.to}
+                  key={item.label}
                   to={item.to}
+
                   onClick={() => setOpen(false)}
                   activeProps={{
                     className:
