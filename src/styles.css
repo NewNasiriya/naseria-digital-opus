@@ -202,10 +202,15 @@
   --container-narrow: 960px;
   --container-wide: 1440px;
   --header-height: 72px;
+
+  /* Institutional gold — sourced from the school crest */
+  --brand-gold: oklch(0.72 0.13 82);
+  --brand-gold-soft: oklch(0.95 0.05 85);
 }
 
 /* ---------- Semantic tokens: DARK (reserved for future admin themes) ---------- */
 .dark {
+
   color-scheme: dark;
   --background: oklch(0.16 0.02 260);
   --foreground: oklch(0.97 0.005 250);
