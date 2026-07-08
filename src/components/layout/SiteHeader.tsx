@@ -63,12 +63,10 @@ export function SiteHeader() {
             size={56}
             className={cn(
               "shrink-0 transition-all",
-              // Blend the logo's white background into any surface (light/dark)
-              // so it reads as part of the header instead of a pasted tile.
-              "mix-blend-multiply dark:mix-blend-screen",
               scrolled ? "h-9 w-9" : "h-11 w-11 sm:h-12 sm:w-12",
             )}
           />
+
           <span className="flex min-w-0 flex-col leading-tight">
             <span
               className={cn(
