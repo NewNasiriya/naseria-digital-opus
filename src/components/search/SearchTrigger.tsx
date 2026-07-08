@@ -1,7 +1,7 @@
 /**
  * Global search trigger button + keyboard shortcut host.
  *
- * Renders a compact search affordance for the header and owns the
+ * Renders a compact magnifier icon for the header and owns the
  * lifecycle of the shared {@link SearchDialog}. Also wires the
  * ⌘/Ctrl+K and `/` shortcuts globally.
  */
@@ -12,11 +12,15 @@ import { SearchDialog } from "./SearchDialog";
 import { cn } from "@/lib/utils";
 
 interface SearchTriggerProps {
+  /**
+   * Kept for backwards compatibility. The trigger now always renders
+   * as a compact icon button regardless of variant.
+   */
   variant?: "full" | "icon";
   className?: string;
 }
 
-export function SearchTrigger({ variant = "full", className }: SearchTriggerProps) {
+export function SearchTrigger({ className }: SearchTriggerProps) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -38,34 +42,17 @@ export function SearchTrigger({ variant = "full", className }: SearchTriggerProp
 
   return (
     <>
-      {variant === "full" ? (
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          aria-label="فتح البحث في الموقع"
-          className={cn(
-            "hidden items-center gap-2 rounded-full border border-border bg-card px-3 py-2 text-sm text-muted-foreground transition-colors hover:border-primary hover:text-foreground md:inline-flex",
-            className,
-          )}
-        >
-          <Search className="h-4 w-4" aria-hidden="true" />
-          <span>ابحث في الموقع…</span>
-          <kbd className="ms-2 hidden rounded border border-border bg-surface-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground lg:inline-block">
-            /
-          </kbd>
-        </button>
-      ) : null}
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="فتح البحث"
+        aria-label="فتح البحث في الموقع"
+        title="بحث"
         className={cn(
-          "inline-flex h-10 w-10 items-center justify-center rounded-full text-foreground hover:bg-accent",
-          variant === "full" && "md:hidden",
+          "inline-flex h-10 w-10 items-center justify-center rounded-full text-foreground/80 transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
           className,
         )}
       >
-        <Search className="h-5 w-5" aria-hidden="true" />
+        <Search className="h-[18px] w-[18px]" aria-hidden="true" />
       </button>
       <SearchDialog open={open} onOpenChange={setOpen} />
     </>
