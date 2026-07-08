@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, X, LogIn } from "lucide-react";
+import { Menu, X, LogIn, CalendarDays } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
@@ -9,11 +9,11 @@ import { SearchTrigger } from "@/components/search/SearchTrigger";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { cn } from "@/lib/utils";
 
-type NavItem = { label: string; to: string };
+type NavItem = { label: string; to: string; accent?: "gold"; icon?: typeof CalendarDays };
 
 const NAV: NavItem[] = [
   { label: "عن المدرسة", to: "/about" },
-  { label: "الجداول الدراسية", to: "/academic" },
+  { label: "الجداول", to: "/academic", accent: "gold", icon: CalendarDays },
   { label: "الأخبار", to: "/news" },
   { label: "الإنجازات", to: "/achievements" },
   { label: "لوحة الشرف", to: "/honor" },
@@ -21,6 +21,7 @@ const NAV: NavItem[] = [
   { label: "المعرض", to: "/gallery" },
   { label: "تواصل معنا", to: "/contact" },
 ];
+
 
 
 
@@ -62,12 +63,10 @@ export function SiteHeader() {
             size={56}
             className={cn(
               "shrink-0 transition-all",
-              // Blend the logo's white background into any surface (light/dark)
-              // so it reads as part of the header instead of a pasted tile.
-              "mix-blend-multiply dark:mix-blend-screen",
               scrolled ? "h-9 w-9" : "h-11 w-11 sm:h-12 sm:w-12",
             )}
           />
+
           <span className="flex min-w-0 flex-col leading-tight">
             <span
               className={cn(
@@ -88,24 +87,39 @@ export function SiteHeader() {
           aria-label="التنقل الرئيسي"
           className="hidden items-center gap-0.5 xl:gap-1 lg:flex"
         >
-          {NAV.map((item) => (
-            <Link
-              key={item.label}
-              to={item.to}
-              activeOptions={{ exact: true }}
-              activeProps={{
-                className:
-                  "rounded-md px-2.5 py-2 text-[13px] xl:text-sm font-semibold text-primary bg-primary-soft",
-              }}
-              inactiveProps={{
-                className:
-                  "rounded-md px-2.5 py-2 text-[13px] xl:text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-              }}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV.map((item) => {
+            const Icon = item.icon;
+            const isGold = item.accent === "gold";
+            return (
+              <Link
+                key={item.label}
+                to={item.to}
+                activeOptions={{ exact: true }}
+                activeProps={{
+                  className: cn(
+                    "inline-flex items-center gap-1.5 rounded-md px-2.5 py-2 text-[13px] xl:text-sm font-semibold",
+                    isGold
+                      ? "text-[color:var(--brand-gold)] bg-[color:var(--brand-gold-soft)]"
+                      : "text-primary bg-primary-soft",
+                  ),
+                }}
+                inactiveProps={{
+                  className: cn(
+                    "inline-flex items-center gap-1.5 rounded-md px-2.5 py-2 text-[13px] xl:text-sm font-medium transition-colors",
+                    isGold
+                      ? "text-[color:var(--brand-gold)] hover:bg-[color:var(--brand-gold-soft)]"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                  ),
+                }}
+              >
+                {Icon ? <Icon className="h-4 w-4" aria-hidden="true" /> : null}
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
         </nav>
+
+
 
 
         <div className="flex items-center gap-2">
@@ -145,24 +159,37 @@ export function SiteHeader() {
         <div className="border-t border-border bg-background lg:hidden">
           <Container size="wide" className="py-3">
             <nav aria-label="التنقل المتنقل" className="flex flex-col gap-1">
-              {NAV.map((item) => (
-                <Link
-                  key={item.label}
-                  to={item.to}
+              {NAV.map((item) => {
+                const Icon = item.icon;
+                const isGold = item.accent === "gold";
+                return (
+                  <Link
+                    key={item.label}
+                    to={item.to}
+                    onClick={() => setOpen(false)}
+                    activeProps={{
+                      className: cn(
+                        "inline-flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-semibold",
+                        isGold
+                          ? "text-[color:var(--brand-gold)] bg-[color:var(--brand-gold-soft)]"
+                          : "text-primary bg-primary-soft",
+                      ),
+                    }}
+                    inactiveProps={{
+                      className: cn(
+                        "inline-flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
+                        isGold
+                          ? "text-[color:var(--brand-gold)] hover:bg-[color:var(--brand-gold-soft)]"
+                          : "text-foreground hover:bg-accent",
+                      ),
+                    }}
+                  >
+                    {Icon ? <Icon className="h-4 w-4" aria-hidden="true" /> : null}
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
 
-                  onClick={() => setOpen(false)}
-                  activeProps={{
-                    className:
-                      "rounded-md px-3 py-2.5 text-sm font-semibold text-primary bg-primary-soft",
-                  }}
-                  inactiveProps={{
-                    className:
-                      "rounded-md px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent",
-                  }}
-                >
-                  {item.label}
-                </Link>
-              ))}
               <a
                 href="/auth"
                 onClick={() => setOpen(false)}
