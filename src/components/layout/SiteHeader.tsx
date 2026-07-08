@@ -13,7 +13,6 @@ type NavItem = { label: string; to: string };
 
 const NAV: NavItem[] = [
   { label: "عن المدرسة", to: "/about" },
-  { label: "الحياة الأكاديمية", to: "/academic" },
   { label: "الجداول الدراسية", to: "/academic" },
   { label: "الأخبار", to: "/news" },
   { label: "الإنجازات", to: "/achievements" },
@@ -22,6 +21,7 @@ const NAV: NavItem[] = [
   { label: "المعرض", to: "/gallery" },
   { label: "تواصل معنا", to: "/contact" },
 ];
+
 
 
 export function SiteHeader() {
