@@ -14,13 +14,15 @@ type NavItem = { label: string; to: string };
 const NAV: NavItem[] = [
   { label: "عن المدرسة", to: "/about" },
   { label: "الحياة الأكاديمية", to: "/academic" },
+  { label: "الجداول الدراسية", to: "/academic" },
+  { label: "الأخبار", to: "/news" },
   { label: "الإنجازات", to: "/achievements" },
   { label: "لوحة الشرف", to: "/honor" },
   { label: "الأنشطة", to: "/activities" },
-  { label: "الأخبار", to: "/news" },
   { label: "المعرض", to: "/gallery" },
   { label: "تواصل معنا", to: "/contact" },
 ];
+
 
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
