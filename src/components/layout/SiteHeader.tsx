@@ -87,23 +87,38 @@ export function SiteHeader() {
           aria-label="التنقل الرئيسي"
           className="hidden items-center gap-0.5 xl:gap-1 lg:flex"
         >
-          {NAV.map((item) => (
-            <Link
-              key={item.label}
-              to={item.to}
-              activeOptions={{ exact: true }}
-              activeProps={{
-                className:
-                  "rounded-md px-2.5 py-2 text-[13px] xl:text-sm font-semibold text-primary bg-primary-soft",
-              }}
-              inactiveProps={{
-                className:
-                  "rounded-md px-2.5 py-2 text-[13px] xl:text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-              }}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV.map((item) => {
+            const Icon = item.icon;
+            const isGold = item.accent === "gold";
+            return (
+              <Link
+                key={item.label}
+                to={item.to}
+                activeOptions={{ exact: true }}
+                activeProps={{
+                  className: cn(
+                    "inline-flex items-center gap-1.5 rounded-md px-2.5 py-2 text-[13px] xl:text-sm font-semibold",
+                    isGold
+                      ? "text-[color:var(--brand-gold)] bg-[color:var(--brand-gold-soft)]"
+                      : "text-primary bg-primary-soft",
+                  ),
+                }}
+                inactiveProps={{
+                  className: cn(
+                    "inline-flex items-center gap-1.5 rounded-md px-2.5 py-2 text-[13px] xl:text-sm font-medium transition-colors",
+                    isGold
+                      ? "text-[color:var(--brand-gold)] hover:bg-[color:var(--brand-gold-soft)]"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                  ),
+                }}
+              >
+                {Icon ? <Icon className="h-4 w-4" aria-hidden="true" /> : null}
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
         </nav>
 
 
