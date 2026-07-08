@@ -46,8 +46,8 @@ export function SiteHeader() {
       <Container
         size="wide"
         className={cn(
-          "flex items-center justify-between gap-6 transition-all duration-300",
-          scrolled ? "h-14" : "h-20"
+          "flex items-center justify-between gap-4 transition-all duration-300",
+          scrolled ? "h-14" : "h-[72px]"
         )}
       >
         {/* Brand */}
@@ -62,20 +62,23 @@ export function SiteHeader() {
             size={56}
             className={cn(
               "shrink-0 transition-all",
-              scrolled ? "h-10 w-10" : "h-12 w-12 sm:h-14 sm:w-14",
+              // Blend the logo's white background into any surface (light/dark)
+              // so it reads as part of the header instead of a pasted tile.
+              "mix-blend-multiply dark:mix-blend-screen",
+              scrolled ? "h-9 w-9" : "h-11 w-11 sm:h-12 sm:w-12",
             )}
           />
           <span className="flex min-w-0 flex-col leading-tight">
             <span
               className={cn(
-                "truncate font-bold text-foreground transition-all",
-                scrolled ? "text-sm" : "text-base"
+                "font-bold text-foreground transition-all whitespace-nowrap",
+                scrolled ? "text-[13px]" : "text-[15px]"
               )}
             >
               مدرسة الناصرية الابتدائية الجديدة
             </span>
-            <span className="hidden text-[11px] font-medium tracking-wide text-muted-foreground sm:block">
-              New Al-Nasiriyah Primary School
+            <span className="hidden text-[10.5px] font-medium tracking-wide text-muted-foreground sm:block whitespace-nowrap">
+              New Al-Nasiriya Primary School
             </span>
           </span>
         </Link>
@@ -83,25 +86,27 @@ export function SiteHeader() {
         {/* Desktop nav */}
         <nav
           aria-label="التنقل الرئيسي"
-          className="hidden items-center gap-1 lg:flex"
+          className="hidden items-center gap-0.5 xl:gap-1 lg:flex"
         >
           {NAV.map((item) => (
             <Link
-              key={item.to}
+              key={item.label}
               to={item.to}
+              activeOptions={{ exact: true }}
               activeProps={{
                 className:
-                  "rounded-md px-3 py-2 text-sm font-semibold text-primary bg-primary-soft",
+                  "rounded-md px-2.5 py-2 text-[13px] xl:text-sm font-semibold text-primary bg-primary-soft",
               }}
               inactiveProps={{
                 className:
-                  "rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+                  "rounded-md px-2.5 py-2 text-[13px] xl:text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
               }}
             >
               {item.label}
             </Link>
           ))}
         </nav>
+
 
         <div className="flex items-center gap-2">
           <SearchTrigger />
