@@ -255,7 +255,12 @@
   --sidebar-accent-foreground: oklch(0.97 0.005 250);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.72 0.11 255);
+
+  /* Institutional gold — slightly warmer for dark surfaces */
+  --brand-gold: oklch(0.78 0.13 82);
+  --brand-gold-soft: oklch(0.32 0.06 82);
 }
+
 
 /* ---------- Base layer ---------- */
 @layer base {
