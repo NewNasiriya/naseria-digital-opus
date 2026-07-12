@@ -132,7 +132,7 @@ export function useTheme(): ThemeContextValue {
 
 /**
  * Inline script executed before hydration to prevent FOUC.
- * Reads the persisted preference (or the OS setting) and applies the
- * `.dark` class + color-scheme on <html> before the first paint.
+ * Reads the persisted preference (or falls back to time-of-day auto)
+ * and applies the `.dark` class + color-scheme on <html> before first paint.
  */
-export const THEME_INIT_SCRIPT = `(function(){try{var k='${STORAGE_KEY}';var v=localStorage.getItem(k);var m=(v==='light'||v==='dark'||v==='auto')?v:'auto';var d=m==='dark'||(m==='auto'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);var r=document.documentElement;r.classList.toggle('dark',d);r.style.colorScheme=d?'dark':'light';r.setAttribute('data-theme',d?'dark':'light');}catch(e){}})();`;
+export const THEME_INIT_SCRIPT = `(function(){try{var k='${STORAGE_KEY}';var v=localStorage.getItem(k);var m=(v==='light'||v==='dark'||v==='auto')?v:'auto';var h=new Date().getHours();var autoDark=(h<${DAY_START_HOUR}||h>=${DAY_END_HOUR});var d=m==='dark'||(m==='auto'&&autoDark);var r=document.documentElement;r.classList.toggle('dark',d);r.style.colorScheme=d?'dark':'light';r.setAttribute('data-theme',d?'dark':'light');}catch(e){}})();`;
