@@ -36,9 +36,24 @@ function systemPrefersDark(): boolean {
   return window.matchMedia("(prefers-color-scheme: dark)").matches;
 }
 
+/**
+ * Time-of-day resolver for "auto" mode.
+ * Daytime is 06:00–17:59 local time (light), otherwise dark.
+ * Uses local hours so the site follows the visitor's clock — the same
+ * behaviour visitors expect from a school in Egypt (day = light, night = dark).
+ */
+const DAY_START_HOUR = 6;
+const DAY_END_HOUR = 18; // exclusive
+
+function isDaytimeNow(): boolean {
+  if (typeof window === "undefined") return true;
+  const h = new Date().getHours();
+  return h >= DAY_START_HOUR && h < DAY_END_HOUR;
+}
+
 function applyTheme(mode: ThemeMode): ResolvedTheme {
   const resolved: ResolvedTheme =
-    mode === "auto" ? (systemPrefersDark() ? "dark" : "light") : mode;
+    mode === "auto" ? (isDaytimeNow() ? "light" : "dark") : mode;
   const root = document.documentElement;
   root.classList.toggle("dark", resolved === "dark");
   root.style.colorScheme = resolved;
