@@ -24,7 +24,7 @@ const OPTIONS: Array<{
   {
     value: "auto",
     label: "تلقائي",
-    description: "يتبع إعدادات نظام التشغيل تلقائيًا.",
+    description: "فاتح نهارًا وداكن ليلًا حسب توقيت جهازك.",
     icon: Monitor,
   },
 ];
