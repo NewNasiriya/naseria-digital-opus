@@ -31,14 +31,25 @@ function readStoredMode(): ThemeMode {
   return "auto";
 }
 
-function systemPrefersDark(): boolean {
-  if (typeof window === "undefined" || !window.matchMedia) return false;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+/**
+ * Time-of-day resolver for "auto" mode.
+ * Daytime is 06:00–17:59 local time (light), otherwise dark.
+ * Uses local hours so the site follows the visitor's clock — the same
+ * behaviour visitors expect from a school in Egypt (day = light, night = dark).
+ */
+const DAY_START_HOUR = 6;
+const DAY_END_HOUR = 18; // exclusive
+
+function isDaytimeNow(): boolean {
+  if (typeof window === "undefined") return true;
+  const h = new Date().getHours();
+  return h >= DAY_START_HOUR && h < DAY_END_HOUR;
 }
 
 function applyTheme(mode: ThemeMode): ResolvedTheme {
   const resolved: ResolvedTheme =
-    mode === "auto" ? (systemPrefersDark() ? "dark" : "light") : mode;
+    mode === "auto" ? (isDaytimeNow() ? "light" : "dark") : mode;
   const root = document.documentElement;
   root.classList.toggle("dark", resolved === "dark");
   root.style.colorScheme = resolved;
@@ -59,13 +70,20 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setResolved(applyTheme(initial));
   }, []);
 
-  // React to OS changes while in "auto".
+  // While in "auto", re-evaluate periodically so the theme flips
+  // automatically at sunrise / sunset without needing a reload.
   useEffect(() => {
-    if (mode !== "auto" || typeof window === "undefined" || !window.matchMedia) return;
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const handler = () => setResolved(applyTheme("auto"));
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
+    if (mode !== "auto" || typeof window === "undefined") return;
+    const tick = () => setResolved(applyTheme("auto"));
+    const interval = window.setInterval(tick, 60_000); // every minute
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") tick();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, [mode]);
 
   // Cross-tab sync.
@@ -110,7 +128,7 @@ export function useTheme(): ThemeContextValue {
 
 /**
  * Inline script executed before hydration to prevent FOUC.
- * Reads the persisted preference (or the OS setting) and applies the
- * `.dark` class + color-scheme on <html> before the first paint.
+ * Reads the persisted preference (or falls back to time-of-day auto)
+ * and applies the `.dark` class + color-scheme on <html> before first paint.
  */
-export const THEME_INIT_SCRIPT = `(function(){try{var k='${STORAGE_KEY}';var v=localStorage.getItem(k);var m=(v==='light'||v==='dark'||v==='auto')?v:'auto';var d=m==='dark'||(m==='auto'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);var r=document.documentElement;r.classList.toggle('dark',d);r.style.colorScheme=d?'dark':'light';r.setAttribute('data-theme',d?'dark':'light');}catch(e){}})();`;
+export const THEME_INIT_SCRIPT = `(function(){try{var k='${STORAGE_KEY}';var v=localStorage.getItem(k);var m=(v==='light'||v==='dark'||v==='auto')?v:'auto';var h=new Date().getHours();var autoDark=(h<${DAY_START_HOUR}||h>=${DAY_END_HOUR});var d=m==='dark'||(m==='auto'&&autoDark);var r=document.documentElement;r.classList.toggle('dark',d);r.style.colorScheme=d?'dark':'light';r.setAttribute('data-theme',d?'dark':'light');}catch(e){}})();`;
