@@ -31,10 +31,6 @@ function readStoredMode(): ThemeMode {
   return "auto";
 }
 
-function systemPrefersDark(): boolean {
-  if (typeof window === "undefined" || !window.matchMedia) return false;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
-}
 
 /**
  * Time-of-day resolver for "auto" mode.
