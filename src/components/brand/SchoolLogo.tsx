@@ -1,7 +1,9 @@
-import logoAsset from "@/assets/brand/school-logo.png.asset.json";
 import { cn } from "@/lib/utils";
 
-export const SCHOOL_LOGO_URL = logoAsset.url;
+// Served from /public so it always loads on the published domain,
+// independent of the CDN asset prefix (which some networks/blockers
+// treat as third-party and drop). Optimized 256px transparent PNG.
+export const SCHOOL_LOGO_URL = "/school-logo-256.png";
 export const SCHOOL_LOGO_ALT = "شعار مدرسة الناصرية الابتدائية الجديدة";
 
 interface SchoolLogoProps {
