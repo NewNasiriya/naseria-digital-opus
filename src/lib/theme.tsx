@@ -74,13 +74,20 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     setResolved(applyTheme(initial));
   }, []);
 
-  // React to OS changes while in "auto".
+  // While in "auto", re-evaluate periodically so the theme flips
+  // automatically at sunrise / sunset without needing a reload.
   useEffect(() => {
-    if (mode !== "auto" || typeof window === "undefined" || !window.matchMedia) return;
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const handler = () => setResolved(applyTheme("auto"));
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
+    if (mode !== "auto" || typeof window === "undefined") return;
+    const tick = () => setResolved(applyTheme("auto"));
+    const interval = window.setInterval(tick, 60_000); // every minute
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") tick();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, [mode]);
 
   // Cross-tab sync.
