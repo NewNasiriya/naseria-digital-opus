@@ -36,16 +36,61 @@ import {
   type AchievementStoryHighlight,
 } from "@/lib/achievements";
 
+import { SITE_URL, SITE_NAME_AR, SITE_DEFAULT_OG_IMAGE } from "@/lib/seo";
+
+const achievementQueryOptions = (slug: string) => ({
+  queryKey: ["achievement", slug] as const,
+  queryFn: () => fetchAchievementBySlug(slug),
+  staleTime: 60_000,
+});
+
+function truncate(text: string, max: number): string {
+  const trimmed = text.trim();
+  return trimmed.length <= max ? trimmed : `${trimmed.slice(0, max - 1).trimEnd()}…`;
+}
+
 export const Route = createFileRoute("/achievements/$slug")({
-  head: ({ params }) => {
-    const path = `https://newnasiriya.com/achievements/${params.slug}`;
+  loader: ({ params, context }) =>
+    context.queryClient.ensureQueryData(achievementQueryOptions(params.slug)),
+  head: ({ params, loaderData }) => {
+    const url = `${SITE_URL}/achievements/${params.slug}`;
+    const item = loaderData;
+    const rawTitle = item?.seo_title ?? item?.title_ar;
+    const title = rawTitle
+      ? truncate(`${rawTitle} | ${SITE_NAME_AR}`, 60)
+      : `إنجاز | ${SITE_NAME_AR}`;
+    const description = truncate(
+      item?.seo_description ??
+        item?.description_ar ??
+        `أحد إنجازات ${SITE_NAME_AR} الرسمية.`,
+      160,
+    );
+    const image = item?.cover_url
+      ? (item.cover_url.startsWith("http") ? item.cover_url : `${SITE_URL}${item.cover_url}`)
+      : SITE_DEFAULT_OG_IMAGE;
+
     return {
       meta: [
-        { title: "إنجاز | مدرسة الناصرية الابتدائية الجديدة" },
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
         { property: "og:type", content: "article" },
-        { property: "og:url", content: path },
+        { property: "og:url", content: url },
+        { property: "og:image", content: image },
+        { property: "og:image:alt", content: item?.title_ar ?? title },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        { name: "twitter:image", content: image },
+        ...(item?.published_at
+          ? [{ property: "article:published_time", content: item.published_at }]
+          : []),
+        ...(item?.category?.name_ar
+          ? [{ property: "article:section", content: item.category.name_ar }]
+          : []),
       ],
-      links: [{ rel: "canonical", href: path }],
+      links: [{ rel: "canonical", href: url }],
     };
   },
   notFoundComponent: () => (
