@@ -161,6 +161,15 @@ export function Stats({ items }: StatsProps) {
   return (
     <Section id="stats" tone="default" spacing="default">
       <Container size="wide">
+        <header className="mb-8 max-w-2xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
+            المدرسة بالأرقام
+          </p>
+          <h2 className="mt-3 rule-accent inline-block">إحصاءات مدرسة الناصرية الابتدائية الجديدة</h2>
+          <p className="mt-3 text-sm leading-loose text-muted-foreground">
+            مؤشرات موجزة عن حجم المجتمع المدرسي والطاقة الاستيعابية للفصول الدراسية.
+          </p>
+        </header>
         <div ref={ref} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {finalItems.map((stat) => (
             <StatCard key={stat.key} stat={stat} active={active} />
