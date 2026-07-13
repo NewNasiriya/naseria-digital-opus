@@ -53,7 +53,18 @@ export function MediaUploader({ bucket, folder, accept, maxBytes = 25 * 1024 * 1
         }, 400);
         try {
           if (abortRef.current.get(item.id)) throw new Error("cancelled");
-          await mediaLibrary.upload(item.file, { bucket, folder, maxBytes });
+          const acceptList = accept
+            ? accept
+                .split(",")
+                .map((s) => s.trim())
+                .filter((s) => s && !s.startsWith("."))
+            : undefined;
+          await mediaLibrary.upload(item.file, {
+            bucket,
+            folder,
+            maxBytes,
+            accept: acceptList,
+          });
         } finally {
           clearInterval(tick);
         }
