@@ -219,7 +219,10 @@ export async function runSearch(
 ): Promise<SearchHit[]> {
   const q = term.trim();
   if (!q) return [];
-  const pattern = like(q);
+  const safe = sanitizeTerm(q);
+  if (!safe) return [];
+  const pattern = like(safe);
+
   const groups = filters.groups && filters.groups.length ? new Set(filters.groups) : null;
   const wants = (g: SearchGroup) => (!groups || groups.has(g)) && (!filters.mediaOnly || g === "media" || g === "gallery");
 
