@@ -190,10 +190,20 @@ function scoreOf(term: string, ...fields: (string | null | undefined)[]): number
   return score;
 }
 
+/**
+ * Strip characters that carry meaning in PostgREST's filter DSL so the
+ * user's term can be safely interpolated into an `.or()` string. This
+ * blocks injection of extra predicates via `,`, `(`, `)`, `.`, `:`, and `"`.
+ */
+function sanitizeTerm(term: string): string {
+  return term.replace(/[,()."'`:*]/g, " ").replace(/\s+/g, " ").trim();
+}
+
 function like(term: string): string {
-  // escape % and _ for ILIKE
+  // Escape ILIKE metacharacters (%, _, \) so they match literally.
   return `%${term.replace(/[\\%_]/g, (m) => `\\${m}`)}%`;
 }
+
 
 export interface SearchFilters {
   groups?: SearchGroup[];
@@ -209,7 +219,10 @@ export async function runSearch(
 ): Promise<SearchHit[]> {
   const q = term.trim();
   if (!q) return [];
-  const pattern = like(q);
+  const safe = sanitizeTerm(q);
+  if (!safe) return [];
+  const pattern = like(safe);
+
   const groups = filters.groups && filters.groups.length ? new Set(filters.groups) : null;
   const wants = (g: SearchGroup) => (!groups || groups.has(g)) && (!filters.mediaOnly || g === "media" || g === "gallery");
 
