@@ -89,7 +89,9 @@ const DEFAULT_BUCKET_ACCEPT: Record<UploadOptions["bucket"], string[]> = {
 
 export const mediaService = {
   async upload(file: File, opts: UploadOptions): Promise<MediaRef> {
-    const invalid = validateFile(file, opts);
+    const effectiveAccept =
+      opts.accept && opts.accept.length > 0 ? opts.accept : DEFAULT_BUCKET_ACCEPT[opts.bucket];
+    const invalid = validateFile(file, { ...opts, accept: effectiveAccept });
     if (invalid) throw new CmsError("validation", invalid);
 
     const ext = extensionOf(file.name);
