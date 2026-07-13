@@ -590,41 +590,8 @@ function splitParagraphs(value: string | null | undefined) {
     .filter(Boolean);
 }
 
-function MetaTags({
-  title,
-  description,
-  image,
-}: {
-  title: string;
-  description: string;
-  image: string | null;
-}) {
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    const setMeta = (attr: "name" | "property", key: string, value: string) => {
-      if (!value) return;
-      let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
-      if (!el) {
-        el = document.createElement("meta");
-        el.setAttribute(attr, key);
-        document.head.appendChild(el);
-      }
-      el.setAttribute("content", value);
-    };
-    document.title = title;
-    setMeta("name", "description", description);
-    setMeta("property", "og:title", title);
-    setMeta("property", "og:description", description);
-    if (image) {
-      setMeta("property", "og:image", image);
-      setMeta("name", "twitter:image", image);
-    }
-    setMeta("name", "twitter:card", "summary_large_image");
-    setMeta("name", "twitter:title", title);
-    setMeta("name", "twitter:description", description);
-  }, [title, description, image]);
-  return null;
-}
+
+
 
 function ShareBar({ title }: { title: string }) {
   const [copied, setCopied] = useState(false);
