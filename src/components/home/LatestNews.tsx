@@ -123,9 +123,10 @@ function LeadStory({ item }: { item: NewsRow }) {
         <Link
           to="/news/$slug"
           params={{ slug: item.slug }}
+          aria-label={`تفاصيل الخبر: ${item.title_ar}`}
           className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary-hover"
         >
-          قراءة الخبر
+          تفاصيل الخبر
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
         </Link>
       </div>
