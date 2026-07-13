@@ -281,6 +281,10 @@ export const mediaLibrary = {
           "نوع الملف الجديد يجب أن يطابق النوع الأصلي (صورة مقابل صورة، مستند مقابل مستند).",
         );
       }
+      // Block script-capable formats (SVG/HTML/JS) regardless of kind match.
+      const invalid = validateFile(file);
+      if (invalid) throw new CmsError("validation", invalid);
+
 
       const { error: upErr } = await supabase.storage
         .from(existing.bucket)
