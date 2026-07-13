@@ -48,9 +48,50 @@ function extensionOf(name: string): string {
   return idx >= 0 ? name.slice(idx + 1) : "";
 }
 
+/**
+ * Default MIME allow-list per bucket. Applied when the caller doesn't
+ * pass its own `accept`, so a missing UI hint can never turn into an
+ * unrestricted upload endpoint.
+ */
+const DEFAULT_BUCKET_ACCEPT: Record<UploadOptions["bucket"], string[]> = {
+  media: [
+    "image/png",
+    "image/jpeg",
+    "image/webp",
+    "image/gif",
+    "image/avif",
+    "application/pdf",
+  ],
+  documents: [
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "application/vnd.ms-powerpoint",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "text/plain",
+    "text/csv",
+  ],
+  "private-uploads": [
+    "image/png",
+    "image/jpeg",
+    "image/webp",
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "text/plain",
+    "text/csv",
+  ],
+};
+
 export const mediaService = {
   async upload(file: File, opts: UploadOptions): Promise<MediaRef> {
-    const invalid = validateFile(file, opts);
+    const effectiveAccept =
+      opts.accept && opts.accept.length > 0 ? opts.accept : DEFAULT_BUCKET_ACCEPT[opts.bucket];
+    const invalid = validateFile(file, { ...opts, accept: effectiveAccept });
     if (invalid) throw new CmsError("validation", invalid);
 
     const ext = extensionOf(file.name);

@@ -61,7 +61,44 @@ export const mediaRefSchema = z.object({
 /** File-side validation for uploads (checked before hitting storage). */
 export interface FileValidationOptions {
   maxBytes?: number;
-  accept?: string[]; // MIME types
+  /**
+   * Allow-list of MIME types. Entries may be exact ("image/png") or
+   * wildcards ("image/*"). When omitted, only the built-in denylist of
+   * script-capable formats is enforced.
+   */
+  accept?: string[];
+}
+
+/**
+ * Hard denylist of MIME types + file extensions that can execute in a
+ * browser when served from the public storage domain (stored XSS surface).
+ * Enforced on every upload regardless of caller-supplied `accept`, so a
+ * missing UI hint cannot open the hole.
+ */
+const DANGEROUS_MIME = new Set([
+  "image/svg+xml",
+  "image/svg",
+  "text/html",
+  "application/xhtml+xml",
+  "text/xml",
+  "application/xml",
+  "text/javascript",
+  "application/javascript",
+  "application/x-javascript",
+  "application/ecmascript",
+  "text/ecmascript",
+  "application/x-httpd-php",
+]);
+const DANGEROUS_EXT = /\.(svgz?|html?|xhtml|xml|js|mjs|cjs|php|phtml|jsp|aspx?|htaccess)$/i;
+
+function matchesAccept(mime: string, accept: string[]): boolean {
+  return accept.some((entry) => {
+    const e = entry.trim().toLowerCase();
+    if (!e) return false;
+    if (e === "*/*") return true;
+    if (e.endsWith("/*")) return mime.toLowerCase().startsWith(e.slice(0, -1));
+    return mime.toLowerCase() === e;
+  });
 }
 
 export function validateFile(file: File, opts: FileValidationOptions = {}): string | null {
@@ -69,7 +106,11 @@ export function validateFile(file: File, opts: FileValidationOptions = {}): stri
   if (file.size > maxBytes) {
     return `حجم الملف يتجاوز الحد المسموح (${Math.round(maxBytes / (1024 * 1024))} ميغابايت).`;
   }
-  if (accept && accept.length > 0 && !accept.includes(file.type)) {
+  const mime = (file.type || "").toLowerCase();
+  if (DANGEROUS_MIME.has(mime) || DANGEROUS_EXT.test(file.name)) {
+    return "نوع الملف غير مسموح لأسباب أمنية (SVG أو HTML أو ملفات نصية برمجية).";
+  }
+  if (accept && accept.length > 0 && !matchesAccept(mime, accept)) {
     return "نوع الملف غير مدعوم.";
   }
   return null;
