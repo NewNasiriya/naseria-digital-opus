@@ -122,7 +122,7 @@ export function Hero({ intro }: HeroProps) {
             className="mt-6 text-white [text-wrap:balance] drop-shadow-sm"
             style={{ fontSize: "clamp(2.25rem, 1.4rem + 3.2vw, 3.75rem)" }}
           >
-            مدرسة الناصرية الابتدائية الجديدة
+            مدرسة الناصرية الابتدائية الجديدة — الموقع الرسمي
           </h1>
 
           <p className="mt-3 text-base font-medium tracking-wide text-white/85 sm:text-lg">
