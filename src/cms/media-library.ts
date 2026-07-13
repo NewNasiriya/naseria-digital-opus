@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 import { fromPostgrest, toCmsError, CmsError } from "./errors";
 import { mediaService } from "./media";
+import { validateFile } from "./validation";
 import type { Page, UUID } from "./types";
 
 /** Broad content classes surfaced to the UI as tabs / filters. */
