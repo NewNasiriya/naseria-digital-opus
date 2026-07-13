@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { buildSeo } from "@/lib/seo";
+import { buildSeo, SITE_URL, SITE_NAME_AR, SITE_NAME_EN, SITE_DEFAULT_OG_IMAGE } from "@/lib/seo";
+import { schemaScript } from "@/lib/schemas";
 
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -20,12 +21,44 @@ import { useContactInfo, useSocialLinks, useWorkingHours } from "@/lib/contact";
 
 
 export const Route = createFileRoute("/contact")({
-  head: () => buildSeo({
-    path: "/contact",
-    title: "تواصل معنا | مدرسة الناصرية الابتدائية الجديدة",
-    description:
-      "قنوات التواصل الرسمية مع إدارة مدرسة الناصرية الابتدائية الجديدة — العنوان، مواعيد العمل، البريد الإلكتروني، والموقع على الخريطة.",
-  }),
+  head: () => {
+    const seo = buildSeo({
+      path: "/contact",
+      title: "تواصل معنا | مدرسة الناصرية الابتدائية الجديدة",
+      description:
+        "قنوات التواصل الرسمية مع إدارة مدرسة الناصرية الابتدائية الجديدة — العنوان، مواعيد العمل، البريد الإلكتروني، والموقع على الخريطة.",
+    });
+    // School / EducationalOrganization JSON-LD for rich results on the
+    // contact page. Address/phone/hours reflect the CMS-managed defaults;
+    // update via the site_settings and working_hours tables.
+    const schoolSchema = schemaScript({
+      "@context": "https://schema.org",
+      "@type": "School",
+      "@id": `${SITE_URL}/#school`,
+      name: SITE_NAME_AR,
+      alternateName: SITE_NAME_EN,
+      url: `${SITE_URL}/contact`,
+      image: SITE_DEFAULT_OG_IMAGE,
+      inLanguage: "ar",
+      areaServed: "EG",
+      address: {
+        "@type": "PostalAddress",
+        addressCountry: "EG",
+        addressRegion: "Gharbia Governorate",
+        addressLocality: "المحلة الكبرى",
+      },
+      openingHoursSpecification: [
+        {
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
+          opens: "08:00",
+          closes: "14:00",
+        },
+      ],
+      parentOrganization: { "@id": `${SITE_URL}/#organization` },
+    });
+    return { ...seo, scripts: [schoolSchema] };
+  },
   component: ContactPage,
 });
 
