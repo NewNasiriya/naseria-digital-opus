@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
 // Production domain — used to emit absolute <loc> URLs per the sitemap spec.
-const BASE_URL = "https://newnasiriya.com";
+const BASE_URL = "https://naseria-digital-opus.lovable.app";
 
 interface SitemapEntry {
   path: string;
@@ -17,15 +17,18 @@ const STATIC_ENTRIES: SitemapEntry[] = [
   { path: "/achievements", changefreq: "weekly", priority: "0.8" },
   { path: "/activities", changefreq: "weekly", priority: "0.7" },
   { path: "/honor", changefreq: "weekly", priority: "0.7" },
+  { path: "/gallery", changefreq: "weekly", priority: "0.7" },
   { path: "/contact", changefreq: "monthly", priority: "0.7" },
   { path: "/academic", changefreq: "weekly", priority: "0.8" },
   { path: "/academic/calendar", changefreq: "monthly", priority: "0.7" },
   { path: "/academic/student-guidelines", changefreq: "monthly", priority: "0.6" },
   { path: "/academic/parent-guidelines", changefreq: "monthly", priority: "0.6" },
   { path: "/academic/attendance", changefreq: "monthly", priority: "0.6" },
+  { path: "/academic/attendance-behaviour", changefreq: "monthly", priority: "0.6" },
   { path: "/academic/behaviour", changefreq: "monthly", priority: "0.6" },
   { path: "/academic/policies", changefreq: "monthly", priority: "0.6" },
   { path: "/academic/faq", changefreq: "monthly", priority: "0.6" },
+  { path: "/academic/admission-guide", changefreq: "yearly", priority: "0.7" },
 ];
 
 export const Route = createFileRoute("/sitemap.xml")({

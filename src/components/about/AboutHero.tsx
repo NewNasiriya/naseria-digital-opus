@@ -12,7 +12,7 @@ interface AboutHeroProps {
   message?: string | null;
 }
 
-const DEFAULT_HEADING = "مرحبًا بكم في مدرستنا";
+const DEFAULT_HEADING = "عن مدرسة الناصرية الابتدائية الجديدة";
 const DEFAULT_MESSAGE =
   "من عند بوابة المدرسة تبدأ رحلة تعليمية متكاملة نصنعها معًا. نحرص على أن يجد كل طالب بيئة آمنة، ومعلمًا مُلهمًا، وفرصًا حقيقية للنمو الأكاديمي والإنساني.";
 

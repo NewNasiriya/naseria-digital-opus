@@ -48,6 +48,7 @@ import { Route as AcademicCalendarRouteImport } from './routes/academic.calendar
 import { Route as AcademicBehaviourRouteImport } from './routes/academic.behaviour'
 import { Route as AcademicAttendanceBehaviourRouteImport } from './routes/academic.attendance-behaviour'
 import { Route as AcademicAttendanceRouteImport } from './routes/academic.attendance'
+import { Route as AcademicAdmissionGuideRouteImport } from './routes/academic.admission-guide'
 import { Route as AdminAcademicIndexRouteImport } from './routes/admin.academic.index'
 import { Route as HonorGradesLevelRouteImport } from './routes/honor.grades.$level'
 import { Route as AdminAcademicLevelRouteImport } from './routes/admin.academic.$level'
@@ -253,6 +254,11 @@ const AcademicAttendanceRoute = AcademicAttendanceRouteImport.update({
   path: '/attendance',
   getParentRoute: () => AcademicRoute,
 } as any)
+const AcademicAdmissionGuideRoute = AcademicAdmissionGuideRouteImport.update({
+  id: '/admission-guide',
+  path: '/admission-guide',
+  getParentRoute: () => AcademicRoute,
+} as any)
 const AdminAcademicIndexRoute = AdminAcademicIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -299,6 +305,7 @@ export interface FileRoutesByFullPath {
   '/news': typeof NewsRouteWithChildren
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/academic/admission-guide': typeof AcademicAdmissionGuideRoute
   '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
   '/academic/behaviour': typeof AcademicBehaviourRoute
@@ -340,6 +347,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/academic/admission-guide': typeof AcademicAdmissionGuideRoute
   '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
   '/academic/behaviour': typeof AcademicBehaviourRoute
@@ -386,6 +394,7 @@ export interface FileRoutesById {
   '/news': typeof NewsRouteWithChildren
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/academic/admission-guide': typeof AcademicAdmissionGuideRoute
   '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
   '/academic/behaviour': typeof AcademicBehaviourRoute
@@ -435,6 +444,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/search'
     | '/sitemap.xml'
+    | '/academic/admission-guide'
     | '/academic/attendance'
     | '/academic/attendance-behaviour'
     | '/academic/behaviour'
@@ -476,6 +486,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/search'
     | '/sitemap.xml'
+    | '/academic/admission-guide'
     | '/academic/attendance'
     | '/academic/attendance-behaviour'
     | '/academic/behaviour'
@@ -521,6 +532,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/search'
     | '/sitemap.xml'
+    | '/academic/admission-guide'
     | '/academic/attendance'
     | '/academic/attendance-behaviour'
     | '/academic/behaviour'
@@ -846,6 +858,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcademicAttendanceRouteImport
       parentRoute: typeof AcademicRoute
     }
+    '/academic/admission-guide': {
+      id: '/academic/admission-guide'
+      path: '/admission-guide'
+      fullPath: '/academic/admission-guide'
+      preLoaderRoute: typeof AcademicAdmissionGuideRouteImport
+      parentRoute: typeof AcademicRoute
+    }
     '/admin/academic/': {
       id: '/admin/academic/'
       path: '/'
@@ -892,6 +911,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AcademicRouteChildren {
+  AcademicAdmissionGuideRoute: typeof AcademicAdmissionGuideRoute
   AcademicAttendanceRoute: typeof AcademicAttendanceRoute
   AcademicAttendanceBehaviourRoute: typeof AcademicAttendanceBehaviourRoute
   AcademicBehaviourRoute: typeof AcademicBehaviourRoute
@@ -905,6 +925,7 @@ interface AcademicRouteChildren {
 }
 
 const AcademicRouteChildren: AcademicRouteChildren = {
+  AcademicAdmissionGuideRoute: AcademicAdmissionGuideRoute,
   AcademicAttendanceRoute: AcademicAttendanceRoute,
   AcademicAttendanceBehaviourRoute: AcademicAttendanceBehaviourRoute,
   AcademicBehaviourRoute: AcademicBehaviourRoute,

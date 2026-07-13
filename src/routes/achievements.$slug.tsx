@@ -36,16 +36,61 @@ import {
   type AchievementStoryHighlight,
 } from "@/lib/achievements";
 
+import { SITE_URL, SITE_NAME_AR, SITE_DEFAULT_OG_IMAGE } from "@/lib/seo";
+
+const achievementQueryOptions = (slug: string) => ({
+  queryKey: ["achievement", slug] as const,
+  queryFn: () => fetchAchievementBySlug(slug),
+  staleTime: 60_000,
+});
+
+function truncate(text: string, max: number): string {
+  const trimmed = text.trim();
+  return trimmed.length <= max ? trimmed : `${trimmed.slice(0, max - 1).trimEnd()}…`;
+}
+
 export const Route = createFileRoute("/achievements/$slug")({
-  head: ({ params }) => {
-    const path = `https://newnasiriya.com/achievements/${params.slug}`;
+  loader: ({ params, context }) =>
+    context.queryClient.ensureQueryData(achievementQueryOptions(params.slug)),
+  head: ({ params, loaderData }) => {
+    const url = `${SITE_URL}/achievements/${params.slug}`;
+    const item = loaderData;
+    const rawTitle = item?.seo_title ?? item?.title_ar;
+    const title = rawTitle
+      ? truncate(`${rawTitle} | ${SITE_NAME_AR}`, 60)
+      : `إنجاز | ${SITE_NAME_AR}`;
+    const description = truncate(
+      item?.seo_description ??
+        item?.description_ar ??
+        `أحد إنجازات ${SITE_NAME_AR} الرسمية.`,
+      160,
+    );
+    const image = item?.cover_url
+      ? (item.cover_url.startsWith("http") ? item.cover_url : `${SITE_URL}${item.cover_url}`)
+      : SITE_DEFAULT_OG_IMAGE;
+
     return {
       meta: [
-        { title: "إنجاز | مدرسة الناصرية الابتدائية الجديدة" },
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
         { property: "og:type", content: "article" },
-        { property: "og:url", content: path },
+        { property: "og:url", content: url },
+        { property: "og:image", content: image },
+        { property: "og:image:alt", content: item?.title_ar ?? title },
+        { name: "twitter:card", content: "summary_large_image" },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+        { name: "twitter:image", content: image },
+        ...(item?.published_at
+          ? [{ property: "article:published_time", content: item.published_at }]
+          : []),
+        ...(item?.category?.name_ar
+          ? [{ property: "article:section", content: item.category.name_ar }]
+          : []),
       ],
-      links: [{ rel: "canonical", href: path }],
+      links: [{ rel: "canonical", href: url }],
     };
   },
   notFoundComponent: () => (
@@ -91,8 +136,6 @@ function AchievementDetailPage() {
 
   useEffect(() => {
     if (!data) return;
-    const title = data.seo_title ?? `${data.title_ar} | مدرسة الناصرية الابتدائية الجديدة`;
-    if (typeof document !== "undefined") document.title = title;
     trackContentView("achievements", data.id, data.slug);
   }, [data]);
 
@@ -142,11 +185,6 @@ function AchievementDetailPage() {
         }}
       />
 
-      <MetaTags
-        title={data.seo_title ?? `${data.title_ar} | مدرسة الناصرية الابتدائية الجديدة`}
-        description={description}
-        image={cover}
-      />
 
       <PageHero
         eyebrow={data.category?.name_ar ?? "الإنجازات"}
@@ -552,41 +590,8 @@ function splitParagraphs(value: string | null | undefined) {
     .filter(Boolean);
 }
 
-function MetaTags({
-  title,
-  description,
-  image,
-}: {
-  title: string;
-  description: string;
-  image: string | null;
-}) {
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    const setMeta = (attr: "name" | "property", key: string, value: string) => {
-      if (!value) return;
-      let el = document.head.querySelector<HTMLMetaElement>(`meta[${attr}="${key}"]`);
-      if (!el) {
-        el = document.createElement("meta");
-        el.setAttribute(attr, key);
-        document.head.appendChild(el);
-      }
-      el.setAttribute("content", value);
-    };
-    document.title = title;
-    setMeta("name", "description", description);
-    setMeta("property", "og:title", title);
-    setMeta("property", "og:description", description);
-    if (image) {
-      setMeta("property", "og:image", image);
-      setMeta("name", "twitter:image", image);
-    }
-    setMeta("name", "twitter:card", "summary_large_image");
-    setMeta("name", "twitter:title", title);
-    setMeta("name", "twitter:description", description);
-  }, [title, description, image]);
-  return null;
-}
+
+
 
 function ShareBar({ title }: { title: string }) {
   const [copied, setCopied] = useState(false);
