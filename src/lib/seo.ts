@@ -7,7 +7,7 @@
  * resolve them correctly regardless of where the page is served from.
  */
 
-export const SITE_URL = "https://newnasiriya.com";
+export const SITE_URL = "https://naseria-digital-opus.lovable.app";
 export const SITE_NAME_AR = "مدرسة الناصرية الابتدائية الجديدة";
 export const SITE_NAME_EN = "New Al-Nasiriyah Primary School";
 export const SITE_LOCALE = "ar_EG";
