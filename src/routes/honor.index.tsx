@@ -20,7 +20,7 @@ export const Route = createFileRoute("/honor/")({
   component: HonorIndex,
   errorComponent: ({ error }) => (
     <div className="grid min-h-[60vh] place-items-center">
-      <p className="text-muted-foreground">تعذّر تحميل لوحة الشرف، حاول لاحقًا.{void console.error(error)}</p>
+      <p className="text-muted-foreground">تعذّر تحميل لوحة الشرف، حاول لاحقًا.</p>
     </div>
   ),
 });

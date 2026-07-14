@@ -56,7 +56,7 @@ export const Route = createFileRoute("/academic/grades/$level")({
   ),
   errorComponent: ({ error }) => (
     <div className="grid min-h-[60vh] place-items-center">
-      <p className="text-muted-foreground">تعذّر تحميل الصفحة، حاول لاحقًا.{void console.error(error)}</p>
+      <p className="text-muted-foreground">تعذّر تحميل الصفحة، حاول لاحقًا.</p>
     </div>
   ),
   component: GradePage,
