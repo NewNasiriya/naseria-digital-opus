@@ -23,7 +23,7 @@ export const Route = createFileRoute("/academic/attendance")({
         content: "أهمية الحضور المنتظم في دعم مسيرة الطالب التعليمية.",
       },
     ],
-    links: [{ rel: "canonical", href: "https://newnasiriya.com/academic/attendance" }],
+    links: [{ rel: "canonical", href: "https://naseria-digital-opus.lovable.app/academic/attendance" }],
   }),
   component: AttendancePage,
 });

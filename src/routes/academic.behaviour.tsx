@@ -19,7 +19,7 @@ export const Route = createFileRoute("/academic/behaviour")({
       },
       { property: "og:title", content: "القيم السلوكية" },
     ],
-    links: [{ rel: "canonical", href: "https://newnasiriya.com/academic/behaviour" }],
+    links: [{ rel: "canonical", href: "https://naseria-digital-opus.lovable.app/academic/behaviour" }],
   }),
   component: BehaviourPage,
 });

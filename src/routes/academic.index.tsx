@@ -20,7 +20,7 @@ export const Route = createFileRoute("/academic/")({
           "كل المصادر الأكاديمية للمدرسة في مكان واحد، منظّمة لكل صف دراسي.",
       },
     ],
-    links: [{ rel: "canonical", href: "https://newnasiriya.com/academic" }],
+    links: [{ rel: "canonical", href: "https://naseria-digital-opus.lovable.app/academic" }],
   }),
   component: AcademicIndex,
 });

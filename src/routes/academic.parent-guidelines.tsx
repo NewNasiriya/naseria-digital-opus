@@ -14,7 +14,7 @@ export const Route = createFileRoute("/academic/parent-guidelines")({
       },
       { property: "og:title", content: "إرشادات أولياء الأمور" },
     ],
-    links: [{ rel: "canonical", href: "https://newnasiriya.com/academic/parent-guidelines" }],
+    links: [{ rel: "canonical", href: "https://naseria-digital-opus.lovable.app/academic/parent-guidelines" }],
   }),
   component: ParentGuidelinesPage,
 });
