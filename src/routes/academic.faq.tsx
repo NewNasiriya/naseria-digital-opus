@@ -10,22 +10,19 @@ import { Section } from "@/components/layout/Section";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
+import { buildSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/academic/faq")({
-  head: () => ({
-    meta: [
-      { title: "الأسئلة الشائعة | مدرسة الناصرية الابتدائية الجديدة" },
-      {
-        name: "description",
-        content:
-          "إجابات على أكثر الأسئلة تكرارًا من الطلاب وأولياء الأمور حول المدرسة والدراسة والخدمات.",
-      },
-      { property: "og:title", content: "الأسئلة الشائعة" },
-    ],
-    links: [{ rel: "canonical", href: "https://newnasiriya.com/academic/faq" }],
-  }),
+  head: () =>
+    buildSeo({
+      path: "/academic/faq",
+      title: "الأسئلة الشائعة | مدرسة الناصرية الابتدائية الجديدة",
+      description:
+        "إجابات على أكثر الأسئلة تكرارًا من الطلاب وأولياء الأمور حول المدرسة والدراسة والخدمات.",
+    }),
   component: FaqPage,
 });
+
 
 interface FaqCategory {
   id: string;

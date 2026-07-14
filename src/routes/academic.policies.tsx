@@ -21,7 +21,7 @@ export const Route = createFileRoute("/academic/policies")({
       },
       { property: "og:title", content: "السياسات المدرسية" },
     ],
-    links: [{ rel: "canonical", href: "https://newnasiriya.com/academic/policies" }],
+    links: [{ rel: "canonical", href: "https://naseria-digital-opus.lovable.app/academic/policies" }],
   }),
   component: PoliciesPage,
 });

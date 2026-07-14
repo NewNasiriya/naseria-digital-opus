@@ -14,7 +14,7 @@ export const Route = createFileRoute("/academic/student-guidelines")({
       },
       { property: "og:title", content: "إرشادات الطلاب" },
     ],
-    links: [{ rel: "canonical", href: "https://newnasiriya.com/academic/student-guidelines" }],
+    links: [{ rel: "canonical", href: "https://naseria-digital-opus.lovable.app/academic/student-guidelines" }],
   }),
   component: StudentGuidelinesPage,
 });
