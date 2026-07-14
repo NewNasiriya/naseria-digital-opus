@@ -47,7 +47,7 @@ export const Route = createFileRoute("/gallery/$slug")({
       links: [{ rel: "canonical", href: `https://newnasiriya.com/gallery/${album.slug}` }],
     };
   },
-  errorComponent: ({ error }) => (
+  errorComponent: () => (
     <>
       <PageHero title="تعذر تحميل الألبوم" description="حدث خطأ أثناء تحميل الألبوم، حاول لاحقًا." />
       <Section>

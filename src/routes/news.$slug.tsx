@@ -96,7 +96,7 @@ export const Route = createFileRoute("/news/$slug")({
       scripts: [schemaScript(article), schemaScript(breadcrumbs)],
     };
   },
-  errorComponent: ({ error }) => (
+  errorComponent: () => (
     <>
       <PageHero title="تعذر تحميل الخبر" description="حدث خطأ أثناء تحميل الخبر، حاول لاحقًا." />
       <Section>
