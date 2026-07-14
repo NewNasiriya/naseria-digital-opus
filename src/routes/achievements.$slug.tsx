@@ -100,7 +100,7 @@ export const Route = createFileRoute("/achievements/$slug")({
   ),
   errorComponent: ({ error }) => (
     <div className="grid min-h-[60vh] place-items-center">
-      <p className="text-muted-foreground">تعذّر تحميل الإنجاز: {error.message}</p>
+      <p className="text-muted-foreground">تعذّر تحميل الإنجاز، حاول لاحقًا.{void console.error(error)}</p>
     </div>
   ),
   component: AchievementDetailPage,

@@ -25,7 +25,7 @@ export const Route = createFileRoute("/achievements/")({
   component: AchievementsIndex,
   errorComponent: ({ error }) => (
     <div className="grid min-h-[60vh] place-items-center">
-      <p className="text-muted-foreground">تعذّر تحميل الإنجازات: {error.message}</p>
+      <p className="text-muted-foreground">تعذّر تحميل الإنجازات، حاول لاحقًا.{void console.error(error)}</p>
     </div>
   ),
 });
