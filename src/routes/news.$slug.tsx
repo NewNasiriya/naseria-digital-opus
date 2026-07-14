@@ -98,7 +98,7 @@ export const Route = createFileRoute("/news/$slug")({
   },
   errorComponent: ({ error }) => (
     <>
-      <PageHero title="تعذر تحميل الخبر" description={String(error?.message ?? "")} />
+      <PageHero title="تعذر تحميل الخبر" description="حدث خطأ أثناء تحميل الخبر، حاول لاحقًا." />
       <Section>
         <Container size="wide">
           <Button asChild variant="outline">

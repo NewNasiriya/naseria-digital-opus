@@ -49,7 +49,7 @@ export const Route = createFileRoute("/gallery/$slug")({
   },
   errorComponent: ({ error }) => (
     <>
-      <PageHero title="تعذر تحميل الألبوم" description={String(error?.message ?? "")} />
+      <PageHero title="تعذر تحميل الألبوم" description="حدث خطأ أثناء تحميل الألبوم، حاول لاحقًا." />
       <Section>
         <Container size="wide">
           <Button asChild variant="outline">
