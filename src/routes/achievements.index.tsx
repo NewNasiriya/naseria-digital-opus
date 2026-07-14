@@ -23,9 +23,9 @@ export const Route = createFileRoute("/achievements/")({
       "الإنجازات الرسمية لمدرسة الناصرية الابتدائية الجديدة — مشاريع التطوير، البنية التحتية، والأنشطة التعليمية الموثقة.",
   }),
   component: AchievementsIndex,
-  errorComponent: ({ error }) => (
+  errorComponent: () => (
     <div className="grid min-h-[60vh] place-items-center">
-      <p className="text-muted-foreground">تعذّر تحميل الإنجازات: {error.message}</p>
+      <p className="text-muted-foreground">تعذّر تحميل الإنجازات، حاول لاحقًا.</p>
     </div>
   ),
 });

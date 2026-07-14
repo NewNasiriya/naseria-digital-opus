@@ -18,9 +18,9 @@ export const Route = createFileRoute("/honor/")({
       "لوحة الشرف الرسمية لمدرسة الناصرية الابتدائية الجديدة — تكريم الطلاب المتفوقين لكل صف دراسي على مستوى العام الأكاديمي.",
   }),
   component: HonorIndex,
-  errorComponent: ({ error }) => (
+  errorComponent: () => (
     <div className="grid min-h-[60vh] place-items-center">
-      <p className="text-muted-foreground">تعذّر تحميل لوحة الشرف: {error.message}</p>
+      <p className="text-muted-foreground">تعذّر تحميل لوحة الشرف، حاول لاحقًا.</p>
     </div>
   ),
 });

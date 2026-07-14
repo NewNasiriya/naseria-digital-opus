@@ -98,9 +98,9 @@ export const Route = createFileRoute("/achievements/$slug")({
       <p className="text-muted-foreground">الإنجاز المطلوب غير موجود.</p>
     </div>
   ),
-  errorComponent: ({ error }) => (
+  errorComponent: () => (
     <div className="grid min-h-[60vh] place-items-center">
-      <p className="text-muted-foreground">تعذّر تحميل الإنجاز: {error.message}</p>
+      <p className="text-muted-foreground">تعذّر تحميل الإنجاز، حاول لاحقًا.</p>
     </div>
   ),
   component: AchievementDetailPage,

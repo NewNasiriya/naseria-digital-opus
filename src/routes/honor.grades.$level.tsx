@@ -44,9 +44,9 @@ export const Route = createFileRoute("/honor/grades/$level")({
       <p className="text-muted-foreground">الصف المطلوب غير موجود.</p>
     </div>
   ),
-  errorComponent: ({ error }) => (
+  errorComponent: () => (
     <div className="grid min-h-[60vh] place-items-center">
-      <p className="text-muted-foreground">تعذّر تحميل الصفحة: {error.message}</p>
+      <p className="text-muted-foreground">تعذّر تحميل الصفحة، حاول لاحقًا.</p>
     </div>
   ),
   component: HonorGradePage,
