@@ -53,7 +53,7 @@ export function AchievementCard({
             alt={alt}
             loading={priority ? "eager" : "lazy"}
             decoding="async"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
           />
         ) : (
           <div
