@@ -1,0 +1,2 @@
+UPDATE public.achievements SET cover_image_media_id='3a4154c6-58c3-4973-9c86-d74acae2cac9', cover_image_url=NULL WHERE slug='school-preparations-2026';
+UPDATE public.achievements SET cover_image_media_id='b9354bbf-f37a-4c51-9949-f131a44cf746', cover_image_url=NULL WHERE slug='kindergarten-preparations-2026';
