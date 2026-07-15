@@ -69,7 +69,7 @@ export function GalleryPreview() {
                           src={cover}
                           alt={album.cover?.alt_ar ?? album.title_ar}
                           loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                          className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.04]"
                         />
                       ) : (
                         <div className="grid h-full w-full place-items-center text-muted-foreground/40">
