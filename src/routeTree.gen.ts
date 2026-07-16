@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as NewsRouteImport } from './routes/news'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as HonorRouteImport } from './routes/honor'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -49,10 +50,13 @@ import { Route as AcademicBehaviourRouteImport } from './routes/academic.behavio
 import { Route as AcademicAttendanceBehaviourRouteImport } from './routes/academic.attendance-behaviour'
 import { Route as AcademicAttendanceRouteImport } from './routes/academic.attendance'
 import { Route as AcademicAdmissionGuideRouteImport } from './routes/academic.admission-guide'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AdminAcademicIndexRouteImport } from './routes/admin.academic.index'
 import { Route as HonorGradesLevelRouteImport } from './routes/honor.grades.$level'
 import { Route as AdminAcademicLevelRouteImport } from './routes/admin.academic.$level'
 import { Route as AcademicGradesLevelRouteImport } from './routes/academic.grades.$level'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AdminAcademicLevelIndexRouteImport } from './routes/admin.academic.$level.index'
 import { Route as AdminAcademicLevelSectionRouteImport } from './routes/admin.academic.$level.$section'
@@ -70,6 +74,11 @@ const SearchRoute = SearchRouteImport.update({
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HonorRoute = HonorRouteImport.update({
@@ -260,6 +269,18 @@ const AcademicAdmissionGuideRoute = AcademicAdmissionGuideRouteImport.update({
   path: '/admission-guide',
   getParentRoute: () => AcademicRoute,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminAcademicIndexRoute = AdminAcademicIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -280,6 +301,12 @@ const AcademicGradesLevelRoute = AcademicGradesLevelRouteImport.update({
   path: '/grades/$level',
   getParentRoute: () => AcademicRoute,
 } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
   id: '/.lovable/oauth/consent',
   path: '/.lovable/oauth/consent',
@@ -308,9 +335,12 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRouteWithChildren
   '/honor': typeof HonorRouteWithChildren
+  '/mcp': typeof McpRoute
   '/news': typeof NewsRouteWithChildren
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/academic/admission-guide': typeof AcademicAdmissionGuideRoute
   '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
@@ -339,6 +369,7 @@ export interface FileRoutesByFullPath {
   '/honor/': typeof HonorIndexRoute
   '/news/': typeof NewsIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
   '/admin/academic/$level': typeof AdminAcademicLevelRouteWithChildren
   '/honor/grades/$level': typeof HonorGradesLevelRoute
@@ -352,8 +383,11 @@ export interface FileRoutesByTo {
   '/activities': typeof ActivitiesRoute
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
+  '/mcp': typeof McpRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/academic/admission-guide': typeof AcademicAdmissionGuideRoute
   '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
@@ -381,6 +415,7 @@ export interface FileRoutesByTo {
   '/honor': typeof HonorIndexRoute
   '/news': typeof NewsIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
   '/honor/grades/$level': typeof HonorGradesLevelRoute
   '/admin/academic': typeof AdminAcademicIndexRoute
@@ -399,9 +434,12 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRouteWithChildren
   '/honor': typeof HonorRouteWithChildren
+  '/mcp': typeof McpRoute
   '/news': typeof NewsRouteWithChildren
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/academic/admission-guide': typeof AcademicAdmissionGuideRoute
   '/academic/attendance': typeof AcademicAttendanceRoute
   '/academic/attendance-behaviour': typeof AcademicAttendanceBehaviourRoute
@@ -430,6 +468,7 @@ export interface FileRoutesById {
   '/honor/': typeof HonorIndexRoute
   '/news/': typeof NewsIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
   '/admin/academic/$level': typeof AdminAcademicLevelRouteWithChildren
   '/honor/grades/$level': typeof HonorGradesLevelRoute
@@ -450,9 +489,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gallery'
     | '/honor'
+    | '/mcp'
     | '/news'
     | '/search'
     | '/sitemap.xml'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/academic/admission-guide'
     | '/academic/attendance'
     | '/academic/attendance-behaviour'
@@ -481,6 +523,7 @@ export interface FileRouteTypes {
     | '/honor/'
     | '/news/'
     | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/academic/grades/$level'
     | '/admin/academic/$level'
     | '/honor/grades/$level'
@@ -494,8 +537,11 @@ export interface FileRouteTypes {
     | '/activities'
     | '/auth'
     | '/contact'
+    | '/mcp'
     | '/search'
     | '/sitemap.xml'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/academic/admission-guide'
     | '/academic/attendance'
     | '/academic/attendance-behaviour'
@@ -523,6 +569,7 @@ export interface FileRouteTypes {
     | '/honor'
     | '/news'
     | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/academic/grades/$level'
     | '/honor/grades/$level'
     | '/admin/academic'
@@ -540,9 +587,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/gallery'
     | '/honor'
+    | '/mcp'
     | '/news'
     | '/search'
     | '/sitemap.xml'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/academic/admission-guide'
     | '/academic/attendance'
     | '/academic/attendance-behaviour'
@@ -571,6 +621,7 @@ export interface FileRouteTypes {
     | '/honor/'
     | '/news/'
     | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/academic/grades/$level'
     | '/admin/academic/$level'
     | '/honor/grades/$level'
@@ -590,10 +641,14 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   GalleryRoute: typeof GalleryRouteWithChildren
   HonorRoute: typeof HonorRouteWithChildren
+  McpRoute: typeof McpRoute
   NewsRoute: typeof NewsRouteWithChildren
   SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -617,6 +672,13 @@ declare module '@tanstack/react-router' {
       path: '/news'
       fullPath: '/news'
       preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/honor': {
@@ -878,6 +940,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcademicAdmissionGuideRouteImport
       parentRoute: typeof AcademicRoute
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/academic/': {
       id: '/admin/academic/'
       path: '/'
@@ -905,6 +981,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/academic/grades/$level'
       preLoaderRoute: typeof AcademicGradesLevelRouteImport
       parentRoute: typeof AcademicRoute
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/.lovable/oauth/consent': {
       id: '/.lovable/oauth/consent'
@@ -1079,10 +1162,15 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   GalleryRoute: GalleryRouteWithChildren,
   HonorRoute: HonorRouteWithChildren,
+  McpRoute: McpRoute,
   NewsRoute: NewsRouteWithChildren,
   SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
