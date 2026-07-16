@@ -53,6 +53,7 @@ import { Route as AdminAcademicIndexRouteImport } from './routes/admin.academic.
 import { Route as HonorGradesLevelRouteImport } from './routes/honor.grades.$level'
 import { Route as AdminAcademicLevelRouteImport } from './routes/admin.academic.$level'
 import { Route as AcademicGradesLevelRouteImport } from './routes/academic.grades.$level'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AdminAcademicLevelIndexRouteImport } from './routes/admin.academic.$level.index'
 import { Route as AdminAcademicLevelSectionRouteImport } from './routes/admin.academic.$level.$section'
 
@@ -279,6 +280,11 @@ const AcademicGradesLevelRoute = AcademicGradesLevelRouteImport.update({
   path: '/grades/$level',
   getParentRoute: () => AcademicRoute,
 } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminAcademicLevelIndexRoute = AdminAcademicLevelIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -332,6 +338,7 @@ export interface FileRoutesByFullPath {
   '/gallery/': typeof GalleryIndexRoute
   '/honor/': typeof HonorIndexRoute
   '/news/': typeof NewsIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
   '/admin/academic/$level': typeof AdminAcademicLevelRouteWithChildren
   '/honor/grades/$level': typeof HonorGradesLevelRoute
@@ -373,6 +380,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryIndexRoute
   '/honor': typeof HonorIndexRoute
   '/news': typeof NewsIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
   '/honor/grades/$level': typeof HonorGradesLevelRoute
   '/admin/academic': typeof AdminAcademicIndexRoute
@@ -421,6 +429,7 @@ export interface FileRoutesById {
   '/gallery/': typeof GalleryIndexRoute
   '/honor/': typeof HonorIndexRoute
   '/news/': typeof NewsIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/academic/grades/$level': typeof AcademicGradesLevelRoute
   '/admin/academic/$level': typeof AdminAcademicLevelRouteWithChildren
   '/honor/grades/$level': typeof HonorGradesLevelRoute
@@ -471,6 +480,7 @@ export interface FileRouteTypes {
     | '/gallery/'
     | '/honor/'
     | '/news/'
+    | '/.lovable/oauth/consent'
     | '/academic/grades/$level'
     | '/admin/academic/$level'
     | '/honor/grades/$level'
@@ -512,6 +522,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/honor'
     | '/news'
+    | '/.lovable/oauth/consent'
     | '/academic/grades/$level'
     | '/honor/grades/$level'
     | '/admin/academic'
@@ -559,6 +570,7 @@ export interface FileRouteTypes {
     | '/gallery/'
     | '/honor/'
     | '/news/'
+    | '/.lovable/oauth/consent'
     | '/academic/grades/$level'
     | '/admin/academic/$level'
     | '/honor/grades/$level'
@@ -581,6 +593,7 @@ export interface RootRouteChildren {
   NewsRoute: typeof NewsRouteWithChildren
   SearchRoute: typeof SearchRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -893,6 +906,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AcademicGradesLevelRouteImport
       parentRoute: typeof AcademicRoute
     }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/academic/$level/': {
       id: '/admin/academic/$level/'
       path: '/'
@@ -1062,6 +1082,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsRoute: NewsRouteWithChildren,
   SearchRoute: SearchRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
