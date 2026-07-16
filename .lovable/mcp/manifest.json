@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "sdk_version": "0.22.2",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://tlyehajicuotulmfaewi.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "nasiriyah-school-mcp",
+      "version": "0.1.0",
+      "title": "مدرسة الناصرية الابتدائية الجديدة"
+    },
+    "tools": [
+      {
+        "name": "list_news",
+        "title": "قائمة الأخبار المدرسية",
+        "description": "استعراض أحدث الأخبار المنشورة للمدرسة مع العنوان والملخّص وتاريخ النشر والرابط.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "description": "عدد الأخبار المطلوبة (الافتراضي 10، بحد أقصى 50).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_achievements",
+        "title": "قائمة إنجازات المدرسة",
+        "description": "استعراض أحدث الإنجازات والمشاريع المنشورة مع العنوان والوصف والتاريخ والفئة.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "description": "عدد الإنجازات المطلوبة (الافتراضي 10، بحد أقصى 50).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_gallery_albums",
+        "title": "قائمة ألبومات معرض الصور",
+        "description": "استعراض أحدث ألبومات الصور المنشورة مع العنوان والوصف والتصنيف وعدد الصور.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "description": "عدد الألبومات المطلوبة (الافتراضي 10، بحد أقصى 50).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
