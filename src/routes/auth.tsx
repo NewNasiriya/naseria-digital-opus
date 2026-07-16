@@ -68,7 +68,7 @@ function AuthPage() {
     const parsed = formSchema.safeParse({ email, password });
     if (!parsed.success) {
       const fieldErrors: typeof errors = {};
-      for (const issue of parsed.error.errors) {
+      for (const issue of parsed.error.issues) {
         const key = issue.path[0];
         if (key === "email" || key === "password") fieldErrors[key] = issue.message;
       }
