@@ -119,7 +119,7 @@ export function validateFile(file: File, opts: FileValidationOptions = {}): stri
 /** Convert a Zod error into the CmsError `fieldErrors` shape. */
 export function zodToFieldErrors(err: z.ZodError): Record<string, string[]> {
   const out: Record<string, string[]> = {};
-  for (const issue of err.errors) {
+  for (const issue of err.issues) {
     const key = issue.path.join(".") || "_";
     (out[key] ??= []).push(issue.message);
   }
