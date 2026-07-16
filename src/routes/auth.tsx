@@ -69,7 +69,7 @@ function AuthPage() {
     if (!parsed.success) {
       const fieldErrors: typeof errors = {};
       for (const issue of parsed.error.issues) {
-        const key = issue.path[0];
+        const key = String(issue.path[0] ?? "");
         if (key === "email" || key === "password") fieldErrors[key] = issue.message;
       }
       setErrors(fieldErrors);
