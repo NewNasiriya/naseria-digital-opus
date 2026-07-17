@@ -22,7 +22,10 @@ function resolveImage(
   imageUrl: string | null,
 ): string | null {
   const fromMedia = media ? mediaPublicUrl(media) : null;
-  return fromMedia ?? imageUrl ?? null;
+  if (fromMedia) return fromMedia;
+  if (!imageUrl) return null;
+  // Normalize legacy Lovable CDN paths so images work on custom domains too.
+  return mediaPublicUrl({ bucket: "external", storage_path: imageUrl });
 }
 
 export async function fetchPublishedHonorBoards(
