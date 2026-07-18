@@ -4,3 +4,4 @@
  * side-effects on bootstrap.
  */
 import "./news";
+import "./honor";
