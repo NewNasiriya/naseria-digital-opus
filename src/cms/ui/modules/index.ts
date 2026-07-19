@@ -5,3 +5,4 @@
  */
 import "./news";
 import "./honor";
+import "./achievements";
