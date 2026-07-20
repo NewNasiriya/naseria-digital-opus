@@ -6,3 +6,4 @@
 import "./news";
 import "./honor";
 import "./achievements";
+import "./activities";
