@@ -91,8 +91,8 @@ async function fetchActions(): Promise<ActionRow[]> {
 }
 
 function HomepageAdmin() {
-  const { can, loading } = useAuth();
-  if (loading) return null;
+  const { can, isLoading } = useAuth();
+  if (isLoading) return null;
   if (!can("homepage.manage")) {
     throw notFound();
   }
