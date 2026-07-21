@@ -1,4 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+
+import { fetchHomepageHero } from "@/lib/homepage-hero";
 
 import schoolDay from "@/assets/school-day.png.asset.json";
 import schoolNight from "@/assets/school-night.png.asset.json";
