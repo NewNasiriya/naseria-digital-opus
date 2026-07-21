@@ -42,7 +42,7 @@ function HomePage() {
     <>
       <SiteHeader />
       <main id="main">
-        <Hero />
+        <HeroWithCms />
         <AcademicTimelineWidget />
         <Stats />
         <WelcomePreview />
@@ -58,3 +58,13 @@ function HomePage() {
     </>
   );
 }
+
+function HeroWithCms() {
+  const { data } = useQuery({
+    queryKey: ["homepage-hero"],
+    queryFn: fetchHomepageHero,
+    staleTime: 60_000,
+  });
+  return <Hero intro={data?.subheadline_ar ?? undefined} />;
+}
+
