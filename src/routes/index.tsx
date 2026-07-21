@@ -1,4 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+
+import { fetchHomepageHero } from "@/lib/homepage-hero";
 
 import schoolDay from "@/assets/school-day.png.asset.json";
 import schoolNight from "@/assets/school-night.png.asset.json";
@@ -42,7 +45,7 @@ function HomePage() {
     <>
       <SiteHeader />
       <main id="main">
-        <Hero />
+        <HeroWithCms />
         <AcademicTimelineWidget />
         <Stats />
         <WelcomePreview />
@@ -58,3 +61,13 @@ function HomePage() {
     </>
   );
 }
+
+function HeroWithCms() {
+  const { data } = useQuery({
+    queryKey: ["homepage-hero"],
+    queryFn: fetchHomepageHero,
+    staleTime: 60_000,
+  });
+  return <Hero intro={data?.subheadline_ar ?? undefined} />;
+}
+
