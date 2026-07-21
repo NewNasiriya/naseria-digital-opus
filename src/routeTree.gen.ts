@@ -34,6 +34,7 @@ import { Route as GallerySlugRouteImport } from './routes/gallery.$slug'
 import { Route as AdminTimelineRouteImport } from './routes/admin.timeline'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminMediaRouteImport } from './routes/admin.media'
+import { Route as AdminHomepageRouteImport } from './routes/admin.homepage'
 import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
 import { Route as AdminDocumentsRouteImport } from './routes/admin.documents'
 import { Route as AdminContactRouteImport } from './routes/admin.contact'
@@ -184,6 +185,11 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
 const AdminMediaRoute = AdminMediaRouteImport.update({
   id: '/media',
   path: '/media',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminHomepageRoute = AdminHomepageRouteImport.update({
+  id: '/homepage',
+  path: '/homepage',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminGalleryRoute = AdminGalleryRouteImport.update({
@@ -357,6 +363,7 @@ export interface FileRoutesByFullPath {
   '/admin/contact': typeof AdminContactRoute
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/homepage': typeof AdminHomepageRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/timeline': typeof AdminTimelineRoute
@@ -403,6 +410,7 @@ export interface FileRoutesByTo {
   '/admin/contact': typeof AdminContactRoute
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/homepage': typeof AdminHomepageRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/timeline': typeof AdminTimelineRoute
@@ -456,6 +464,7 @@ export interface FileRoutesById {
   '/admin/contact': typeof AdminContactRoute
   '/admin/documents': typeof AdminDocumentsRoute
   '/admin/gallery': typeof AdminGalleryRoute
+  '/admin/homepage': typeof AdminHomepageRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/timeline': typeof AdminTimelineRoute
@@ -511,6 +520,7 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/documents'
     | '/admin/gallery'
+    | '/admin/homepage'
     | '/admin/media'
     | '/admin/settings'
     | '/admin/timeline'
@@ -557,6 +567,7 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/documents'
     | '/admin/gallery'
+    | '/admin/homepage'
     | '/admin/media'
     | '/admin/settings'
     | '/admin/timeline'
@@ -609,6 +620,7 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/documents'
     | '/admin/gallery'
+    | '/admin/homepage'
     | '/admin/media'
     | '/admin/settings'
     | '/admin/timeline'
@@ -826,6 +838,13 @@ declare module '@tanstack/react-router' {
       path: '/media'
       fullPath: '/admin/media'
       preLoaderRoute: typeof AdminMediaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/homepage': {
+      id: '/admin/homepage'
+      path: '/homepage'
+      fullPath: '/admin/homepage'
+      preLoaderRoute: typeof AdminHomepageRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/gallery': {
@@ -1093,6 +1112,7 @@ interface AdminRouteChildren {
   AdminContactRoute: typeof AdminContactRoute
   AdminDocumentsRoute: typeof AdminDocumentsRoute
   AdminGalleryRoute: typeof AdminGalleryRoute
+  AdminHomepageRoute: typeof AdminHomepageRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminTimelineRoute: typeof AdminTimelineRoute
@@ -1106,6 +1126,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminContactRoute: AdminContactRoute,
   AdminDocumentsRoute: AdminDocumentsRoute,
   AdminGalleryRoute: AdminGalleryRoute,
+  AdminHomepageRoute: AdminHomepageRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminTimelineRoute: AdminTimelineRoute,
