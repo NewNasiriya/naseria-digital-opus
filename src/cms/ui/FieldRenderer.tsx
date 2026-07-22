@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { mediaLibrary, type MediaBucket, type MediaItem } from "@/cms/media-library";
+import { mediaPublicUrl } from "@/lib/media";
 
 import type { FieldDef } from "./fields";
 import { slugify } from "./fields";
@@ -236,10 +237,18 @@ export function FieldRenderer({
       );
     }
     case "media": {
+      const fallbackUrl = field.fallbackUrlField
+        ? mediaPublicUrl({
+            bucket: "external",
+            storage_path: (values[field.fallbackUrlField] as string | null | undefined) ?? null,
+          })
+        : null;
       return (
         <MediaField
           field={field}
           value={(value as string | null | undefined) ?? null}
+          fallbackUrl={fallbackUrl}
+          fallbackLabel={field.fallbackLabel}
           onChange={(v) => onChange(field.name, v)}
           disabled={disabled}
           describedBy={describedBy}
@@ -368,6 +377,8 @@ function ReferenceField({
 function MediaField({
   field,
   value,
+  fallbackUrl,
+  fallbackLabel,
   onChange,
   disabled,
   describedBy,
@@ -376,6 +387,8 @@ function MediaField({
 }: {
   field: Extract<FieldDef, { kind: "media" }>;
   value: string | null;
+  fallbackUrl?: string | null;
+  fallbackLabel?: string;
   onChange: (v: string | null) => void;
   disabled?: boolean;
   describedBy?: string;
@@ -420,6 +433,7 @@ function MediaField({
   }, [value]);
 
   const handleSelect = (item: MediaItem) => onChange(item.id);
+  const hasFallbackPreview = !value && Boolean(fallbackUrl);
 
   return (
     <div>
@@ -469,6 +483,40 @@ function MediaField({
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   إزالة
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : hasFallbackPreview ? (
+        <div className="rounded-xl border border-border bg-card p-3">
+          <div className="flex items-start gap-3">
+            <div className="w-32 shrink-0 overflow-hidden rounded-lg border border-border bg-surface-muted">
+              <AspectRatio ratio={4 / 3}>
+                <img
+                  src={fallbackUrl ?? ""}
+                  alt={fallbackLabel ?? "الصورة الحالية"}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </AspectRatio>
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium">{fallbackLabel ?? "الصورة الحالية محفوظة"}</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                سيتم استخدام هذه الصورة الحالية على الموقع حتى تختار بديلًا من مكتبة الوسائط.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5"
+                  onClick={() => setPickerOpen(true)}
+                  disabled={disabled}
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                  استبدال من المكتبة
                 </Button>
               </div>
             </div>
