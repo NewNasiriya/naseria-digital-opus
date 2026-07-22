@@ -294,7 +294,7 @@ export function EntityListView<T extends EntityMeta>({
             <Button size="sm" variant="outline" className="gap-1.5" onClick={() => runBulk("restore")}>
               <RotateCcw className="h-3.5 w-3.5" /> استعادة
             </Button>
-            {canDelete && (
+            {canDelete && allowHardDelete && (
               <Button
                 size="sm"
                 variant="outline"

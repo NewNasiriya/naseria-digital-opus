@@ -49,13 +49,14 @@ function ModuleRoute() {
   if (!mod) throw notFound();
 
   const ui = getCmsUiModule(mod.id);
-  const isEditing = Boolean(search.id) || Boolean(search.new);
+  const wantsEditor = Boolean(search.id) || Boolean(search.new);
   const listHref = `/admin/${slug}`;
   const newHref = `/admin/${slug}?new=1`;
 
   // If the module has a UI registration, render the shared list or editor.
   if (ui) {
-    if (isEditing) {
+    const isEditing = Boolean(search.id) || (Boolean(search.new) && ui.list.allowCreate !== false);
+    if (wantsEditor && isEditing) {
       return (
         <>
           <AdminSectionHeader
