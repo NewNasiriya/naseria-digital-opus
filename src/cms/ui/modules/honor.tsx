@@ -177,6 +177,10 @@ const listConfig: EntityListConfig<HonorBoardRow> = {
   primaryTitleField: "title_ar",
   requiredPermission: "honor.manage",
   supportsBulk: true,
+  allowCreate: false,
+  allowDuplicate: false,
+  allowHardDelete: false,
+  relatedQueryKeys: [["honor"]],
   pageSize: 20,
   searchPlaceholder: "بحث بعنوان الكشف…",
   publicPathFor: (row) =>
@@ -328,6 +332,8 @@ const editorSections: FieldSection[] = [
         label: "الصورة من مكتبة الوسائط",
         mediaKind: "image",
         folder: "honor",
+        fallbackUrlField: "image_url",
+        fallbackLabel: "صورة الكشف المنشورة حاليًا",
         helpText: "الصيغة الحديثة — تدعم البدائل والوصف والتصنيف.",
       },
       {
@@ -370,6 +376,9 @@ const editorConfig: EntityEditorConfig<HonorBoardRow> = {
   entityLabel: "كشف شرف",
   primaryTitleField: "title_ar",
   requiredPermission: "honor.manage",
+  allowDuplicate: false,
+  allowHardDelete: false,
+  relatedQueryKeys: [["honor"]],
   publicPathFor: (row) =>
     row.grade?.level ? `/honor/grades/${row.grade.level}` : "/honor",
   createDefaults: {

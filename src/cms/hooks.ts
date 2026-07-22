@@ -10,6 +10,7 @@ import {
   useQueryClient,
   type UseMutationOptions,
   type UseQueryOptions,
+  type QueryKey,
 } from "@tanstack/react-query";
 
 import { toCmsError, type CmsError } from "./errors";
@@ -53,10 +54,15 @@ interface MutationCallbacks<T> {
 export function useCmsMutations<T extends EntityMeta>(
   module: string,
   service: ContentService<T>,
+  relatedQueryKeys: readonly QueryKey[] = [],
 ) {
   const queryClient = useQueryClient();
-  const invalidate = () =>
+  const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: cmsKeys.module(module) });
+    for (const queryKey of relatedQueryKeys) {
+      queryClient.invalidateQueries({ queryKey });
+    }
+  };
 
   function withInvalidate<Args, Result extends { id?: UUID } | void>(
     fn: (args: Args) => Promise<Result>,

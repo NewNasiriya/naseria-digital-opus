@@ -19,13 +19,15 @@ export function createContentService<T extends EntityMeta>(
 ) {
   async function transition(id: UUID, next: ContentStatus, extra: Partial<T> = {}) {
     const now = new Date().toISOString();
+    const current = next === "published" ? await repo.getById(id) : null;
     const patch: Partial<T> = {
       ...extra,
       status: next,
       updated_at: now,
     } as Partial<T>;
     if (next === "published") {
-      (patch as Record<string, unknown>).published_at = now;
+      (patch as Record<string, unknown>).published_at =
+        (current as Record<string, unknown> | null)?.published_at ?? now;
     }
     const updated = await repo.update(id, patch);
     await opts.onAfterChange?.(id, `status:${next}`);
@@ -36,7 +38,10 @@ export function createContentService<T extends EntityMeta>(
     repo,
     saveDraft: (input: Partial<T> & { id?: UUID }) =>
       input.id
-        ? repo.update(input.id, { ...input, status: "draft" } as Partial<T>)
+        ? repo.update(input.id, {
+            ...input,
+            status: input.status === "published" ? "published" : "draft",
+          } as Partial<T>)
         : repo.create({ ...input, status: "draft" } as Partial<T>),
     publish: (id: UUID) => transition(id, "published"),
     unpublish: (id: UUID) => transition(id, "draft"),

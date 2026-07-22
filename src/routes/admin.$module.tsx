@@ -49,13 +49,14 @@ function ModuleRoute() {
   if (!mod) throw notFound();
 
   const ui = getCmsUiModule(mod.id);
-  const isEditing = Boolean(search.id) || Boolean(search.new);
+  const wantsEditor = Boolean(search.id) || Boolean(search.new);
   const listHref = `/admin/${slug}`;
   const newHref = `/admin/${slug}?new=1`;
 
   // If the module has a UI registration, render the shared list or editor.
   if (ui) {
-    if (isEditing) {
+    const isEditing = Boolean(search.id) || (Boolean(search.new) && ui.list.allowCreate !== false);
+    if (wantsEditor && isEditing) {
       return (
         <>
           <AdminSectionHeader
@@ -90,12 +91,14 @@ function ModuleRoute() {
           ]}
           publicHref={mod.publicHref}
           action={
-            <Button size="sm" className="gap-1.5" asChild>
-              <Link to={newHref}>
-                <Plus className="h-4 w-4" />
-                إضافة {ui.list.entityLabel}
-              </Link>
-            </Button>
+            ui.list.allowCreate === false ? null : (
+              <Button size="sm" className="gap-1.5" asChild>
+                <Link to={newHref}>
+                  <Plus className="h-4 w-4" />
+                  إضافة {ui.list.entityLabel}
+                </Link>
+              </Button>
+            )
           }
         />
         <EntityListView

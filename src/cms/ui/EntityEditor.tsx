@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/lib/auth";
 import type { Permission } from "@/lib/auth/permissions";
+import type { QueryKey } from "@tanstack/react-query";
 
 import { useCmsEntity, useCmsMutations } from "../hooks";
 import { useAutosave, useUnsavedChangesGuard } from "../autosave";
@@ -66,6 +67,9 @@ export interface EntityEditorConfig<T extends EntityMeta> {
   publicPathFor?: (row: T) => string | null;
   /** Optional field-level validator. Return `{ [name]: "message" }` for errors. */
   validate?: (values: Partial<T>) => Record<string, string> | null;
+  allowDuplicate?: boolean;
+  allowHardDelete?: boolean;
+  relatedQueryKeys?: readonly QueryKey[];
 }
 
 interface Props<T extends EntityMeta> {
@@ -92,7 +96,9 @@ export function EntityEditor<T extends EntityMeta>({
   const canDelete = can("content.delete");
 
   const entity = useCmsEntity<T>(config.module, repository, id);
-  const mutations = useCmsMutations<T>(config.module, service);
+  const mutations = useCmsMutations<T>(config.module, service, config.relatedQueryKeys);
+  const allowDuplicate = config.allowDuplicate !== false;
+  const allowHardDelete = config.allowHardDelete !== false;
 
   const [values, setValues] = useState<Partial<T>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -184,7 +190,7 @@ export function EntityEditor<T extends EntityMeta>({
     }
     try {
       const saved = await service.saveDraft({ ...values, id });
-      toast.success("تم حفظ المسودة");
+      toast.success(currentStatus === "published" ? "تم حفظ التحديث على الموقع." : "تم حفظ المسودة");
       if (!id) {
         setRestoringId(saved.id);
         navigate({
@@ -368,7 +374,7 @@ export function EntityEditor<T extends EntityMeta>({
               <History className="h-3.5 w-3.5" />
               السجل
             </Button>
-            {id && (
+            {id && allowDuplicate && (
               <Button
                 variant="outline"
                 size="sm"
@@ -401,7 +407,7 @@ export function EntityEditor<T extends EntityMeta>({
                 استعادة
               </Button>
             )}
-            {id && canDelete && (
+            {id && canDelete && allowHardDelete && (
               <Button
                 variant="outline"
                 size="sm"
@@ -424,7 +430,7 @@ export function EntityEditor<T extends EntityMeta>({
               ) : (
                 <Save className="h-3.5 w-3.5" />
               )}
-              حفظ مسودة
+              {currentStatus === "published" ? "حفظ التحديث" : "حفظ مسودة"}
             </Button>
             {canPublish && currentStatus === "published" && (
               <Button
