@@ -190,7 +190,7 @@ export function EntityEditor<T extends EntityMeta>({
     }
     try {
       const saved = await service.saveDraft({ ...values, id });
-      toast.success("تم حفظ المسودة");
+      toast.success(currentStatus === "published" ? "تم حفظ التحديث على الموقع." : "تم حفظ المسودة");
       if (!id) {
         setRestoringId(saved.id);
         navigate({
@@ -430,7 +430,7 @@ export function EntityEditor<T extends EntityMeta>({
               ) : (
                 <Save className="h-3.5 w-3.5" />
               )}
-              حفظ مسودة
+              {currentStatus === "published" ? "حفظ التحديث" : "حفظ مسودة"}
             </Button>
             {canPublish && currentStatus === "published" && (
               <Button

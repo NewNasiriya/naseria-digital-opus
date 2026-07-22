@@ -38,7 +38,10 @@ export function createContentService<T extends EntityMeta>(
     repo,
     saveDraft: (input: Partial<T> & { id?: UUID }) =>
       input.id
-        ? repo.update(input.id, { ...input, status: "draft" } as Partial<T>)
+        ? repo.update(input.id, {
+            ...input,
+            status: input.status === "published" ? "published" : "draft",
+          } as Partial<T>)
         : repo.create({ ...input, status: "draft" } as Partial<T>),
     publish: (id: UUID) => transition(id, "published"),
     unpublish: (id: UUID) => transition(id, "draft"),
