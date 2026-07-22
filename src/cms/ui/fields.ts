@@ -77,6 +77,9 @@ export type FieldDef =
       bucket?: MediaBucket;
       mediaKind?: MediaKind;
       folder?: string;
+      /** Optional legacy URL field displayed until a Media Library item is chosen. */
+      fallbackUrlField?: string;
+      fallbackLabel?: string;
       helpText?: string;
     }
   | {
