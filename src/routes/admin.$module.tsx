@@ -90,12 +90,14 @@ function ModuleRoute() {
           ]}
           publicHref={mod.publicHref}
           action={
-            <Button size="sm" className="gap-1.5" asChild>
-              <Link to={newHref}>
-                <Plus className="h-4 w-4" />
-                إضافة {ui.list.entityLabel}
-              </Link>
-            </Button>
+            ui.list.allowCreate === false ? null : (
+              <Button size="sm" className="gap-1.5" asChild>
+                <Link to={newHref}>
+                  <Plus className="h-4 w-4" />
+                  إضافة {ui.list.entityLabel}
+                </Link>
+              </Button>
+            )
           }
         />
         <EntityListView
