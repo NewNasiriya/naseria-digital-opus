@@ -63,6 +63,7 @@ import {
 import { EmptyState } from "@/components/admin/EmptyState";
 import { useAuth } from "@/lib/auth";
 import type { Permission } from "@/lib/auth/permissions";
+import type { QueryKey } from "@tanstack/react-query";
 
 import { useCmsList, useCmsMutations } from "../hooks";
 import { messageFor } from "../errors";
@@ -90,6 +91,10 @@ export interface EntityListConfig<T extends EntityMeta> {
   requiredPermission: Permission;
   publicPathFor?: (row: T) => string | null;
   pageSize?: number;
+  allowCreate?: boolean;
+  allowDuplicate?: boolean;
+  allowHardDelete?: boolean;
+  relatedQueryKeys?: readonly QueryKey[];
 }
 
 interface Props<T extends EntityMeta> {
@@ -147,7 +152,10 @@ export function EntityListView<T extends EntityMeta>({
   );
 
   const list = useCmsList<T>(config.module, repository, query);
-  const mutations = useCmsMutations<T>(config.module, service);
+  const mutations = useCmsMutations<T>(config.module, service, config.relatedQueryKeys);
+  const allowCreate = config.allowCreate !== false;
+  const allowDuplicate = config.allowDuplicate !== false;
+  const allowHardDelete = config.allowHardDelete !== false;
 
   const rows = list.data?.rows ?? [];
   const total = list.data?.total ?? 0;
@@ -321,7 +329,7 @@ export function EntityListView<T extends EntityMeta>({
             title={`لا يوجد ${config.entityLabel} حاليًا`}
             description="ابدأ بإنشاء أول عنصر لعرضه على الموقع."
             action={
-              canManage ? (
+                canManage && allowCreate ? (
                 <Button size="sm" className="gap-1.5" asChild>
                   <Link to={newHref}>
                     <Plus className="h-4 w-4" />
@@ -421,18 +429,20 @@ export function EntityListView<T extends EntityMeta>({
                               <Undo2 className="me-2 h-3.5 w-3.5" /> إلغاء النشر
                             </DropdownMenuItem>
                           )}
-                          <DropdownMenuItem
-                            onSelect={async () => {
-                              try {
-                                await mutations.duplicate.mutateAsync(row.id);
-                                toast.success("تم إنشاء نسخة");
-                              } catch (e) {
-                                toast.error(messageFor(e as never));
-                              }
-                            }}
-                          >
-                            <Copy className="me-2 h-3.5 w-3.5" /> تكرار
-                          </DropdownMenuItem>
+                          {allowDuplicate && (
+                            <DropdownMenuItem
+                              onSelect={async () => {
+                                try {
+                                  await mutations.duplicate.mutateAsync(row.id);
+                                  toast.success("تم إنشاء نسخة");
+                                } catch (e) {
+                                  toast.error(messageFor(e as never));
+                                }
+                              }}
+                            >
+                              <Copy className="me-2 h-3.5 w-3.5" /> تكرار
+                            </DropdownMenuItem>
+                          )}
                           {canArchive && row.status !== "archived" && (
                             <DropdownMenuItem
                               onSelect={async () => {
@@ -461,7 +471,7 @@ export function EntityListView<T extends EntityMeta>({
                               <RotateCcw className="me-2 h-3.5 w-3.5" /> استعادة
                             </DropdownMenuItem>
                           )}
-                          {canDelete && (
+                          {canDelete && allowHardDelete && (
                             <>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
