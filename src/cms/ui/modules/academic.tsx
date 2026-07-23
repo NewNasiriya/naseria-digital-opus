@@ -252,6 +252,7 @@ function timetableEditorConfig(scope: Scope, section: "study" | "exam"): EntityE
     entityLabel: meta.entity,
     primaryTitleField: "title_ar",
     requiredPermission: "academic.manage",
+    relatedQueryKeys: [["academic"]],
     createDefaults: {
       kind,
       grade_id: scope.gradeId,
@@ -269,6 +270,7 @@ function timetableEditorConfig(scope: Scope, section: "study" | "exam"): EntityE
     },
   };
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* Academic Resources                                                         */
