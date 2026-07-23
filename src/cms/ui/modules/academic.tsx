@@ -163,6 +163,7 @@ function timetableListConfig(scope: Scope, section: "study" | "exam"): EntityLis
     requiredPermission: "academic.manage",
     supportsBulk: true,
     pageSize: 20,
+    relatedQueryKeys: [["academic"]],
     columns: [
       {
         key: "title",
@@ -194,6 +195,7 @@ function timetableListConfig(scope: Scope, section: "study" | "exam"): EntityLis
     publicPathFor: () => `/academic/grades/${scope.level}`,
   };
 }
+
 
 function timetableEditorConfig(scope: Scope, section: "study" | "exam"): EntityEditorConfig<TimetableRow> {
   const meta = ACADEMIC_SECTION_META[section];
@@ -250,6 +252,7 @@ function timetableEditorConfig(scope: Scope, section: "study" | "exam"): EntityE
     entityLabel: meta.entity,
     primaryTitleField: "title_ar",
     requiredPermission: "academic.manage",
+    relatedQueryKeys: [["academic"]],
     createDefaults: {
       kind,
       grade_id: scope.gradeId,
@@ -267,6 +270,7 @@ function timetableEditorConfig(scope: Scope, section: "study" | "exam"): EntityE
     },
   };
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* Academic Resources                                                         */
@@ -325,6 +329,7 @@ function resourceListConfig(scope: Scope): EntityListConfig<AcademicResourceRow>
     primaryTitleField: "title_ar",
     requiredPermission: "academic.manage",
     supportsBulk: true,
+    relatedQueryKeys: [["academic"]],
     columns: [
       {
         key: "title",
@@ -360,6 +365,7 @@ function resourceEditorConfig(scope: Scope): EntityEditorConfig<AcademicResource
     entityLabel: ACADEMIC_SECTION_META.resources.entity,
     primaryTitleField: "title_ar",
     requiredPermission: "academic.manage",
+    relatedQueryKeys: [["academic"]],
     createDefaults: {
       grade_id: scope.gradeId,
       display_order: 0,
@@ -461,6 +467,7 @@ function noteListConfig(scope: Scope): EntityListConfig<AcademicNoteRow> {
     primaryTitleField: "title_ar",
     requiredPermission: "academic.manage",
     supportsBulk: true,
+    relatedQueryKeys: [["academic"]],
     columns: [
       {
         key: "title",
@@ -493,6 +500,7 @@ function noteEditorConfig(scope: Scope): EntityEditorConfig<AcademicNoteRow> {
     entityLabel: ACADEMIC_SECTION_META.notes.entity,
     primaryTitleField: "title_ar",
     requiredPermission: "academic.manage",
+    relatedQueryKeys: [["academic"]],
     createDefaults: {
       grade_id: scope.gradeId,
       display_order: 0,
