@@ -467,6 +467,7 @@ function noteListConfig(scope: Scope): EntityListConfig<AcademicNoteRow> {
     primaryTitleField: "title_ar",
     requiredPermission: "academic.manage",
     supportsBulk: true,
+    relatedQueryKeys: [["academic"]],
     columns: [
       {
         key: "title",
