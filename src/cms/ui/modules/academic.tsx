@@ -329,6 +329,7 @@ function resourceListConfig(scope: Scope): EntityListConfig<AcademicResourceRow>
     primaryTitleField: "title_ar",
     requiredPermission: "academic.manage",
     supportsBulk: true,
+    relatedQueryKeys: [["academic"]],
     columns: [
       {
         key: "title",
