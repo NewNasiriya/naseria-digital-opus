@@ -163,6 +163,7 @@ function timetableListConfig(scope: Scope, section: "study" | "exam"): EntityLis
     requiredPermission: "academic.manage",
     supportsBulk: true,
     pageSize: 20,
+    relatedQueryKeys: [["academic"]],
     columns: [
       {
         key: "title",
@@ -194,6 +195,7 @@ function timetableListConfig(scope: Scope, section: "study" | "exam"): EntityLis
     publicPathFor: () => `/academic/grades/${scope.level}`,
   };
 }
+
 
 function timetableEditorConfig(scope: Scope, section: "study" | "exam"): EntityEditorConfig<TimetableRow> {
   const meta = ACADEMIC_SECTION_META[section];
