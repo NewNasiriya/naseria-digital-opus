@@ -2492,6 +2492,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_media_publicly_visible: {
+        Args: { _media_id: string }
+        Returns: boolean
+      }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
