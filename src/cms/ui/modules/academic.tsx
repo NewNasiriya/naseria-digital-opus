@@ -500,6 +500,7 @@ function noteEditorConfig(scope: Scope): EntityEditorConfig<AcademicNoteRow> {
     entityLabel: ACADEMIC_SECTION_META.notes.entity,
     primaryTitleField: "title_ar",
     requiredPermission: "academic.manage",
+    relatedQueryKeys: [["academic"]],
     createDefaults: {
       grade_id: scope.gradeId,
       display_order: 0,
