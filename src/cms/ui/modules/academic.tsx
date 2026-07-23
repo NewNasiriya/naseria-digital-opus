@@ -365,6 +365,7 @@ function resourceEditorConfig(scope: Scope): EntityEditorConfig<AcademicResource
     entityLabel: ACADEMIC_SECTION_META.resources.entity,
     primaryTitleField: "title_ar",
     requiredPermission: "academic.manage",
+    relatedQueryKeys: [["academic"]],
     createDefaults: {
       grade_id: scope.gradeId,
       display_order: 0,
