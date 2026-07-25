@@ -49,9 +49,9 @@ export async function fetchPublishedHonorBoards(
   const { data, error } = await q;
   if (error) throw error;
 
-  return (data ?? [])
-    .map((row: any) => {
-      const image = resolveImage(row.media, row.image_url);
+  const resolved = await Promise.all(
+    (data ?? []).map(async (row: any) => {
+      const image = await resolveImage(row.media, row.image_url);
       if (!image) return null;
       return {
         id: row.id,
@@ -65,8 +65,12 @@ export async function fetchPublishedHonorBoards(
         display_order: row.display_order,
         published_at: row.published_at,
       } as HonorBoardRecord;
-    })
-    .filter((x: HonorBoardRecord | null): x is HonorBoardRecord => x !== null);
+    }),
+  );
+
+  return resolved.filter(
+    (x: HonorBoardRecord | null): x is HonorBoardRecord => x !== null,
+  );
 }
 
 export async function fetchHonorBoardByGrade(
