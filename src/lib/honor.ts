@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import { mediaPublicUrl } from "@/lib/media";
+import { mediaPublicUrl, mediaSignedUrl } from "@/lib/media";
 
 export interface HonorBoardRecord {
   id: string;
@@ -15,18 +15,20 @@ export interface HonorBoardRecord {
 }
 
 /**
- * Resolve final image URL: prefer Media Library, fall back to direct image_url.
+ * Resolve final image URL: prefer Media Library (private bucket → signed
+ * URL), fall back to the legacy direct `image_url`.
  */
-function resolveImage(
+async function resolveImage(
   media: { bucket: string | null; storage_path: string | null } | null,
   imageUrl: string | null,
-): string | null {
-  const fromMedia = media ? mediaPublicUrl(media) : null;
+): Promise<string | null> {
+  const fromMedia = media ? await mediaSignedUrl(media) : null;
   if (fromMedia) return fromMedia;
   if (!imageUrl) return null;
   // Normalize legacy Lovable CDN paths so images work on custom domains too.
   return mediaPublicUrl({ bucket: "external", storage_path: imageUrl });
 }
+
 
 export async function fetchPublishedHonorBoards(
   academicYearId?: string,
@@ -47,9 +49,9 @@ export async function fetchPublishedHonorBoards(
   const { data, error } = await q;
   if (error) throw error;
 
-  return (data ?? [])
-    .map((row: any) => {
-      const image = resolveImage(row.media, row.image_url);
+  const resolved = await Promise.all(
+    (data ?? []).map(async (row: any) => {
+      const image = await resolveImage(row.media, row.image_url);
       if (!image) return null;
       return {
         id: row.id,
@@ -63,8 +65,12 @@ export async function fetchPublishedHonorBoards(
         display_order: row.display_order,
         published_at: row.published_at,
       } as HonorBoardRecord;
-    })
-    .filter((x: HonorBoardRecord | null): x is HonorBoardRecord => x !== null);
+    }),
+  );
+
+  return resolved.filter(
+    (x: HonorBoardRecord | null): x is HonorBoardRecord => x !== null,
+  );
 }
 
 export async function fetchHonorBoardByGrade(
@@ -88,7 +94,7 @@ export async function fetchHonorBoardByGrade(
   if (!data) return null;
 
   const row: any = data;
-  const image = resolveImage(row.media, row.image_url);
+  const image = await resolveImage(row.media, row.image_url);
   if (!image) return null;
 
   return {

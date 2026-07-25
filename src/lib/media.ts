@@ -31,3 +31,31 @@ export function mediaPublicUrl(m: MediaRef | null | undefined): string | null {
   const { data } = supabase.storage.from(bucket).getPublicUrl(path);
   return data?.publicUrl ?? null;
 }
+
+/**
+ * Resolve a media row to a *usable* URL.
+ *
+ * Storage buckets in this project are private: object access is granted by
+ * RLS on `storage.objects` (only media backing published content), so the
+ * plain public URL 404s. For those rows a short-lived signed URL is issued;
+ * externally-hosted assets fall through to `mediaPublicUrl`.
+ */
+export async function mediaSignedUrl(
+  m: MediaRef | null | undefined,
+  expiresInSeconds = 60 * 60,
+): Promise<string | null> {
+  if (!m || !m.storage_path) return null;
+  const path = m.storage_path;
+  const isExternal =
+    m.bucket === "external" ||
+    /^(https?:)?\/\//.test(path) ||
+    path.startsWith("/");
+  if (isExternal) return mediaPublicUrl(m);
+
+  const bucket = m.bucket ?? "media";
+  const { data, error } = await supabase.storage
+    .from(bucket)
+    .createSignedUrl(path, expiresInSeconds);
+  if (error || !data?.signedUrl) return mediaPublicUrl(m);
+  return data.signedUrl;
+}
