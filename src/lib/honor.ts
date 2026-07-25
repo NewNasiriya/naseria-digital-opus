@@ -94,7 +94,7 @@ export async function fetchHonorBoardByGrade(
   if (!data) return null;
 
   const row: any = data;
-  const image = resolveImage(row.media, row.image_url);
+  const image = await resolveImage(row.media, row.image_url);
   if (!image) return null;
 
   return {
