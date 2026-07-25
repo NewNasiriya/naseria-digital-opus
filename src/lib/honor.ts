@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import { mediaPublicUrl } from "@/lib/media";
+import { mediaPublicUrl, mediaSignedUrl } from "@/lib/media";
 
 export interface HonorBoardRecord {
   id: string;
@@ -15,18 +15,20 @@ export interface HonorBoardRecord {
 }
 
 /**
- * Resolve final image URL: prefer Media Library, fall back to direct image_url.
+ * Resolve final image URL: prefer Media Library (private bucket → signed
+ * URL), fall back to the legacy direct `image_url`.
  */
-function resolveImage(
+async function resolveImage(
   media: { bucket: string | null; storage_path: string | null } | null,
   imageUrl: string | null,
-): string | null {
-  const fromMedia = media ? mediaPublicUrl(media) : null;
+): Promise<string | null> {
+  const fromMedia = media ? await mediaSignedUrl(media) : null;
   if (fromMedia) return fromMedia;
   if (!imageUrl) return null;
   // Normalize legacy Lovable CDN paths so images work on custom domains too.
   return mediaPublicUrl({ bucket: "external", storage_path: imageUrl });
 }
+
 
 export async function fetchPublishedHonorBoards(
   academicYearId?: string,
