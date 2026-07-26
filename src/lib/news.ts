@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import { mediaPublicUrl, type MediaRef } from "@/lib/media";
+import { mediaPublicUrl, mediaSignedUrl, type MediaRef } from "@/lib/media";
 
 export interface NewsCategory {
   id: string;
@@ -17,11 +17,14 @@ export interface NewsListItem {
   summary_ar: string | null;
   summary_en: string | null;
   published_at: string | null;
+  updated_at?: string | null;
   is_featured: boolean;
   is_pinned: boolean;
   reading_minutes: number | null;
   category: Pick<NewsCategory, "id" | "slug" | "name_ar"> | null;
   featured_media: MediaRef | null;
+  /** Resolved, ready-to-render cover URL (signed for private buckets). */
+  cover_url: string | null;
 }
 
 export interface NewsDetail extends NewsListItem {
@@ -34,11 +37,13 @@ export interface NewsDetail extends NewsListItem {
     caption_ar: string | null;
     display_order: number;
     media: MediaRef & { file_name?: string };
+    /** Resolved, ready-to-render URL. */
+    url: string | null;
   }>;
 }
 
 const LIST_SELECT = `
-  id,title_ar,title_en,slug,summary_ar,summary_en,published_at,
+  id,title_ar,title_en,slug,summary_ar,summary_en,published_at,updated_at,
   is_featured,is_pinned,reading_minutes,
   category:news_categories!news_category_id_fkey(id,slug,name_ar),
   featured_media:media!news_featured_image_media_id_fkey(bucket,storage_path,alt_ar,alt_en)
@@ -54,6 +59,26 @@ export interface ListOptions {
 }
 
 export const ANNOUNCEMENT_SLUGS = ["announcements", "announcement", "اعلانات", "إعلانات"];
+
+/**
+ * Resolve the cover image for a row.
+ *
+ * Media rows either point at a repo-hosted asset (`bucket = 'external'`,
+ * root-relative path — normalized by `mediaPublicUrl`) or at an object in a
+ * *private* Supabase Storage bucket, which requires a short-lived signed URL.
+ * `mediaSignedUrl` handles both, so replacing a cover from the Media Library
+ * keeps rendering on the public site.
+ */
+async function withCovers<T extends { featured_media: MediaRef | null }>(
+  rows: T[],
+): Promise<Array<T & { cover_url: string | null }>> {
+  return Promise.all(
+    rows.map(async (row) => ({
+      ...row,
+      cover_url: await mediaSignedUrl(row.featured_media),
+    })),
+  );
+}
 
 export async function fetchCategories(): Promise<NewsCategory[]> {
   const { data, error } = await supabase
@@ -74,7 +99,7 @@ export async function fetchPinned(limit = 3): Promise<NewsListItem[]> {
     .order("published_at", { ascending: false })
     .limit(limit);
   if (error) throw error;
-  return (data ?? []) as unknown as NewsListItem[];
+  return withCovers((data ?? []) as unknown as NewsListItem[]);
 }
 
 export async function fetchFeatured(limit = 3): Promise<NewsListItem[]> {
@@ -86,7 +111,7 @@ export async function fetchFeatured(limit = 3): Promise<NewsListItem[]> {
     .order("published_at", { ascending: false })
     .limit(limit);
   if (error) throw error;
-  return (data ?? []) as unknown as NewsListItem[];
+  return withCovers((data ?? []) as unknown as NewsListItem[]);
 }
 
 export async function fetchNewsList(
@@ -132,7 +157,7 @@ export async function fetchNewsList(
     .range(from, to);
   if (error) throw error;
   return {
-    items: (data ?? []) as unknown as NewsListItem[],
+    items: await withCovers((data ?? []) as unknown as NewsListItem[]),
     total: count ?? 0,
   };
 }
@@ -150,8 +175,12 @@ export async function fetchNewsBySlug(slug: string): Promise<NewsDetail | null> 
   if (error) throw error;
   if (!data) return null;
   const detail = data as unknown as NewsDetail;
-  detail.gallery = (detail.gallery ?? []).slice().sort(
-    (a, b) => (a.display_order ?? 0) - (b.display_order ?? 0),
+  detail.cover_url = await mediaSignedUrl(detail.featured_media);
+  const gallery = (detail.gallery ?? [])
+    .slice()
+    .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0));
+  detail.gallery = await Promise.all(
+    gallery.map(async (g) => ({ ...g, url: await mediaSignedUrl(g.media) })),
   );
   return detail;
 }
@@ -171,7 +200,7 @@ export async function fetchRelatedNews(
   if (categoryId) query = query.eq("category_id", categoryId);
   const { data, error } = await query;
   if (error) throw error;
-  return (data ?? []) as unknown as NewsListItem[];
+  return withCovers((data ?? []) as unknown as NewsListItem[]);
 }
 
 export async function fetchAdjacentNews(publishedAt: string | null): Promise<{
@@ -216,6 +245,19 @@ export function formatArabicDate(iso: string | null): string {
   }
 }
 
-export function coverImageUrl(item: Pick<NewsListItem, "featured_media">): string | null {
-  return mediaPublicUrl(item.featured_media);
+/** Reading time fallback derived from the body when the CMS field is empty. */
+export function readingMinutes(item: {
+  reading_minutes?: number | null;
+  body_ar?: string | null;
+}): number | null {
+  if (item.reading_minutes) return item.reading_minutes;
+  const words = (item.body_ar ?? "").trim().split(/\s+/).filter(Boolean).length;
+  if (!words) return null;
+  return Math.max(1, Math.round(words / 180));
+}
+
+export function coverImageUrl(
+  item: Pick<NewsListItem, "featured_media"> & { cover_url?: string | null },
+): string | null {
+  return item.cover_url ?? mediaPublicUrl(item.featured_media);
 }

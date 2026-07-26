@@ -175,6 +175,9 @@ const listConfig: EntityListConfig<NewsRow> = {
   supportsBulk: true,
   pageSize: 20,
   searchPlaceholder: "بحث بعنوان الخبر…",
+  // Public-site caches that must refresh the moment an article is
+  // saved / published / archived / deleted from the dashboard.
+  relatedQueryKeys: [["news"], ["home", "latest-news"], ["search"]],
   publicPathFor: (row) => (row.slug ? `/news/${row.slug}` : null),
   columns: [
     {
@@ -366,6 +369,12 @@ const editorSections: FieldSection[] = [
         helpText: "يُحدَّث تلقائيًا عند النشر. يمكن تعديله لأرشفة تواريخ سابقة.",
       },
       {
+        kind: "date",
+        name: "scheduled_at",
+        label: "موعد النشر المجدول",
+        helpText: "للتوثيق الإداري لموعد النشر المخطط. النشر الفعلي يتم بزر «نشر».",
+      },
+      {
         kind: "boolean",
         name: "is_featured",
         label: "خبر مميّز",
@@ -383,6 +392,17 @@ const editorSections: FieldSection[] = [
         label: "زمن القراءة (دقيقة)",
         min: 1,
         max: 60,
+        helpText: "إذا تُرك فارغًا يُحسب تقديريًا من طول المحتوى.",
+      },
+      {
+        kind: "readonly",
+        name: "view_count",
+        label: "عدد المشاهدات",
+      },
+      {
+        kind: "readonly",
+        name: "updated_at",
+        label: "آخر تعديل",
       },
     ],
   },
@@ -425,6 +445,7 @@ const editorConfig: EntityEditorConfig<NewsRow> = {
   module: "news",
   entityTable: "news",
   entityLabel: "خبر",
+  relatedQueryKeys: [["news"], ["home", "latest-news"], ["search"]],
   primaryTitleField: "title_ar",
   requiredPermission: "news.manage",
   publicPathFor: (row) => (row.slug ? `/news/${row.slug}` : null),

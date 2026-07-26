@@ -7,28 +7,26 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
-  Facebook,
-  Link2,
   Newspaper,
   Pin,
-  Share2,
   Star,
-  Twitter,
 } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/academic/PageHero";
 import { NewsCard } from "@/components/news/NewsCard";
+import { ArticleShare } from "@/components/news/ArticleShare";
+import { ReadingProgress } from "@/components/news/ReadingProgress";
 import {
   coverImageUrl,
   fetchAdjacentNews,
   fetchNewsBySlug,
   fetchRelatedNews,
   formatArabicDate,
+  readingMinutes,
   type NewsDetail,
 } from "@/lib/news";
-import { mediaPublicUrl } from "@/lib/media";
 import { trackContentView } from "@/lib/analytics";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -136,6 +134,16 @@ export const Route = createFileRoute("/news/$slug")({
 function NewsDetailPage() {
   const { item } = Route.useLoaderData() as { item: NewsDetail };
   const cover = coverImageUrl(item);
+  const canonical = `${SITE_URL}/news/${item.slug}`;
+  const minutes = readingMinutes(item);
+  // Only surface "last updated" when it lands on a different calendar day
+  // than publication, otherwise it is noise for the reader.
+  const updated =
+    item.updated_at &&
+    item.published_at &&
+    item.updated_at.slice(0, 10) !== item.published_at.slice(0, 10)
+      ? item.updated_at
+      : null;
 
   const relatedQ = useQuery({
     queryKey: ["news", "related", item.category?.id ?? null, item.id],
@@ -157,69 +165,130 @@ function NewsDetailPage() {
 
   return (
     <>
-      <PageHero
-        eyebrow={item.category?.name_ar ?? "خبر"}
-        title={item.title_ar}
-        description={item.summary_ar ?? undefined}
-        crumbs={[
-          { label: "الأخبار", to: "/news" },
-          { label: item.title_ar },
-        ]}
-        actions={
-          <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-            {item.published_at && (
-              <span className="inline-flex items-center gap-1.5">
-                <CalendarDays className="h-4 w-4" aria-hidden="true" />
-                {formatArabicDate(item.published_at)}
-              </span>
-            )}
-            {item.reading_minutes && (
-              <span className="inline-flex items-center gap-1.5">
-                <Clock className="h-4 w-4" aria-hidden="true" />
-                {item.reading_minutes} د قراءة
-              </span>
-            )}
-            {item.is_pinned && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-primary">
-                <Pin className="h-3.5 w-3.5" aria-hidden="true" />
-                مثبت
-              </span>
-            )}
-            {item.is_featured && (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-soft px-2.5 py-1 text-primary">
-                <Star className="h-3.5 w-3.5" aria-hidden="true" />
-                خبر مميز
-              </span>
-            )}
-          </div>
-        }
-      />
+      <ReadingProgress />
 
       <Section spacing="default">
         <Container size="wide">
-          <div className="mx-auto max-w-4xl">
+          <article className="mx-auto max-w-[46rem]">
+            {/* Breadcrumbs */}
+            <nav aria-label="مسار التنقل" className="text-xs text-muted-foreground">
+              <ol className="flex flex-wrap items-center gap-1.5">
+                <li>
+                  <Link to="/" className="transition-colors hover:text-primary">
+                    الرئيسية
+                  </Link>
+                </li>
+                <li aria-hidden="true">/</li>
+                <li>
+                  <Link to="/news" className="transition-colors hover:text-primary">
+                    الأخبار
+                  </Link>
+                </li>
+                <li aria-hidden="true">/</li>
+                <li className="max-w-[18rem] truncate text-foreground/70" aria-current="page">
+                  {item.title_ar}
+                </li>
+              </ol>
+            </nav>
+
+            {/* Editorial header */}
+            <header className="mt-6">
+              <div className="flex flex-wrap items-center gap-2">
+                {item.category && (
+                  <Link
+                    to="/news"
+                    search={{ category: item.category.slug }}
+                    className="inline-flex items-center rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-primary transition-colors hover:bg-primary/15"
+                  >
+                    {item.category.name_ar}
+                  </Link>
+                )}
+                {item.is_pinned && (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+                    <Pin className="h-3 w-3" aria-hidden="true" />
+                    مثبت
+                  </span>
+                )}
+                {item.is_featured && (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground">
+                    <Star className="h-3 w-3" aria-hidden="true" />
+                    مميز
+                  </span>
+                )}
+              </div>
+
+              <h1 className="mt-5 text-balance text-3xl font-semibold leading-[1.35] tracking-tight text-foreground sm:text-4xl sm:leading-[1.3]">
+                {item.title_ar}
+              </h1>
+
+              {item.summary_ar && (
+                <p className="mt-5 border-r-2 border-primary/40 pr-4 text-lg leading-[1.9] text-muted-foreground">
+                  {item.summary_ar}
+                </p>
+              )}
+
+              <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-border py-3 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 font-medium text-foreground/80">
+                  <Newspaper className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+                  إدارة المدرسة
+                </span>
+                {item.published_at && (
+                  <time
+                    dateTime={item.published_at}
+                    className="inline-flex items-center gap-1.5"
+                  >
+                    <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
+                    {formatArabicDate(item.published_at)}
+                  </time>
+                )}
+                {minutes && (
+                  <span className="inline-flex items-center gap-1.5">
+                    <Clock className="h-3.5 w-3.5" aria-hidden="true" />
+                    {minutes} د قراءة
+                  </span>
+                )}
+                {updated && (
+                  <span className="inline-flex items-center gap-1.5">
+                    آخر تحديث: {formatArabicDate(updated)}
+                  </span>
+                )}
+              </div>
+            </header>
+
             {cover && (
-              <figure className="mb-10 overflow-hidden rounded-2xl border border-border bg-surface-muted elevation-sm">
+              <figure className="mt-8 overflow-hidden rounded-2xl border border-border bg-surface-muted elevation-sm">
                 <img
                   src={cover}
                   alt={item.featured_media?.alt_ar ?? item.title_ar}
                   loading="eager"
                   decoding="async"
-                  className="aspect-[16/9] w-full object-cover"
+                  className="aspect-[16/9] w-full object-cover object-center"
                 />
+                {item.featured_media?.alt_ar && (
+                  <figcaption className="border-t border-border bg-card p-3 text-xs text-muted-foreground">
+                    {item.featured_media.alt_ar}
+                  </figcaption>
+                )}
               </figure>
             )}
 
             {paragraphs.length > 0 ? (
-              <article className="prose-news space-y-6 text-base leading-loose text-foreground">
+              <div className="mt-10 space-y-6">
                 {paragraphs.map((p, i) => (
-                  <p key={i} className="text-[17px] leading-[2] text-foreground/90">
+                  <p
+                    key={i}
+                    className={
+                      i === 0
+                        ? "text-[19px] leading-[2.1] text-foreground"
+                        : "text-[17px] leading-[2.1] text-foreground/90"
+                    }
+                  >
                     {p}
                   </p>
                 ))}
-              </article>
+              </div>
             ) : (
-              <p className="rounded-2xl border border-dashed border-border bg-surface p-8 text-center text-muted-foreground">
+              <p className="mt-10 rounded-2xl border border-dashed border-border bg-surface p-8 text-center text-muted-foreground">
                 سيتم إضافة تفاصيل هذا الخبر قريبًا.
               </p>
             )}
@@ -232,21 +301,20 @@ function NewsDetailPage() {
                 >
                   معرض الصور
                 </h2>
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-3 sm:grid-cols-2">
                   {item.gallery.map((g) => {
-                    const url = mediaPublicUrl(g.media);
-                    if (!url) return null;
+                    if (!g.url) return null;
                     return (
                       <figure
                         key={g.id}
                         className="overflow-hidden rounded-xl border border-border bg-surface-muted"
                       >
                         <img
-                          src={url}
+                          src={g.url}
                           alt={g.media.alt_ar ?? g.caption_ar ?? item.title_ar}
                           loading="lazy"
                           decoding="async"
-                          className="aspect-[4/3] w-full object-cover transition-transform duration-500 hover:scale-[1.03]"
+                          className="aspect-[4/3] w-full object-cover object-center transition-transform duration-500 hover:scale-[1.03]"
                         />
                         {g.caption_ar && (
                           <figcaption className="p-3 text-xs text-muted-foreground">
@@ -260,13 +328,13 @@ function NewsDetailPage() {
               </section>
             )}
 
-            <ShareBar title={item.title_ar} />
+            <ArticleShare title={item.title_ar} url={canonical} />
 
             <PrevNextNav
               prev={adjQ.data?.prev ?? null}
               next={adjQ.data?.next ?? null}
             />
-          </div>
+          </article>
         </Container>
       </Section>
 
@@ -296,45 +364,6 @@ function NewsDetailPage() {
         </Section>
       )}
     </>
-  );
-}
-
-function ShareBar({ title }: { title: string }) {
-  return (
-    <div className="mt-12 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-card p-5">
-      <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-        <Share2 className="h-4 w-4 text-primary" aria-hidden="true" />
-        شارك هذا الخبر
-      </div>
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          aria-label="نسخ الرابط"
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
-          onClick={() => {
-            if (typeof window !== "undefined") {
-              void navigator.clipboard?.writeText(window.location.href);
-            }
-          }}
-        >
-          <Link2 className="h-4 w-4" aria-hidden="true" />
-        </button>
-        <span
-          role="button"
-          aria-label={`مشاركة "${title}" على فيسبوك (قريبًا)`}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border text-muted-foreground opacity-60"
-        >
-          <Facebook className="h-4 w-4" aria-hidden="true" />
-        </span>
-        <span
-          role="button"
-          aria-label={`مشاركة "${title}" على تويتر (قريبًا)`}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border text-muted-foreground opacity-60"
-        >
-          <Twitter className="h-4 w-4" aria-hidden="true" />
-        </span>
-      </div>
-    </div>
   );
 }
 
