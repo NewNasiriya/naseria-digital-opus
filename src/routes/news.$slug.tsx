@@ -136,8 +136,12 @@ function NewsDetailPage() {
   const cover = coverImageUrl(item);
   const canonical = `${SITE_URL}/news/${item.slug}`;
   const minutes = readingMinutes(item);
+  // Only surface "last updated" when it lands on a different calendar day
+  // than publication, otherwise it is noise for the reader.
   const updated =
-    item.updated_at && item.published_at && item.updated_at !== item.published_at
+    item.updated_at &&
+    item.published_at &&
+    item.updated_at.slice(0, 10) !== item.published_at.slice(0, 10)
       ? item.updated_at
       : null;
 
@@ -240,7 +244,7 @@ function NewsDetailPage() {
                 {minutes && (
                   <span className="inline-flex items-center gap-1.5">
                     <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-                    {minutes} دقائق قراءة
+                    {minutes} د قراءة
                   </span>
                 )}
                 {updated && (
