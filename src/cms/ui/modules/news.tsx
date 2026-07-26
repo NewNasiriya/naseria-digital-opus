@@ -369,6 +369,12 @@ const editorSections: FieldSection[] = [
         helpText: "يُحدَّث تلقائيًا عند النشر. يمكن تعديله لأرشفة تواريخ سابقة.",
       },
       {
+        kind: "date",
+        name: "scheduled_at",
+        label: "موعد النشر المجدول",
+        helpText: "للتوثيق الإداري لموعد النشر المخطط. النشر الفعلي يتم بزر «نشر».",
+      },
+      {
         kind: "boolean",
         name: "is_featured",
         label: "خبر مميّز",
@@ -386,6 +392,17 @@ const editorSections: FieldSection[] = [
         label: "زمن القراءة (دقيقة)",
         min: 1,
         max: 60,
+        helpText: "إذا تُرك فارغًا يُحسب تقديريًا من طول المحتوى.",
+      },
+      {
+        kind: "readonly",
+        name: "view_count",
+        label: "عدد المشاهدات",
+      },
+      {
+        kind: "readonly",
+        name: "updated_at",
+        label: "آخر تعديل",
       },
     ],
   },
