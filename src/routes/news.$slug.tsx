@@ -7,28 +7,26 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
-  Facebook,
-  Link2,
   Newspaper,
   Pin,
-  Share2,
   Star,
-  Twitter,
 } from "lucide-react";
 
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { PageHero } from "@/components/academic/PageHero";
 import { NewsCard } from "@/components/news/NewsCard";
+import { ArticleShare } from "@/components/news/ArticleShare";
+import { ReadingProgress } from "@/components/news/ReadingProgress";
 import {
   coverImageUrl,
   fetchAdjacentNews,
   fetchNewsBySlug,
   fetchRelatedNews,
   formatArabicDate,
+  readingMinutes,
   type NewsDetail,
 } from "@/lib/news";
-import { mediaPublicUrl } from "@/lib/media";
 import { trackContentView } from "@/lib/analytics";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
