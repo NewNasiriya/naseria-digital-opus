@@ -175,6 +175,9 @@ const listConfig: EntityListConfig<NewsRow> = {
   supportsBulk: true,
   pageSize: 20,
   searchPlaceholder: "بحث بعنوان الخبر…",
+  // Public-site caches that must refresh the moment an article is
+  // saved / published / archived / deleted from the dashboard.
+  relatedQueryKeys: [["news"], ["home", "latest-news"], ["search"]],
   publicPathFor: (row) => (row.slug ? `/news/${row.slug}` : null),
   columns: [
     {
