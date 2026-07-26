@@ -445,6 +445,7 @@ const editorConfig: EntityEditorConfig<NewsRow> = {
   module: "news",
   entityTable: "news",
   entityLabel: "خبر",
+  relatedQueryKeys: [["news"], ["home", "latest-news"], ["search"]],
   primaryTitleField: "title_ar",
   requiredPermission: "news.manage",
   publicPathFor: (row) => (row.slug ? `/news/${row.slug}` : null),
