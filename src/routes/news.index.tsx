@@ -63,22 +63,20 @@ function SectionHeader({
   );
 }
 
-function SkeletonGrid({ count = 6 }: { count?: number }) {
+function SkeletonList({ count = 6 }: { count?: number }) {
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="mx-auto max-w-3xl divide-y divide-border">
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="overflow-hidden rounded-2xl border border-border bg-card">
-          <div className="aspect-[16/10] w-full animate-pulse bg-surface-muted" />
-          <div className="space-y-3 p-6">
-            <div className="h-3 w-24 animate-pulse rounded bg-surface-muted" />
-            <div className="h-5 w-3/4 animate-pulse rounded bg-surface-muted" />
-            <div className="h-3 w-full animate-pulse rounded bg-surface-muted" />
-          </div>
+        <div key={i} className="space-y-3 py-7 first:pt-0">
+          <div className="h-3 w-40 animate-pulse rounded bg-surface-muted" />
+          <div className="h-5 w-3/4 animate-pulse rounded bg-surface-muted" />
+          <div className="h-3 w-full animate-pulse rounded bg-surface-muted" />
         </div>
       ))}
     </div>
   );
 }
+
 
 function NewsIndexPage() {
   const { category, q, page = 1 } = Route.useSearch();
