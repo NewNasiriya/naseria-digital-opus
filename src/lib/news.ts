@@ -46,7 +46,7 @@ export interface NewsDetail extends NewsListItem {
 
 const LIST_SELECT = `
   id,title_ar,title_en,slug,summary_ar,summary_en,published_at,updated_at,
-  is_featured,is_pinned,reading_minutes,
+  is_featured,is_pinned,reading_minutes,body_ar,
   category:news_categories!news_category_id_fkey(id,slug,name_ar),
   featured_media:media!news_featured_image_media_id_fkey(bucket,storage_path,alt_ar,alt_en)
 `;
