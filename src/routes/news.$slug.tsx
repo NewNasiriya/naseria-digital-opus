@@ -133,17 +133,13 @@ export const Route = createFileRoute("/news/$slug")({
 
 function NewsDetailPage() {
   const { item } = Route.useLoaderData() as { item: NewsDetail };
-  const cover = coverImageUrl(item);
   const canonical = `${SITE_URL}/news/${item.slug}`;
   const minutes = readingMinutes(item);
   // Only surface "last updated" when it lands on a different calendar day
   // than publication, otherwise it is noise for the reader.
-  const updated =
-    item.updated_at &&
-    item.published_at &&
-    item.updated_at.slice(0, 10) !== item.published_at.slice(0, 10)
-      ? item.updated_at
-      : null;
+  const updated = meaningfulUpdatedAt(item);
+  const standfirst = excerptFor(item, 240);
+
 
   const relatedQ = useQuery({
     queryKey: ["news", "related", item.category?.id ?? null, item.id],
