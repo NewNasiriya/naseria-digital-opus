@@ -134,7 +134,7 @@ function NewsIndexPage() {
 
       <Section tone="default" spacing="default">
         <Container size="wide">
-          <div className="flex flex-col gap-6">
+          <div className="mx-auto flex max-w-3xl flex-col gap-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <SectionHeader
                 title={
