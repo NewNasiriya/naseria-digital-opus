@@ -21,6 +21,8 @@ export interface NewsListItem {
   is_featured: boolean;
   is_pinned: boolean;
   reading_minutes: number | null;
+  /** Present on list rows so excerpt + reading time can be derived. */
+  body_ar?: string | null;
   category: Pick<NewsCategory, "id" | "slug" | "name_ar"> | null;
   featured_media: MediaRef | null;
   /** Resolved, ready-to-render cover URL (signed for private buckets). */
@@ -44,7 +46,7 @@ export interface NewsDetail extends NewsListItem {
 
 const LIST_SELECT = `
   id,title_ar,title_en,slug,summary_ar,summary_en,published_at,updated_at,
-  is_featured,is_pinned,reading_minutes,
+  is_featured,is_pinned,reading_minutes,body_ar,
   category:news_categories!news_category_id_fkey(id,slug,name_ar),
   featured_media:media!news_featured_image_media_id_fkey(bucket,storage_path,alt_ar,alt_en)
 `;
@@ -166,7 +168,7 @@ export async function fetchNewsBySlug(slug: string): Promise<NewsDetail | null> 
   const { data, error } = await supabase
     .from("news")
     .select(
-      `${LIST_SELECT},body_ar,body_en,seo_title,seo_description,
+      `${LIST_SELECT},body_en,seo_title,seo_description,
        gallery:news_media(id,caption_ar,display_order,media:media!news_media_media_id_fkey(bucket,storage_path,alt_ar,alt_en,file_name))`,
     )
     .eq("slug", slug)
@@ -260,4 +262,81 @@ export function coverImageUrl(
   item: Pick<NewsListItem, "featured_media"> & { cover_url?: string | null },
 ): string | null {
   return item.cover_url ?? mediaPublicUrl(item.featured_media);
+}
+
+/**
+ * Editorial excerpt. Uses the CMS summary when the editor wrote one, and
+ * otherwise derives a clean, sentence-aware snippet from the article body so
+ * administrators never have to type what can be inferred.
+ */
+export function excerptFor(
+  item: { summary_ar?: string | null; body_ar?: string | null },
+  maxChars = 180,
+): string | null {
+  const summary = item.summary_ar?.trim();
+  if (summary) return summary;
+  const body = (item.body_ar ?? "").replace(/\s+/g, " ").trim();
+  if (!body) return null;
+  if (body.length <= maxChars) return body;
+  const slice = body.slice(0, maxChars);
+  const cut = Math.max(
+    slice.lastIndexOf("."),
+    slice.lastIndexOf("،"),
+    slice.lastIndexOf("؟"),
+    slice.lastIndexOf(" "),
+  );
+  return `${slice.slice(0, cut > 60 ? cut : maxChars).trim()}…`;
+}
+
+/**
+ * "Last updated" is only meaningful when it falls on a different calendar day
+ * than publication — otherwise it is noise. Returns null when it should hide.
+ */
+export function meaningfulUpdatedAt(item: {
+  published_at?: string | null;
+  updated_at?: string | null;
+}): string | null {
+  const { published_at: p, updated_at: u } = item;
+  if (!p || !u) return null;
+  return u.slice(0, 10) !== p.slice(0, 10) ? u : null;
+}
+
+const RELATIVE_UNITS: Array<[Intl.RelativeTimeFormatUnit, number]> = [
+  ["year", 365 * 24 * 3600_000],
+  ["month", 30 * 24 * 3600_000],
+  ["week", 7 * 24 * 3600_000],
+  ["day", 24 * 3600_000],
+  ["hour", 3600_000],
+  ["minute", 60_000],
+];
+
+/**
+ * Relative Arabic date for recent items ("قبل 3 أيام"), falling back to the
+ * absolute date once an article is older than ~two weeks.
+ */
+export function relativeArabicDate(iso: string | null): string {
+  if (!iso) return "";
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return "";
+  const diff = then - Date.now();
+  const abs = Math.abs(diff);
+  if (abs > 14 * 24 * 3600_000) return formatArabicDate(iso);
+  try {
+    const rtf = new Intl.RelativeTimeFormat("ar-EG", { numeric: "auto" });
+    for (const [unit, ms] of RELATIVE_UNITS) {
+      if (abs >= ms) return rtf.format(Math.round(diff / ms), unit);
+    }
+    return rtf.format(0, "minute");
+  } catch {
+    return formatArabicDate(iso);
+  }
+}
+
+
+/** Arabic-correct reading-time label ("دقيقة واحدة" / "دقيقتان" / "٥ دقائق"). */
+export function readingTimeLabel(minutes: number): string {
+  if (minutes === 1) return "دقيقة واحدة للقراءة";
+  if (minutes === 2) return "دقيقتان للقراءة";
+  if (minutes <= 10) return `${minutes} دقائق للقراءة`;
+  return `${minutes} دقيقة للقراءة`;
 }

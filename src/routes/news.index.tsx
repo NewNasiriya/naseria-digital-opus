@@ -63,22 +63,20 @@ function SectionHeader({
   );
 }
 
-function SkeletonGrid({ count = 6 }: { count?: number }) {
+function SkeletonList({ count = 6 }: { count?: number }) {
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="mx-auto max-w-3xl divide-y divide-border">
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="overflow-hidden rounded-2xl border border-border bg-card">
-          <div className="aspect-[16/10] w-full animate-pulse bg-surface-muted" />
-          <div className="space-y-3 p-6">
-            <div className="h-3 w-24 animate-pulse rounded bg-surface-muted" />
-            <div className="h-5 w-3/4 animate-pulse rounded bg-surface-muted" />
-            <div className="h-3 w-full animate-pulse rounded bg-surface-muted" />
-          </div>
+        <div key={i} className="space-y-3 py-7 first:pt-0">
+          <div className="h-3 w-40 animate-pulse rounded bg-surface-muted" />
+          <div className="h-5 w-3/4 animate-pulse rounded bg-surface-muted" />
+          <div className="h-3 w-full animate-pulse rounded bg-surface-muted" />
         </div>
       ))}
     </div>
   );
 }
+
 
 function NewsIndexPage() {
   const { category, q, page = 1 } = Route.useSearch();
@@ -125,9 +123,9 @@ function NewsIndexPage() {
         <Section tone="muted" spacing="sm">
           <Container size="wide">
             <SectionHeader eyebrow="الأهم" title="أخبار مثبّتة" icon={Pin} />
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {pinnedQ.data!.map((item, i) => (
-                <NewsCard key={item.id} item={item} priority={i === 0} />
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {pinnedQ.data!.map((item) => (
+                <NewsCard key={item.id} item={item} variant="card" />
               ))}
             </div>
           </Container>
@@ -136,7 +134,7 @@ function NewsIndexPage() {
 
       <Section tone="default" spacing="default">
         <Container size="wide">
-          <div className="flex flex-col gap-6">
+          <div className="mx-auto flex max-w-3xl flex-col gap-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <SectionHeader
                 title={
@@ -156,9 +154,9 @@ function NewsIndexPage() {
             )}
           </div>
 
-          <div className="mt-10">
+          <div className="mx-auto mt-10 max-w-3xl">
             {listQ.isLoading ? (
-              <SkeletonGrid />
+              <SkeletonList />
             ) : items.length === 0 ? (
               <EmptyPanel
                 icon={Newspaper}
@@ -173,9 +171,9 @@ function NewsIndexPage() {
               />
             ) : (
               <>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {items.map((item, i) => (
-                    <NewsCard key={item.id} item={item} priority={i < 3} />
+                <div className="mx-auto max-w-3xl divide-y divide-border">
+                  {items.map((item) => (
+                    <NewsCard key={item.id} item={item} />
                   ))}
                 </div>
                 <NewsPagination
@@ -188,6 +186,7 @@ function NewsIndexPage() {
               </>
             )}
           </div>
+
         </Container>
       </Section>
 

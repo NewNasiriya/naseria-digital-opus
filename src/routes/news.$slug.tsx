@@ -20,13 +20,17 @@ import { ArticleShare } from "@/components/news/ArticleShare";
 import { ReadingProgress } from "@/components/news/ReadingProgress";
 import {
   coverImageUrl,
+  excerptFor,
   fetchAdjacentNews,
   fetchNewsBySlug,
   fetchRelatedNews,
   formatArabicDate,
+  meaningfulUpdatedAt,
   readingMinutes,
+  readingTimeLabel,
   type NewsDetail,
 } from "@/lib/news";
+
 import { trackContentView } from "@/lib/analytics";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -133,17 +137,13 @@ export const Route = createFileRoute("/news/$slug")({
 
 function NewsDetailPage() {
   const { item } = Route.useLoaderData() as { item: NewsDetail };
-  const cover = coverImageUrl(item);
   const canonical = `${SITE_URL}/news/${item.slug}`;
   const minutes = readingMinutes(item);
   // Only surface "last updated" when it lands on a different calendar day
   // than publication, otherwise it is noise for the reader.
-  const updated =
-    item.updated_at &&
-    item.published_at &&
-    item.updated_at.slice(0, 10) !== item.published_at.slice(0, 10)
-      ? item.updated_at
-      : null;
+  const updated = meaningfulUpdatedAt(item);
+  const standfirst = excerptFor(item, 240);
+
 
   const relatedQ = useQuery({
     queryKey: ["news", "related", item.category?.id ?? null, item.id],
@@ -161,7 +161,7 @@ function NewsDetailPage() {
     trackContentView("news", item.id, item.slug);
   }, [item.id, item.slug]);
 
-  const paragraphs = (item.body_ar ?? "").split(/\n{2,}/).filter(Boolean);
+  
 
   return (
     <>
@@ -169,7 +169,7 @@ function NewsDetailPage() {
 
       <Section spacing="default">
         <Container size="wide">
-          <article className="mx-auto max-w-[46rem]">
+          <article className="mx-auto max-w-[44rem]">
             {/* Breadcrumbs */}
             <nav aria-label="مسار التنقل" className="text-xs text-muted-foreground">
               <ol className="flex flex-wrap items-center gap-1.5">
@@ -217,17 +217,23 @@ function NewsDetailPage() {
                 )}
               </div>
 
-              <h1 className="mt-5 text-balance text-3xl font-semibold leading-[1.35] tracking-tight text-foreground sm:text-4xl sm:leading-[1.3]">
+              <h1 className="mt-5 text-balance text-[2rem] font-semibold leading-[1.4] tracking-tight text-foreground sm:text-[2.6rem] sm:leading-[1.3]">
                 {item.title_ar}
               </h1>
 
-              {item.summary_ar && (
-                <p className="mt-5 border-r-2 border-primary/40 pr-4 text-lg leading-[1.9] text-muted-foreground">
-                  {item.summary_ar}
+              {item.title_en && (
+                <p className="mt-2 text-base text-muted-foreground/80" dir="ltr">
+                  {item.title_en}
                 </p>
               )}
 
-              <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-border py-3 text-xs text-muted-foreground">
+              {standfirst && (
+                <p className="mt-6 text-lg leading-[2] text-muted-foreground sm:text-xl">
+                  {standfirst}
+                </p>
+              )}
+
+              <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-border py-3.5 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-1.5 font-medium text-foreground/80">
                   <Newspaper className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                   إدارة المدرسة
@@ -241,10 +247,10 @@ function NewsDetailPage() {
                     {formatArabicDate(item.published_at)}
                   </time>
                 )}
-                {minutes && (
+                {minutes !== null && (
                   <span className="inline-flex items-center gap-1.5">
                     <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-                    {minutes} د قراءة
+                    {readingTimeLabel(minutes)}
                   </span>
                 )}
                 {updated && (
@@ -255,78 +261,8 @@ function NewsDetailPage() {
               </div>
             </header>
 
-            {cover && (
-              <figure className="mt-8 overflow-hidden rounded-2xl border border-border bg-surface-muted elevation-sm">
-                <img
-                  src={cover}
-                  alt={item.featured_media?.alt_ar ?? item.title_ar}
-                  loading="eager"
-                  decoding="async"
-                  className="aspect-[16/9] w-full object-cover object-center"
-                />
-                {item.featured_media?.alt_ar && (
-                  <figcaption className="border-t border-border bg-card p-3 text-xs text-muted-foreground">
-                    {item.featured_media.alt_ar}
-                  </figcaption>
-                )}
-              </figure>
-            )}
+            <ArticleBody body={item.body_ar} />
 
-            {paragraphs.length > 0 ? (
-              <div className="mt-10 space-y-6">
-                {paragraphs.map((p, i) => (
-                  <p
-                    key={i}
-                    className={
-                      i === 0
-                        ? "text-[19px] leading-[2.1] text-foreground"
-                        : "text-[17px] leading-[2.1] text-foreground/90"
-                    }
-                  >
-                    {p}
-                  </p>
-                ))}
-              </div>
-            ) : (
-              <p className="mt-10 rounded-2xl border border-dashed border-border bg-surface p-8 text-center text-muted-foreground">
-                سيتم إضافة تفاصيل هذا الخبر قريبًا.
-              </p>
-            )}
-
-            {item.gallery.length > 0 && (
-              <section aria-labelledby="gallery-title" className="mt-12">
-                <h2
-                  id="gallery-title"
-                  className="mb-5 text-lg font-semibold text-foreground"
-                >
-                  معرض الصور
-                </h2>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {item.gallery.map((g) => {
-                    if (!g.url) return null;
-                    return (
-                      <figure
-                        key={g.id}
-                        className="overflow-hidden rounded-xl border border-border bg-surface-muted"
-                      >
-                        <img
-                          src={g.url}
-                          alt={g.media.alt_ar ?? g.caption_ar ?? item.title_ar}
-                          loading="lazy"
-                          decoding="async"
-                          className="aspect-[4/3] w-full object-cover object-center transition-transform duration-500 hover:scale-[1.03]"
-                        />
-                        {g.caption_ar && (
-                          <figcaption className="p-3 text-xs text-muted-foreground">
-                            {g.caption_ar}
-                          </figcaption>
-                        )}
-                      </figure>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
 
             <ArticleShare title={item.title_ar} url={canonical} />
 
@@ -357,7 +293,7 @@ function NewsDetailPage() {
             </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {relatedQ.data!.map((n) => (
-                <NewsCard key={n.id} item={n} />
+                <NewsCard key={n.id} item={n} variant="card" />
               ))}
             </div>
           </Container>
@@ -366,6 +302,83 @@ function NewsDetailPage() {
     </>
   );
 }
+
+/**
+ * Renders CMS body text as premium editorial prose.
+ *
+ * The body is plain text authored in the dashboard, so structure is inferred
+ * automatically: blank lines separate paragraphs, `## ` marks a subheading,
+ * `- ` / `• ` marks a list, and `---` an elegant separator. Nothing is
+ * rendered when the body is empty — no boxes, no placeholders.
+ */
+function ArticleBody({ body }: { body: string | null }) {
+  const blocks = (body ?? "")
+    .replace(/\r\n/g, "\n")
+    .split(/\n{2,}/)
+    .map((b) => b.trim())
+    .filter(Boolean);
+
+  if (blocks.length === 0) return null;
+
+  let paragraphIndex = 0;
+
+  return (
+    <div className="mt-12">
+      {blocks.map((block, i) => {
+        if (/^-{3,}$/.test(block)) {
+          return (
+            <hr
+              key={i}
+              className="mx-auto my-12 w-16 border-0 border-t border-border"
+            />
+          );
+        }
+
+        if (block.startsWith("## ")) {
+          return (
+            <h2
+              key={i}
+              className="mt-12 mb-4 text-xl font-semibold tracking-tight text-foreground sm:text-2xl"
+            >
+              {block.slice(3).trim()}
+            </h2>
+          );
+        }
+
+        const lines = block.split("\n").map((l) => l.trim());
+        if (lines.every((l) => /^[-•]\s+/.test(l))) {
+          return (
+            <ul key={i} className="my-6 space-y-2.5 pr-5">
+              {lines.map((l, j) => (
+                <li
+                  key={j}
+                  className="list-disc text-[17px] leading-[2.05] text-foreground/90 marker:text-primary/60"
+                >
+                  {l.replace(/^[-•]\s+/, "")}
+                </li>
+              ))}
+            </ul>
+          );
+        }
+
+        paragraphIndex += 1;
+        return (
+          <p
+            key={i}
+            className={
+              paragraphIndex === 1
+                ? "text-[19px] leading-[2.05] text-foreground"
+                : "mt-6 text-[17px] leading-[2.05] text-foreground/90"
+            }
+          >
+            {block}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
 
 function PrevNextNav({
   prev,
