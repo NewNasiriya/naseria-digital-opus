@@ -168,7 +168,7 @@ function NewsDetailPage() {
 
       <Section spacing="default">
         <Container size="wide">
-          <article className="mx-auto max-w-[46rem]">
+          <article className="mx-auto max-w-[44rem]">
             {/* Breadcrumbs */}
             <nav aria-label="مسار التنقل" className="text-xs text-muted-foreground">
               <ol className="flex flex-wrap items-center gap-1.5">
