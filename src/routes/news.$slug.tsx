@@ -20,13 +20,16 @@ import { ArticleShare } from "@/components/news/ArticleShare";
 import { ReadingProgress } from "@/components/news/ReadingProgress";
 import {
   coverImageUrl,
+  excerptFor,
   fetchAdjacentNews,
   fetchNewsBySlug,
   fetchRelatedNews,
   formatArabicDate,
+  meaningfulUpdatedAt,
   readingMinutes,
   type NewsDetail,
 } from "@/lib/news";
+
 import { trackContentView } from "@/lib/analytics";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
