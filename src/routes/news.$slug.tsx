@@ -27,6 +27,7 @@ import {
   formatArabicDate,
   meaningfulUpdatedAt,
   readingMinutes,
+  readingTimeLabel,
   type NewsDetail,
 } from "@/lib/news";
 
@@ -249,7 +250,7 @@ function NewsDetailPage() {
                 {minutes !== null && (
                   <span className="inline-flex items-center gap-1.5">
                     <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-                    {minutes} دقائق قراءة
+                    {readingTimeLabel(minutes)}
                   </span>
                 )}
                 {updated && (

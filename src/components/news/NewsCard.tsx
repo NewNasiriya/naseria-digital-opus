@@ -7,6 +7,7 @@ import {
   formatArabicDate,
   meaningfulUpdatedAt,
   readingMinutes,
+  readingTimeLabel,
   relativeArabicDate,
   type NewsListItem,
 } from "@/lib/news";
@@ -54,7 +55,7 @@ function Meta({ item, compact }: { item: NewsListItem; compact?: boolean }) {
           <Dot />
           <span className="inline-flex items-center gap-1">
             <Clock className="h-3 w-3" aria-hidden="true" />
-            {minutes} دقائق قراءة
+            {readingTimeLabel(minutes)}
           </span>
         </>
       )}
