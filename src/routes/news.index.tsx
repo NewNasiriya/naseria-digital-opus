@@ -154,7 +154,7 @@ function NewsIndexPage() {
             )}
           </div>
 
-          <div className="mt-10">
+          <div className="mx-auto mt-10 max-w-3xl">
             {listQ.isLoading ? (
               <SkeletonList />
             ) : items.length === 0 ? (
