@@ -160,7 +160,7 @@ function NewsDetailPage() {
     trackContentView("news", item.id, item.slug);
   }, [item.id, item.slug]);
 
-  const paragraphs = (item.body_ar ?? "").split(/\n{2,}/).filter(Boolean);
+  
 
   return (
     <>
