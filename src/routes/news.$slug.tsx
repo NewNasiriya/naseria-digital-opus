@@ -292,7 +292,7 @@ function NewsDetailPage() {
             </div>
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {relatedQ.data!.map((n) => (
-                <NewsCard key={n.id} item={n} />
+                <NewsCard key={n.id} item={n} variant="card" />
               ))}
             </div>
           </Container>
