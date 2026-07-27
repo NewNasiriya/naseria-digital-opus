@@ -213,17 +213,23 @@ function NewsDetailPage() {
                 )}
               </div>
 
-              <h1 className="mt-5 text-balance text-3xl font-semibold leading-[1.35] tracking-tight text-foreground sm:text-4xl sm:leading-[1.3]">
+              <h1 className="mt-5 text-balance text-[2rem] font-semibold leading-[1.4] tracking-tight text-foreground sm:text-[2.6rem] sm:leading-[1.3]">
                 {item.title_ar}
               </h1>
 
-              {item.summary_ar && (
-                <p className="mt-5 border-r-2 border-primary/40 pr-4 text-lg leading-[1.9] text-muted-foreground">
-                  {item.summary_ar}
+              {item.title_en && (
+                <p className="mt-2 text-base text-muted-foreground/80" dir="ltr">
+                  {item.title_en}
                 </p>
               )}
 
-              <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-border py-3 text-xs text-muted-foreground">
+              {standfirst && (
+                <p className="mt-6 text-lg leading-[2] text-muted-foreground sm:text-xl">
+                  {standfirst}
+                </p>
+              )}
+
+              <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-border py-3.5 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-1.5 font-medium text-foreground/80">
                   <Newspaper className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                   إدارة المدرسة
@@ -237,10 +243,10 @@ function NewsDetailPage() {
                     {formatArabicDate(item.published_at)}
                   </time>
                 )}
-                {minutes && (
+                {minutes !== null && (
                   <span className="inline-flex items-center gap-1.5">
                     <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-                    {minutes} د قراءة
+                    {minutes} دقائق قراءة
                   </span>
                 )}
                 {updated && (
@@ -251,78 +257,8 @@ function NewsDetailPage() {
               </div>
             </header>
 
-            {cover && (
-              <figure className="mt-8 overflow-hidden rounded-2xl border border-border bg-surface-muted elevation-sm">
-                <img
-                  src={cover}
-                  alt={item.featured_media?.alt_ar ?? item.title_ar}
-                  loading="eager"
-                  decoding="async"
-                  className="aspect-[16/9] w-full object-cover object-center"
-                />
-                {item.featured_media?.alt_ar && (
-                  <figcaption className="border-t border-border bg-card p-3 text-xs text-muted-foreground">
-                    {item.featured_media.alt_ar}
-                  </figcaption>
-                )}
-              </figure>
-            )}
+            <ArticleBody body={item.body_ar} />
 
-            {paragraphs.length > 0 ? (
-              <div className="mt-10 space-y-6">
-                {paragraphs.map((p, i) => (
-                  <p
-                    key={i}
-                    className={
-                      i === 0
-                        ? "text-[19px] leading-[2.1] text-foreground"
-                        : "text-[17px] leading-[2.1] text-foreground/90"
-                    }
-                  >
-                    {p}
-                  </p>
-                ))}
-              </div>
-            ) : (
-              <p className="mt-10 rounded-2xl border border-dashed border-border bg-surface p-8 text-center text-muted-foreground">
-                سيتم إضافة تفاصيل هذا الخبر قريبًا.
-              </p>
-            )}
-
-            {item.gallery.length > 0 && (
-              <section aria-labelledby="gallery-title" className="mt-12">
-                <h2
-                  id="gallery-title"
-                  className="mb-5 text-lg font-semibold text-foreground"
-                >
-                  معرض الصور
-                </h2>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {item.gallery.map((g) => {
-                    if (!g.url) return null;
-                    return (
-                      <figure
-                        key={g.id}
-                        className="overflow-hidden rounded-xl border border-border bg-surface-muted"
-                      >
-                        <img
-                          src={g.url}
-                          alt={g.media.alt_ar ?? g.caption_ar ?? item.title_ar}
-                          loading="lazy"
-                          decoding="async"
-                          className="aspect-[4/3] w-full object-cover object-center transition-transform duration-500 hover:scale-[1.03]"
-                        />
-                        {g.caption_ar && (
-                          <figcaption className="p-3 text-xs text-muted-foreground">
-                            {g.caption_ar}
-                          </figcaption>
-                        )}
-                      </figure>
-                    );
-                  })}
-                </div>
-              </section>
-            )}
 
             <ArticleShare title={item.title_ar} url={canonical} />
 
