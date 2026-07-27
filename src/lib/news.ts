@@ -332,3 +332,11 @@ export function relativeArabicDate(iso: string | null): string {
   }
 }
 
+
+/** Arabic-correct reading-time label ("دقيقة واحدة" / "دقيقتان" / "٥ دقائق"). */
+export function readingTimeLabel(minutes: number): string {
+  if (minutes === 1) return "دقيقة واحدة للقراءة";
+  if (minutes === 2) return "دقيقتان للقراءة";
+  if (minutes <= 10) return `${minutes} دقائق للقراءة`;
+  return `${minutes} دقيقة للقراءة`;
+}
