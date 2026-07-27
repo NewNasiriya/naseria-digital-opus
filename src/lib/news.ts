@@ -21,6 +21,8 @@ export interface NewsListItem {
   is_featured: boolean;
   is_pinned: boolean;
   reading_minutes: number | null;
+  /** Present on list rows so excerpt + reading time can be derived. */
+  body_ar?: string | null;
   category: Pick<NewsCategory, "id" | "slug" | "name_ar"> | null;
   featured_media: MediaRef | null;
   /** Resolved, ready-to-render cover URL (signed for private buckets). */
