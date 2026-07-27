@@ -302,6 +302,83 @@ function NewsDetailPage() {
   );
 }
 
+/**
+ * Renders CMS body text as premium editorial prose.
+ *
+ * The body is plain text authored in the dashboard, so structure is inferred
+ * automatically: blank lines separate paragraphs, `## ` marks a subheading,
+ * `- ` / `• ` marks a list, and `---` an elegant separator. Nothing is
+ * rendered when the body is empty — no boxes, no placeholders.
+ */
+function ArticleBody({ body }: { body: string | null }) {
+  const blocks = (body ?? "")
+    .replace(/\r\n/g, "\n")
+    .split(/\n{2,}/)
+    .map((b) => b.trim())
+    .filter(Boolean);
+
+  if (blocks.length === 0) return null;
+
+  let paragraphIndex = 0;
+
+  return (
+    <div className="mt-12">
+      {blocks.map((block, i) => {
+        if (/^-{3,}$/.test(block)) {
+          return (
+            <hr
+              key={i}
+              className="mx-auto my-12 w-16 border-0 border-t border-border"
+            />
+          );
+        }
+
+        if (block.startsWith("## ")) {
+          return (
+            <h2
+              key={i}
+              className="mt-12 mb-4 text-xl font-semibold tracking-tight text-foreground sm:text-2xl"
+            >
+              {block.slice(3).trim()}
+            </h2>
+          );
+        }
+
+        const lines = block.split("\n").map((l) => l.trim());
+        if (lines.every((l) => /^[-•]\s+/.test(l))) {
+          return (
+            <ul key={i} className="my-6 space-y-2.5 pr-5">
+              {lines.map((l, j) => (
+                <li
+                  key={j}
+                  className="list-disc text-[17px] leading-[2.05] text-foreground/90 marker:text-primary/60"
+                >
+                  {l.replace(/^[-•]\s+/, "")}
+                </li>
+              ))}
+            </ul>
+          );
+        }
+
+        paragraphIndex += 1;
+        return (
+          <p
+            key={i}
+            className={
+              paragraphIndex === 1
+                ? "text-[19px] leading-[2.05] text-foreground"
+                : "mt-6 text-[17px] leading-[2.05] text-foreground/90"
+            }
+          >
+            {block}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
+
 function PrevNextNav({
   prev,
   next,
