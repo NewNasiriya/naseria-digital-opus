@@ -125,9 +125,9 @@ function NewsIndexPage() {
         <Section tone="muted" spacing="sm">
           <Container size="wide">
             <SectionHeader eyebrow="الأهم" title="أخبار مثبّتة" icon={Pin} />
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {pinnedQ.data!.map((item, i) => (
-                <NewsCard key={item.id} item={item} priority={i === 0} />
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {pinnedQ.data!.map((item) => (
+                <NewsCard key={item.id} item={item} variant="card" />
               ))}
             </div>
           </Container>
@@ -158,7 +158,7 @@ function NewsIndexPage() {
 
           <div className="mt-10">
             {listQ.isLoading ? (
-              <SkeletonGrid />
+              <SkeletonList />
             ) : items.length === 0 ? (
               <EmptyPanel
                 icon={Newspaper}
@@ -173,9 +173,9 @@ function NewsIndexPage() {
               />
             ) : (
               <>
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {items.map((item, i) => (
-                    <NewsCard key={item.id} item={item} priority={i < 3} />
+                <div className="mx-auto max-w-3xl divide-y divide-border">
+                  {items.map((item) => (
+                    <NewsCard key={item.id} item={item} />
                   ))}
                 </div>
                 <NewsPagination
@@ -188,6 +188,7 @@ function NewsIndexPage() {
               </>
             )}
           </div>
+
         </Container>
       </Section>
 
