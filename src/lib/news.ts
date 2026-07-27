@@ -168,7 +168,7 @@ export async function fetchNewsBySlug(slug: string): Promise<NewsDetail | null> 
   const { data, error } = await supabase
     .from("news")
     .select(
-      `${LIST_SELECT},body_ar,body_en,seo_title,seo_description,
+      `${LIST_SELECT},body_en,seo_title,seo_description,
        gallery:news_media(id,caption_ar,display_order,media:media!news_media_media_id_fkey(bucket,storage_path,alt_ar,alt_en,file_name))`,
     )
     .eq("slug", slug)
