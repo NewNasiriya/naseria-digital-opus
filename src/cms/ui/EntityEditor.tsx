@@ -106,20 +106,35 @@ export function EntityEditor<T extends EntityMeta>({
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [restoringId, setRestoringId] = useState<UUID | undefined>(id);
 
+  /**
+   * Tracks unsaved local edits. Saves now invalidate the CMS cache, which
+   * refetches this entity — without this guard the refetch would overwrite
+   * whatever the administrator typed while the request was in flight.
+   */
+  const dirtyRef = useRef(false);
+
   // Load fetched values into form state.
   useEffect(() => {
     if (entity.data) {
+      if (dirtyRef.current) return;
       setValues(entity.data as Partial<T>);
     } else if (!id) {
       setValues({ ...(config.createDefaults ?? {}) } as Partial<T>);
     }
   }, [entity.data, id, config.createDefaults]);
 
+  // A different record was opened — accept server state again.
+  useEffect(() => {
+    dirtyRef.current = false;
+  }, [id]);
+
   const handleChange = useCallback((name: string, value: unknown) => {
+    dirtyRef.current = true;
     setValues((prev) => ({ ...prev, [name]: value } as Partial<T>));
     setErrors((prev) => {
       if (!(name in prev)) return prev;
       const { [name]: _drop, ...rest } = prev;
+
       return rest;
     });
   }, []);
