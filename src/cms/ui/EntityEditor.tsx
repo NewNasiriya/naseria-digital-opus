@@ -8,7 +8,7 @@
  * Modules declare only their field schema and identifiers; no module
  * implements its own form runtime.
  */
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useRouter } from "@tanstack/react-router";
 import {
   Archive,
@@ -106,20 +106,35 @@ export function EntityEditor<T extends EntityMeta>({
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [restoringId, setRestoringId] = useState<UUID | undefined>(id);
 
+  /**
+   * Tracks unsaved local edits. Saves now invalidate the CMS cache, which
+   * refetches this entity — without this guard the refetch would overwrite
+   * whatever the administrator typed while the request was in flight.
+   */
+  const dirtyRef = useRef(false);
+
   // Load fetched values into form state.
   useEffect(() => {
     if (entity.data) {
+      if (dirtyRef.current) return;
       setValues(entity.data as Partial<T>);
     } else if (!id) {
       setValues({ ...(config.createDefaults ?? {}) } as Partial<T>);
     }
   }, [entity.data, id, config.createDefaults]);
 
+  // A different record was opened — accept server state again.
+  useEffect(() => {
+    dirtyRef.current = false;
+  }, [id]);
+
   const handleChange = useCallback((name: string, value: unknown) => {
+    dirtyRef.current = true;
     setValues((prev) => ({ ...prev, [name]: value } as Partial<T>));
     setErrors((prev) => {
       if (!(name in prev)) return prev;
       const { [name]: _drop, ...rest } = prev;
+
       return rest;
     });
   }, []);
@@ -156,7 +171,10 @@ export function EntityEditor<T extends EntityMeta>({
         // Skip autosave while invalid; user still sees errors via manual save.
         throw new Error("validation");
       }
-      const saved = await service.saveDraft({ ...v, id });
+      // Go through the mutation so the CMS + public query caches are
+      // invalidated exactly like a manual save.
+      const saved = await mutations.saveDraft.mutateAsync({ ...v, id });
+      dirtyRef.current = false;
       // Snapshot after successful autosave.
       try {
         await recordSnapshot({
@@ -169,8 +187,9 @@ export function EntityEditor<T extends EntityMeta>({
         /* snapshot is best-effort */
       }
     },
-    [id, service, runValidation, config.entityTable, profile?.id],
+    [id, mutations.saveDraft, runValidation, config.entityTable, profile?.id],
   );
+
 
   const autosave = useAutosave<Partial<T>>({
     value: values,
@@ -189,7 +208,8 @@ export function EntityEditor<T extends EntityMeta>({
       return;
     }
     try {
-      const saved = await service.saveDraft({ ...values, id });
+      const saved = await mutations.saveDraft.mutateAsync({ ...values, id });
+      dirtyRef.current = false;
       toast.success(currentStatus === "published" ? "تم حفظ التحديث على الموقع." : "تم حفظ المسودة");
       if (!id) {
         setRestoringId(saved.id);
@@ -223,7 +243,9 @@ export function EntityEditor<T extends EntityMeta>({
       return;
     }
     try {
-      const saved = await service.saveDraft({ ...values, id });
+      const saved = await mutations.saveDraft.mutateAsync({ ...values, id });
+
+      dirtyRef.current = false;
       const publishId = id ?? saved.id;
       await mutations.publish.mutateAsync(publishId);
       toast.success("تم نشر المحتوى على الموقع.");
@@ -444,11 +466,21 @@ export function EntityEditor<T extends EntityMeta>({
               </Button>
             )}
             {canPublish && currentStatus !== "published" && (
-              <Button size="sm" className="gap-1.5" onClick={handlePublish}>
-                <Send className="h-3.5 w-3.5" />
+              <Button
+                size="sm"
+                className="gap-1.5"
+                onClick={handlePublish}
+                disabled={mutations.publish.isPending || mutations.saveDraft.isPending}
+              >
+                {mutations.publish.isPending ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Send className="h-3.5 w-3.5" />
+                )}
                 نشر مباشرة
               </Button>
             )}
+
 
           </div>
         </div>
