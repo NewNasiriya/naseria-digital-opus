@@ -156,7 +156,9 @@ export function EntityEditor<T extends EntityMeta>({
         // Skip autosave while invalid; user still sees errors via manual save.
         throw new Error("validation");
       }
-      const saved = await service.saveDraft({ ...v, id });
+      // Go through the mutation so the CMS + public query caches are
+      // invalidated exactly like a manual save.
+      const saved = await mutations.saveDraft.mutateAsync({ ...v, id });
       // Snapshot after successful autosave.
       try {
         await recordSnapshot({
@@ -169,8 +171,9 @@ export function EntityEditor<T extends EntityMeta>({
         /* snapshot is best-effort */
       }
     },
-    [id, service, runValidation, config.entityTable, profile?.id],
+    [id, mutations.saveDraft, runValidation, config.entityTable, profile?.id],
   );
+
 
   const autosave = useAutosave<Partial<T>>({
     value: values,
