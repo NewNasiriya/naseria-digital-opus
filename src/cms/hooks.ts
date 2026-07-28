@@ -57,12 +57,22 @@ export function useCmsMutations<T extends EntityMeta>(
   relatedQueryKeys: readonly QueryKey[] = [],
 ) {
   const queryClient = useQueryClient();
+  /**
+   * Every write invalidates: the module's own CMS cache, the public
+   * homepage/search caches (which aggregate content from every module),
+   * and any module-declared public query keys. Invalidation marks
+   * inactive queries stale too, so public pages refetch on next mount.
+   */
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: cmsKeys.module(module) });
+    queryClient.invalidateQueries({ queryKey: ["home"] });
+    queryClient.invalidateQueries({ queryKey: ["search"] });
+    queryClient.invalidateQueries({ queryKey: ["search-page"] });
     for (const queryKey of relatedQueryKeys) {
       queryClient.invalidateQueries({ queryKey });
     }
   };
+
 
   function withInvalidate<Args, Result extends { id?: UUID } | void>(
     fn: (args: Args) => Promise<Result>,
