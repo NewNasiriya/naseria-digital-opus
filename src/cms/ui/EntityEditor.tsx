@@ -174,6 +174,7 @@ export function EntityEditor<T extends EntityMeta>({
       // Go through the mutation so the CMS + public query caches are
       // invalidated exactly like a manual save.
       const saved = await mutations.saveDraft.mutateAsync({ ...v, id });
+      dirtyRef.current = false;
       // Snapshot after successful autosave.
       try {
         await recordSnapshot({
@@ -208,6 +209,7 @@ export function EntityEditor<T extends EntityMeta>({
     }
     try {
       const saved = await mutations.saveDraft.mutateAsync({ ...values, id });
+      dirtyRef.current = false;
       toast.success(currentStatus === "published" ? "تم حفظ التحديث على الموقع." : "تم حفظ المسودة");
       if (!id) {
         setRestoringId(saved.id);
@@ -243,6 +245,7 @@ export function EntityEditor<T extends EntityMeta>({
     try {
       const saved = await mutations.saveDraft.mutateAsync({ ...values, id });
 
+      dirtyRef.current = false;
       const publishId = id ?? saved.id;
       await mutations.publish.mutateAsync(publishId);
       toast.success("تم نشر المحتوى على الموقع.");
