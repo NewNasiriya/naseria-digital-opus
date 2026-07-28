@@ -192,7 +192,7 @@ export function EntityEditor<T extends EntityMeta>({
       return;
     }
     try {
-      const saved = await service.saveDraft({ ...values, id });
+      const saved = await mutations.saveDraft.mutateAsync({ ...values, id });
       toast.success(currentStatus === "published" ? "تم حفظ التحديث على الموقع." : "تم حفظ المسودة");
       if (!id) {
         setRestoringId(saved.id);
@@ -226,7 +226,8 @@ export function EntityEditor<T extends EntityMeta>({
       return;
     }
     try {
-      const saved = await service.saveDraft({ ...values, id });
+      const saved = await mutations.saveDraft.mutateAsync({ ...values, id });
+
       const publishId = id ?? saved.id;
       await mutations.publish.mutateAsync(publishId);
       toast.success("تم نشر المحتوى على الموقع.");
