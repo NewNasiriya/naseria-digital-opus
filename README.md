@@ -276,7 +276,7 @@ naseria-digital-opus/
 ├── tsconfig.json                  # TypeScript config
 ├── vite.config.ts                 # Vite config
 ├── eslint.config.js               # Linting rules
-├── .env                           # Environment variables
+├── .env.example                   # Safe environment variable template
 ├── .prettierrc                    # Code formatting
 ├── SECURITY.md                    # Security policy
 ├── AGENTS.md                      # Lovable.dev instructions
@@ -733,15 +733,29 @@ Produces:
 
 ### Production Configuration
 
-**Environment Variables** (`.env`):
+Copy `.env.example` to an untracked `.env` for local development. Configure the
+same values through the deployment platform's secret/environment settings in
+production. Browser-safe variables use the `VITE_` prefix; never give a
+server-only or service-role secret that prefix.
+
+**Browser-safe environment variables:**
 ```
-SUPABASE_PROJECT_ID=<project-id>
-SUPABASE_PUBLISHABLE_KEY=<anon-key>
-SUPABASE_URL=<api-url>
-VITE_SUPABASE_PROJECT_ID=<project-id>
-VITE_SUPABASE_PUBLISHABLE_KEY=<anon-key>
-VITE_SUPABASE_URL=<api-url>
+VITE_SUPABASE_PROJECT_ID=twixqnbgmcelbkryoezg
+VITE_SUPABASE_URL=https://twixqnbgmcelbkryoezg.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=<production-publishable-key>
 ```
+
+**Server-only environment variables:**
+```
+SUPABASE_PROJECT_ID=twixqnbgmcelbkryoezg
+SUPABASE_URL=https://twixqnbgmcelbkryoezg.supabase.co
+SUPABASE_PUBLISHABLE_KEY=<production-publishable-key>
+SUPABASE_SERVICE_ROLE_KEY=<production-service-role-key>
+```
+
+`SUPABASE_SERVICE_ROLE_KEY` bypasses RLS. Store it only in the server runtime's
+secret manager; it must never be committed, logged, or exposed to a client
+bundle.
 
 ### Cloudflare Workers Deployment
 
@@ -759,8 +773,10 @@ Migrations live in `supabase/migrations/` and are versioned by timestamp:
 ```bash
 supabase migration new create_news_table
 # ... Edit migration file ...
-supabase db push  # Apply to production
 ```
+
+Production migrations require a separately reviewed and approved deployment
+procedure; do not apply them directly from a development checkout.
 
 ---
 
