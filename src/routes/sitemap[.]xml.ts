@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
 // Production domain — used to emit absolute <loc> URLs per the sitemap spec.
-const BASE_URL = "https://naseria-digital-opus.lovable.app";
+const BASE_URL = "https://newnasiriya.com";
 
 interface SitemapEntry {
   path: string;
