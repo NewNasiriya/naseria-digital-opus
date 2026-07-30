@@ -12,7 +12,7 @@
     "format": "prettier --write .",
     "verify:production-bootstrap": "node scripts/verify-production-bootstrap.mjs",
     "verify:content-preservation": "node scripts/verify-production-content-preservation.mjs",
-    "test:cms-safety": "bun test tests/cms-production-safety.test.ts"
+    "test:cms-safety": "bun test tests/cms-production-safety.test.ts tests/content-preservation-verifier.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

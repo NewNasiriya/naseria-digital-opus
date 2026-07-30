@@ -7,13 +7,11 @@ import schoolNight from "@/assets/school-night.png.asset.json";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/lib/theme";
+import { resolveHeroIntro } from "@/lib/homepage-hero-fallback";
 
 interface HeroProps {
   intro?: string | null;
 }
-
-const DEFAULT_INTRO =
-  "مؤسسة تعليمية حكومية تجمع بين أصالة القيم وحداثة التعليم، لبناء جيل واعٍ ومتميز يخدم مجتمعه ووطنه.";
 
 // Approximate sunrise/sunset — good enough for a cinematic day/night flip.
 const DAY_START_HOUR = 6;
@@ -66,10 +64,7 @@ export function Hero({ intro }: HeroProps) {
   }, [showNight, secondaryReady]);
 
   return (
-    <section
-      aria-labelledby="hero-heading"
-      className="relative isolate overflow-hidden"
-    >
+    <section aria-labelledby="hero-heading" className="relative isolate overflow-hidden">
       {/* Background — both images mounted, crossfaded via opacity */}
       <div className="absolute inset-0 -z-10">
         <img
@@ -110,10 +105,7 @@ export function Hero({ intro }: HeroProps) {
       >
         <div className="max-w-3xl">
           <p className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-sm">
-            <span
-              aria-hidden="true"
-              className="h-1.5 w-1.5 rounded-full bg-white"
-            />
+            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-white" />
             الموقع الرسمي للمدرسة
           </p>
 
@@ -130,15 +122,11 @@ export function Hero({ intro }: HeroProps) {
           </p>
 
           <p className="mt-6 max-w-2xl text-base leading-loose text-white/90 sm:text-lg">
-            {intro?.trim() || DEFAULT_INTRO}
+            {resolveHeroIntro(intro)}
           </p>
 
           <div className="mt-9 flex flex-wrap items-center gap-3">
-            <Button
-              asChild
-              size="lg"
-              className="bg-white text-primary hover:bg-white/90"
-            >
+            <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90">
               <Link to="/about">
                 تعرف على المدرسة
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />

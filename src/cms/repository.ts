@@ -7,6 +7,7 @@
  * to any public table with the standard `id / created_at / updated_at`
  * shape.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- generic PostgREST builders are table-specific */
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -129,7 +130,7 @@ export function createSupabaseRepository<T extends EntityMeta>(
           .update(patch as never)
           .eq("id", id)
           .select(select)
-          .single();
+          .maybeSingle();
         return requireMutationResult("update", { data, error }) as T;
       } catch (err) {
         throw toCmsError(err);
@@ -138,11 +139,12 @@ export function createSupabaseRepository<T extends EntityMeta>(
 
     async remove(id) {
       try {
-        const { data, error, count } = await ((supabase as any).from(table) as any)
+        const { data, error } = await ((supabase as any).from(table) as any)
           .delete({ count: "exact" })
           .eq("id", id)
           .select("id");
-        return requireMutationResult("delete", { data, error, count }) as number;
+        requireMutationResult("delete", { data, error });
+        return Array.isArray(data) ? data.length : 1;
       } catch (err) {
         throw toCmsError(err);
       }
@@ -188,7 +190,7 @@ export function createInMemoryRepository<T extends EntityMeta>(seed: T[] = []): 
     },
     async update(id, patch) {
       const idx = rows.findIndex((r) => r.id === id);
-      if (idx === -1) throw new CmsError("not_found", "العنصر غير موجود");
+      if (idx === -1) throw new CmsError("stale", "العنصر غير موجود أو تغيّر منذ فتحه");
       const updated = { ...rows[idx], ...patch, updated_at: new Date().toISOString() } as T;
       rows[idx] = updated;
       return updated;

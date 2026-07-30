@@ -58,11 +58,11 @@ export function MediaDetailsSheet({ item, open, onOpenChange }: Props) {
     mediaLibrary
       .signedUrl({ bucket: item.bucket as MediaBucket, path: item.storage_path })
       .then((u) => setSigned(u));
-  }, [item?.id]);
+  }, [item]);
 
   const usagesQuery = useQuery({
     queryKey: item ? mediaLibraryKeys.usages(item.id) : ["media-library", "usages", "none"],
-    queryFn: () => mediaLibrary.listUsages(item!.id),
+    queryFn: () => mediaLibrary.listReferences(item!.id),
     enabled: !!item && open,
   });
 
@@ -89,7 +89,7 @@ export function MediaDetailsSheet({ item, open, onOpenChange }: Props) {
   const archive = useMutation({
     mutationFn: async () => {
       if (!item) return;
-      await mediaLibrary.archive(item.id, false);
+      await mediaLibrary.archive(item.id);
     },
     onSuccess: () => {
       toast.success("تمت الأرشفة");
@@ -224,15 +224,19 @@ export function MediaDetailsSheet({ item, open, onOpenChange }: Props) {
 
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold text-foreground">
-                  الاستخدامات ({usagesQuery.data?.length ?? 0})
+                  الاستخدامات ({usagesQuery.data ? usagesQuery.data.length : "غير معروف"})
                 </h3>
                 {usagesQuery.isLoading ? (
                   <p className="text-xs text-muted-foreground">جاري التحميل…</p>
+                ) : usagesQuery.isError ? (
+                  <p className="text-xs text-destructive">
+                    تعذّر التحقق من جميع المراجع. الأرشفة معطّلة حتى تنجح إعادة المحاولة.
+                  </p>
                 ) : usagesQuery.data && usagesQuery.data.length > 0 ? (
                   <ul className="space-y-1.5 text-xs">
                     {usagesQuery.data.map((u) => (
                       <li
-                        key={u.id}
+                        key={`${u.table}:${u.entityId}:${u.field}`}
                         className="flex items-center gap-2 rounded-lg border border-border bg-surface-muted/40 px-3 py-2"
                       >
                         <LinkIcon
@@ -240,13 +244,13 @@ export function MediaDetailsSheet({ item, open, onOpenChange }: Props) {
                           aria-hidden="true"
                         />
                         <span className="font-mono text-[11px] text-muted-foreground">
-                          {u.entity_table}
+                          {u.table}
                         </span>
                         <Badge variant="secondary" className="text-[10px]">
-                          {u.field_name}
+                          {u.field}
                         </Badge>
-                        <span className="truncate text-muted-foreground" title={u.entity_id}>
-                          #{u.entity_id.slice(0, 8)}
+                        <span className="truncate text-muted-foreground" title={u.entityId}>
+                          #{u.entityId.slice(0, 8)}
                         </span>
                       </li>
                     ))}
@@ -265,7 +269,7 @@ export function MediaDetailsSheet({ item, open, onOpenChange }: Props) {
                     variant="outline"
                     className="gap-2"
                     onClick={() => archive.mutate()}
-                    disabled={archive.isPending}
+                    disabled={archive.isPending || usagesQuery.isLoading || usagesQuery.isError}
                   >
                     <Archive className="h-4 w-4" />
                     أرشفة

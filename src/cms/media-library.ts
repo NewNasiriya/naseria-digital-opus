@@ -9,12 +9,13 @@
  * UI code MUST call this module — never touch `supabase.storage.*` or
  * the `media` / `media_usages` tables directly.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- legacy media queries span generated table builders */
 import { supabase } from "@/integrations/supabase/client";
 
 import { fromPostgrest, toCmsError, CmsError } from "./errors";
 import { mediaService } from "./media";
 import type { Page, UUID } from "./types";
-import { fetchMediaReferences, usageCounts } from "./media-references";
+import { fetchMediaReferences, usageCounts, type MediaReference } from "./media-references";
 
 /** Broad content classes surfaced to the UI as tabs / filters. */
 export type MediaKind = "image" | "document" | "video" | "audio" | "other";
@@ -46,15 +47,6 @@ export interface MediaItem {
   kind: MediaKind;
   /** Populated by `attachUsageCounts`. */
   usage_count?: number;
-}
-
-export interface MediaUsage {
-  id: UUID;
-  media_id: UUID;
-  entity_table: string;
-  entity_id: UUID;
-  field_name: string;
-  created_at: string;
 }
 
 export interface MediaListQuery {
@@ -204,15 +196,9 @@ export const mediaLibrary = {
     }
   },
 
-  async listUsages(mediaId: UUID): Promise<MediaUsage[]> {
+  async listReferences(mediaId: UUID): Promise<MediaReference[]> {
     try {
-      const { data, error } = await (supabase as any)
-        .from("media_usages")
-        .select("*")
-        .eq("media_id", mediaId)
-        .order("created_at", { ascending: false });
-      if (error) throw fromPostgrest(error);
-      return (data ?? []) as MediaUsage[];
+      return await fetchMediaReferences(supabase as never, [mediaId]);
     } catch (err) {
       throw toCmsError(err);
     }
@@ -277,17 +263,9 @@ export const mediaLibrary = {
   /**
    * Archive an asset. Refuses when usages exist unless `force` is true.
    */
-  async archive(id: UUID, force = false): Promise<void> {
+  async archive(id: UUID): Promise<void> {
     try {
-      if (!force) {
-        const usages = await this.listUsages(id);
-        if (usages.length > 0) {
-          throw new CmsError(
-            "conflict",
-            `لا يمكن أرشفة الملف لأنه مستخدم في ${usages.length} موقع. أزل الاستخدامات أولاً أو استخدم "أرشفة رغم الاستخدام".`,
-          );
-        }
-      }
+      assertMediaArchivable(await this.listReferences(id));
       await this.updateMeta(id, { is_archived: true });
     } catch (err) {
       throw toCmsError(err);
@@ -317,11 +295,16 @@ export const mediaLibrary = {
 async function attachUsageCounts(items: MediaItem[]): Promise<MediaItem[]> {
   if (items.length === 0) return items;
   const ids = items.map((i) => i.id);
-  try {
-    const counts = usageCounts(await fetchMediaReferences(supabase as never, ids));
-    return items.map((it) => ({ ...it, usage_count: counts.get(it.id) ?? 0 }));
-  } catch {
-    return items.map((it) => ({ ...it, usage_count: 0 }));
+  const counts = usageCounts(await fetchMediaReferences(supabase as never, ids));
+  return items.map((it) => ({ ...it, usage_count: counts.get(it.id) ?? 0 }));
+}
+
+export function assertMediaArchivable(references: readonly MediaReference[]): void {
+  if (references.length > 0) {
+    throw new CmsError(
+      "conflict",
+      `لا يمكن أرشفة الملف لأنه مستخدم في ${references.length} موقع موثّق.`,
+    );
   }
 }
 

@@ -17,6 +17,7 @@ export type CmsErrorKind =
   | "conflict"
   | "network"
   | "storage"
+  | "reconciliation_required"
   | "unknown";
 
 export class CmsError extends Error {
@@ -89,6 +90,8 @@ export function messageFor(err: CmsError): string {
       return "تعذّر الاتصال بالخادم، تحقق من الشبكة وحاول مجددًا.";
     case "storage":
       return "تعذّر معالجة الملف، حاول مرة أخرى.";
+    case "reconciliation_required":
+      return "تعذّر التحقق من ربط الوسائط. تُركت النسختان كما هما للمراجعة الآمنة.";
     default:
       return err.message || "حدث خطأ غير متوقع.";
   }
