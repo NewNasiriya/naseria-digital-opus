@@ -66,6 +66,7 @@ import type { Permission } from "@/lib/auth/permissions";
 import type { QueryKey } from "@tanstack/react-query";
 
 import { useCmsList, useCmsMutations } from "../hooks";
+import { NORMAL_CMS_PERMANENT_DELETE_AVAILABLE } from "../content-preservation";
 import { messageFor } from "../errors";
 import type { Repository } from "../repository";
 import type { ContentService } from "../service";
@@ -132,9 +133,7 @@ export function EntityListView<T extends EntityMeta>({
   const [page, setPage] = useState(0);
   const [selected, setSelected] = useState<Set<UUID>>(new Set());
   const [confirm, setConfirm] = useState<
-    | { kind: "delete-row"; id: UUID; title: string }
-    | { kind: "bulk-delete"; ids: UUID[] }
-    | null
+    { kind: "delete-row"; id: UUID; title: string } | { kind: "bulk-delete"; ids: UUID[] } | null
   >(null);
 
   const pageSize = config.pageSize ?? 20;
@@ -155,7 +154,7 @@ export function EntityListView<T extends EntityMeta>({
   const mutations = useCmsMutations<T>(config.module, service, config.relatedQueryKeys);
   const allowCreate = config.allowCreate !== false;
   const allowDuplicate = config.allowDuplicate !== false;
-  const allowHardDelete = config.allowHardDelete !== false;
+  const allowHardDelete = NORMAL_CMS_PERMANENT_DELETE_AVAILABLE && config.allowHardDelete !== false;
 
   const rows = list.data?.rows ?? [];
   const total = list.data?.total ?? 0;
@@ -181,9 +180,7 @@ export function EntityListView<T extends EntityMeta>({
     });
   };
 
-  const runBulk = async (
-    action: "publish" | "unpublish" | "archive" | "restore" | "delete",
-  ) => {
+  const runBulk = async (action: "publish" | "unpublish" | "archive" | "restore" | "delete") => {
     const ids = Array.from(selected);
     if (ids.length === 0) return;
     const fn = {
@@ -278,20 +275,40 @@ export function EntityListView<T extends EntityMeta>({
           <div className="flex flex-wrap items-center gap-1.5">
             {canPublish && (
               <>
-                <Button size="sm" variant="outline" className="gap-1.5" onClick={() => runBulk("publish")}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-1.5"
+                  onClick={() => runBulk("publish")}
+                >
                   <Send className="h-3.5 w-3.5" /> نشر
                 </Button>
-                <Button size="sm" variant="outline" className="gap-1.5" onClick={() => runBulk("unpublish")}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-1.5"
+                  onClick={() => runBulk("unpublish")}
+                >
                   <Undo2 className="h-3.5 w-3.5" /> إلغاء النشر
                 </Button>
               </>
             )}
             {canArchive && (
-              <Button size="sm" variant="outline" className="gap-1.5" onClick={() => runBulk("archive")}>
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5"
+                onClick={() => runBulk("archive")}
+              >
                 <Archive className="h-3.5 w-3.5" /> أرشفة
               </Button>
             )}
-            <Button size="sm" variant="outline" className="gap-1.5" onClick={() => runBulk("restore")}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="gap-1.5"
+              onClick={() => runBulk("restore")}
+            >
               <RotateCcw className="h-3.5 w-3.5" /> استعادة
             </Button>
             {canDelete && allowHardDelete && (
@@ -329,7 +346,7 @@ export function EntityListView<T extends EntityMeta>({
             title={`لا يوجد ${config.entityLabel} حاليًا`}
             description="ابدأ بإنشاء أول عنصر لعرضه على الموقع."
             action={
-                canManage && allowCreate ? (
+              canManage && allowCreate ? (
                 <Button size="sm" className="gap-1.5" asChild>
                   <Link to={newHref}>
                     <Plus className="h-4 w-4" />
@@ -536,8 +553,7 @@ export function EntityListView<T extends EntityMeta>({
                 : "حذف العنصر نهائيًا؟"}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              هذا الإجراء لا يمكن التراجع عنه. يفضّل الأرشفة بدلًا من الحذف للاحتفاظ بسجل
-              كامل.
+              هذا الإجراء لا يمكن التراجع عنه. يفضّل الأرشفة بدلًا من الحذف للاحتفاظ بسجل كامل.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -578,9 +594,7 @@ export function DefaultTitleCell({ title, subtitle }: { title: string; subtitle?
       <p className="truncate font-medium text-foreground" title={title}>
         {title}
       </p>
-      {subtitle && (
-        <p className="mt-0.5 truncate text-xs text-muted-foreground">{subtitle}</p>
-      )}
+      {subtitle && <p className="mt-0.5 truncate text-xs text-muted-foreground">{subtitle}</p>}
     </div>
   );
 }

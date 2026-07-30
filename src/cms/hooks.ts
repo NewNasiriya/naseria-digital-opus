@@ -73,8 +73,7 @@ export function useCmsMutations<T extends EntityMeta>(
     }
   };
 
-
-  function withInvalidate<Args, Result extends { id?: UUID } | void>(
+  function withInvalidate<Args, Result>(
     fn: (args: Args) => Promise<Result>,
     cb?: MutationCallbacks<Result>,
   ): UseMutationOptions<Result, CmsError, Args> {
@@ -102,7 +101,7 @@ export function useCmsMutations<T extends EntityMeta>(
   const archive = useMutation(withInvalidate<UUID, T>((id) => service.archive(id)));
   const restore = useMutation(withInvalidate<UUID, T>((id) => service.restore(id)));
   const duplicate = useMutation(withInvalidate<UUID, T>((id) => service.duplicate(id)));
-  const remove = useMutation(withInvalidate<UUID, void>((id) => service.repo.remove(id)));
+  const remove = useMutation(withInvalidate<UUID, number>((id) => service.repo.remove(id)));
 
   return { saveDraft, publish, unpublish, archive, restore, duplicate, remove };
 }

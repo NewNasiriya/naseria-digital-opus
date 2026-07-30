@@ -41,6 +41,7 @@ import type { Permission } from "@/lib/auth/permissions";
 import type { QueryKey } from "@tanstack/react-query";
 
 import { useCmsEntity, useCmsMutations } from "../hooks";
+import { NORMAL_CMS_PERMANENT_DELETE_AVAILABLE } from "../content-preservation";
 import { useAutosave, useUnsavedChangesGuard } from "../autosave";
 import { recordSnapshot } from "../versions";
 import { messageFor } from "../errors";
@@ -98,7 +99,7 @@ export function EntityEditor<T extends EntityMeta>({
   const entity = useCmsEntity<T>(config.module, repository, id);
   const mutations = useCmsMutations<T>(config.module, service, config.relatedQueryKeys);
   const allowDuplicate = config.allowDuplicate !== false;
-  const allowHardDelete = config.allowHardDelete !== false;
+  const allowHardDelete = NORMAL_CMS_PERMANENT_DELETE_AVAILABLE && config.allowHardDelete !== false;
 
   const [values, setValues] = useState<Partial<T>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -130,7 +131,7 @@ export function EntityEditor<T extends EntityMeta>({
 
   const handleChange = useCallback((name: string, value: unknown) => {
     dirtyRef.current = true;
-    setValues((prev) => ({ ...prev, [name]: value } as Partial<T>));
+    setValues((prev) => ({ ...prev, [name]: value }) as Partial<T>);
     setErrors((prev) => {
       if (!(name in prev)) return prev;
       const { [name]: _drop, ...rest } = prev;
@@ -160,8 +161,7 @@ export function EntityEditor<T extends EntityMeta>({
   // Autosave draft. Enabled only when editing an existing record, we have
   // manage permission, and status is not "published" (we never mutate a live
   // record via autosave — user must click Publish explicitly).
-  const autosaveEnabled =
-    !!id && canManage && (values.status ?? "draft") !== "published";
+  const autosaveEnabled = !!id && canManage && (values.status ?? "draft") !== "published";
 
   const persistDraft = useCallback(
     async (v: Partial<T>) => {
@@ -190,7 +190,6 @@ export function EntityEditor<T extends EntityMeta>({
     [id, mutations.saveDraft, runValidation, config.entityTable, profile?.id],
   );
 
-
   const autosave = useAutosave<Partial<T>>({
     value: values,
     onSave: persistDraft,
@@ -210,7 +209,9 @@ export function EntityEditor<T extends EntityMeta>({
     try {
       const saved = await mutations.saveDraft.mutateAsync({ ...values, id });
       dirtyRef.current = false;
-      toast.success(currentStatus === "published" ? "تم حفظ التحديث على الموقع." : "تم حفظ المسودة");
+      toast.success(
+        currentStatus === "published" ? "تم حفظ التحديث على الموقع." : "تم حفظ المسودة",
+      );
       if (!id) {
         setRestoringId(saved.id);
         navigate({
@@ -262,7 +263,6 @@ export function EntityEditor<T extends EntityMeta>({
       toast.error(messageFor(e as never));
     }
   };
-
 
   const handleUnpublish = async () => {
     if (!id) return;
@@ -397,34 +397,19 @@ export function EntityEditor<T extends EntityMeta>({
               السجل
             </Button>
             {id && allowDuplicate && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-1.5"
-                onClick={handleDuplicate}
-              >
+              <Button variant="outline" size="sm" className="gap-1.5" onClick={handleDuplicate}>
                 <Copy className="h-3.5 w-3.5" />
                 تكرار
               </Button>
             )}
             {id && canArchive && currentStatus !== "archived" && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-1.5"
-                onClick={handleArchive}
-              >
+              <Button variant="outline" size="sm" className="gap-1.5" onClick={handleArchive}>
                 <Archive className="h-3.5 w-3.5" />
                 أرشفة
               </Button>
             )}
             {id && currentStatus === "archived" && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-1.5"
-                onClick={handleRestore}
-              >
+              <Button variant="outline" size="sm" className="gap-1.5" onClick={handleRestore}>
                 <RotateCcw className="h-3.5 w-3.5" />
                 استعادة
               </Button>
@@ -455,12 +440,7 @@ export function EntityEditor<T extends EntityMeta>({
               {currentStatus === "published" ? "حفظ التحديث" : "حفظ مسودة"}
             </Button>
             {canPublish && currentStatus === "published" && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-1.5"
-                onClick={handleUnpublish}
-              >
+              <Button variant="outline" size="sm" className="gap-1.5" onClick={handleUnpublish}>
                 <Undo2 className="h-3.5 w-3.5" />
                 إلغاء النشر
               </Button>
@@ -480,8 +460,6 @@ export function EntityEditor<T extends EntityMeta>({
                 نشر مباشرة
               </Button>
             )}
-
-
           </div>
         </div>
       </div>
@@ -492,9 +470,7 @@ export function EntityEditor<T extends EntityMeta>({
           const body = (
             <div
               className={
-                section.columns === 2
-                  ? "grid grid-cols-1 gap-4 md:grid-cols-2"
-                  : "space-y-4"
+                section.columns === 2 ? "grid grid-cols-1 gap-4 md:grid-cols-2" : "space-y-4"
               }
             >
               {section.fields.map((field) => (
@@ -524,9 +500,7 @@ export function EntityEditor<T extends EntityMeta>({
                   </span>
                 </summary>
                 {section.description && (
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    {section.description}
-                  </p>
+                  <p className="mt-2 text-xs text-muted-foreground">{section.description}</p>
                 )}
                 <div className="mt-4 border-t border-border pt-4">{body}</div>
               </details>
@@ -534,21 +508,14 @@ export function EntityEditor<T extends EntityMeta>({
           }
 
           return (
-            <section
-              key={section.id}
-              className="rounded-2xl border border-border bg-card p-5"
-            >
+            <section key={section.id} className="rounded-2xl border border-border bg-card p-5">
               {(section.title || section.description) && (
                 <header className="mb-4 border-b border-border pb-3">
                   {section.title && (
-                    <h2 className="text-base font-semibold text-foreground">
-                      {section.title}
-                    </h2>
+                    <h2 className="text-base font-semibold text-foreground">{section.title}</h2>
                   )}
                   {section.description && (
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {section.description}
-                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">{section.description}</p>
                   )}
                 </header>
               )}
@@ -557,7 +524,6 @@ export function EntityEditor<T extends EntityMeta>({
           );
         })}
       </div>
-
 
       <VersionHistoryPanel
         open={historyOpen}
@@ -573,8 +539,7 @@ export function EntityEditor<T extends EntityMeta>({
           <AlertDialogHeader>
             <AlertDialogTitle>حذف {config.entityLabel} نهائيًا؟</AlertDialogTitle>
             <AlertDialogDescription>
-              هذا الإجراء لا يمكن التراجع عنه. يُفضّل الأرشفة بدلًا من الحذف للاحتفاظ
-              بسجل كامل.
+              هذا الإجراء لا يمكن التراجع عنه. يُفضّل الأرشفة بدلًا من الحذف للاحتفاظ بسجل كامل.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -591,4 +556,3 @@ export function EntityEditor<T extends EntityMeta>({
     </>
   );
 }
-

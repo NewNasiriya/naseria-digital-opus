@@ -8,9 +8,12 @@
 import type { PostgrestError } from "@supabase/supabase-js";
 
 export type CmsErrorKind =
+  | "authentication"
   | "validation"
   | "not_found"
   | "permission"
+  | "stale"
+  | "rls"
   | "conflict"
   | "network"
   | "storage"
@@ -35,21 +38,32 @@ export class CmsError extends Error {
 }
 
 /** Map a Postgrest error to a CmsError. */
-export function fromPostgrest(error: PostgrestError | null | undefined, fallback = "حدث خطأ غير متوقع"): CmsError {
+export function fromPostgrest(
+  error: PostgrestError | null | undefined,
+  fallback = "حدث خطأ غير متوقع",
+): CmsError {
   if (!error) return new CmsError("unknown", fallback);
   const code = error.code ?? "";
   if (code === "PGRST116") return new CmsError("not_found", "العنصر غير موجود", { cause: error });
-  if (code.startsWith("42501") || /permission|rls/i.test(error.message)) {
+  if (/row.level.security|rls/i.test(error.message)) {
+    return new CmsError("rls", "رفضت سياسة حماية البيانات تنفيذ العملية", { cause: error });
+  }
+  if (code.startsWith("42501") || /permission/i.test(error.message)) {
     return new CmsError("permission", "لا تملك صلاحية لتنفيذ هذه العملية", { cause: error });
   }
-  if (code === "23505") return new CmsError("conflict", "قيمة مكررة، حاول تغيير المعرّف أو الرابط", { cause: error });
-  if (code === "23514" || code.startsWith("22")) return new CmsError("validation", error.message, { cause: error });
+  if (code === "23505")
+    return new CmsError("conflict", "قيمة مكررة، حاول تغيير المعرّف أو الرابط", { cause: error });
+  if (code === "23514" || code.startsWith("22"))
+    return new CmsError("validation", error.message, { cause: error });
   return new CmsError("unknown", error.message || fallback, { cause: error });
 }
 
 /** Wrap unknown thrown values into a CmsError. */
 export function toCmsError(err: unknown): CmsError {
   if (err instanceof CmsError) return err;
+  if (err instanceof TypeError && /fetch|network|connection/i.test(err.message)) {
+    return new CmsError("network", "تعذّر الاتصال بالخادم", { cause: err });
+  }
   if (err instanceof Error) return new CmsError("unknown", err.message, { cause: err });
   return new CmsError("unknown", "حدث خطأ غير متوقع", { cause: err });
 }
@@ -57,12 +71,18 @@ export function toCmsError(err: unknown): CmsError {
 /** Arabic message helper for UI toasts. */
 export function messageFor(err: CmsError): string {
   switch (err.kind) {
+    case "authentication":
+      return "انتهت جلسة الدخول. سجّل الدخول ثم حاول مجددًا.";
     case "validation":
       return "بيانات غير صحيحة، راجع الحقول المميزة.";
     case "not_found":
       return "العنصر غير موجود أو تم حذفه.";
     case "permission":
       return "لا تملك صلاحية لتنفيذ هذه العملية.";
+    case "rls":
+      return "رفضت سياسة حماية البيانات تنفيذ العملية.";
+    case "stale":
+      return "تغيّر المحتوى منذ فتحه. حدّث الصفحة قبل الحفظ.";
     case "conflict":
       return "يوجد تعارض مع بيانات موجودة بالفعل.";
     case "network":

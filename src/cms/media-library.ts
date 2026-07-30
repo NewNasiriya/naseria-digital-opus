@@ -13,8 +13,8 @@ import { supabase } from "@/integrations/supabase/client";
 
 import { fromPostgrest, toCmsError, CmsError } from "./errors";
 import { mediaService } from "./media";
-import { validateFile } from "./validation";
 import type { Page, UUID } from "./types";
+import { fetchMediaReferences, usageCounts } from "./media-references";
 
 /** Broad content classes surfaced to the UI as tabs / filters. */
 export type MediaKind = "image" | "document" | "video" | "audio" | "other";
@@ -63,7 +63,7 @@ export interface MediaListQuery {
   bucket?: MediaBucket | "all";
   folder?: string | "all";
   archived?: boolean;
-  /** When true, list only assets with zero references in `media_usages`. */
+  /** When true, list only assets with zero references across every verified relationship. */
   unusedOnly?: boolean;
   tag?: string;
   limit?: number;
@@ -243,7 +243,9 @@ export const mediaLibrary = {
 
   async updateMeta(
     id: UUID,
-    patch: Partial<Pick<MediaItem, "alt_ar" | "alt_en" | "caption_ar" | "caption_en" | "tags" | "is_archived">>,
+    patch: Partial<
+      Pick<MediaItem, "alt_ar" | "alt_en" | "caption_ar" | "caption_en" | "tags" | "is_archived">
+    >,
   ): Promise<void> {
     try {
       const { error } = await (supabase as any)
@@ -264,50 +266,12 @@ export const mediaLibrary = {
    * to avoid silently breaking consuming modules.
    */
   async replace(id: UUID, file: File): Promise<void> {
-    try {
-      const { data: existing, error: readErr } = await (supabase as any)
-        .from("media")
-        .select("id,bucket,storage_path,mime_type,file_name")
-        .eq("id", id)
-        .single();
-      if (readErr) throw fromPostgrest(readErr);
-      if (!existing) throw new CmsError("not_found", "الملف غير موجود");
-
-      const oldKind = classifyMime(existing.mime_type);
-      const newKind = classifyMime(file.type);
-      if (oldKind !== newKind) {
-        throw new CmsError(
-          "validation",
-          "نوع الملف الجديد يجب أن يطابق النوع الأصلي (صورة مقابل صورة، مستند مقابل مستند).",
-        );
-      }
-      // Block script-capable formats (SVG/HTML/JS) regardless of kind match.
-      const invalid = validateFile(file);
-      if (invalid) throw new CmsError("validation", invalid);
-
-
-      const { error: upErr } = await supabase.storage
-        .from(existing.bucket)
-        .upload(existing.storage_path, file, {
-          cacheControl: "3600",
-          upsert: true,
-          contentType: file.type,
-        });
-      if (upErr) throw new CmsError("storage", upErr.message, { cause: upErr });
-
-      const { error: updErr } = await (supabase as any)
-        .from("media")
-        .update({
-          file_name: file.name,
-          mime_type: file.type,
-          size_bytes: file.size,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", id);
-      if (updErr) throw fromPostgrest(updErr);
-    } catch (err) {
-      throw toCmsError(err);
-    }
+    void id;
+    void file;
+    throw new CmsError(
+      "validation",
+      "الاستبدال الموضعي معطّل لحماية النسخة الحالية؛ استخدم سير عمل الاستبدال الآمن المرتبط بالمحتوى.",
+    );
   },
 
   /**
@@ -339,33 +303,9 @@ export const mediaLibrary = {
    * cascade). Refuses when usages exist unless `force` is true.
    */
   async remove(id: UUID, force = false): Promise<void> {
-    try {
-      const usages = await this.listUsages(id);
-      if (!force && usages.length > 0) {
-        throw new CmsError(
-          "conflict",
-          `لا يمكن حذف الملف لأنه مستخدم في ${usages.length} موقع.`,
-        );
-      }
-      const { data: row, error: readErr } = await (supabase as any)
-        .from("media")
-        .select("bucket,storage_path")
-        .eq("id", id)
-        .single();
-      if (readErr) throw fromPostgrest(readErr);
-
-      if (row) {
-        const { error: rmErr } = await supabase.storage.from(row.bucket).remove([row.storage_path]);
-        // Ignore missing-object errors so metadata cleanup still runs.
-        if (rmErr && !/not.*found/i.test(rmErr.message)) {
-          throw new CmsError("storage", rmErr.message, { cause: rmErr });
-        }
-      }
-      const { error: delErr } = await (supabase as any).from("media").delete().eq("id", id);
-      if (delErr) throw fromPostgrest(delErr);
-    } catch (err) {
-      throw toCmsError(err);
-    }
+    void id;
+    void force;
+    throw new CmsError("permission", "الحذف الدائم للوسائط غير متاح في مسار CMS العادي");
   },
 
   signedUrl: mediaService.signedUrl,
@@ -378,15 +318,7 @@ async function attachUsageCounts(items: MediaItem[]): Promise<MediaItem[]> {
   if (items.length === 0) return items;
   const ids = items.map((i) => i.id);
   try {
-    const { data, error } = await (supabase as any)
-      .from("media_usages")
-      .select("media_id")
-      .in("media_id", ids);
-    if (error) throw fromPostgrest(error);
-    const counts = new Map<string, number>();
-    for (const row of data ?? []) {
-      counts.set(row.media_id, (counts.get(row.media_id) ?? 0) + 1);
-    }
+    const counts = usageCounts(await fetchMediaReferences(supabase as never, ids));
     return items.map((it) => ({ ...it, usage_count: counts.get(it.id) ?? 0 }));
   } catch {
     return items.map((it) => ({ ...it, usage_count: 0 }));
