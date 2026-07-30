@@ -7,4 +7,4 @@ Disallow: /auth
 Disallow: /api/
 Disallow: /search
 
-Sitemap: https://naseria-digital-opus.lovable.app/sitemap.xml
+Sitemap: https://newnasiriya.com/sitemap.xml

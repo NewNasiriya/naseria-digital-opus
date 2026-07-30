@@ -6,15 +6,25 @@ import {
   Download,
   ExternalLink,
   Link as LinkIcon,
-  RefreshCw,
-  Trash2,
   Archive,
   ArchiveRestore,
   Save,
 } from "lucide-react";
 
-import { mediaLibrary, mediaLibraryKeys, formatBytes, type MediaBucket, type MediaItem } from "@/cms/media-library";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import {
+  mediaLibrary,
+  mediaLibraryKeys,
+  formatBytes,
+  type MediaBucket,
+  type MediaItem,
+} from "@/cms/media-library";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -48,11 +58,11 @@ export function MediaDetailsSheet({ item, open, onOpenChange }: Props) {
     mediaLibrary
       .signedUrl({ bucket: item.bucket as MediaBucket, path: item.storage_path })
       .then((u) => setSigned(u));
-  }, [item?.id]);
+  }, [item]);
 
   const usagesQuery = useQuery({
     queryKey: item ? mediaLibraryKeys.usages(item.id) : ["media-library", "usages", "none"],
-    queryFn: () => mediaLibrary.listUsages(item!.id),
+    queryFn: () => mediaLibrary.listReferences(item!.id),
     enabled: !!item && open,
   });
 
@@ -76,22 +86,10 @@ export function MediaDetailsSheet({ item, open, onOpenChange }: Props) {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const replaceFile = useMutation({
-    mutationFn: async (file: File) => {
-      if (!item) return;
-      await mediaLibrary.replace(item.id, file);
-    },
-    onSuccess: () => {
-      toast.success("تم استبدال الملف — جميع الاستخدامات محدثة تلقائيًا");
-      qc.invalidateQueries({ queryKey: mediaLibraryKeys.all });
-    },
-    onError: (e: Error) => toast.error(e.message),
-  });
-
   const archive = useMutation({
     mutationFn: async () => {
       if (!item) return;
-      await mediaLibrary.archive(item.id, false);
+      await mediaLibrary.archive(item.id);
     },
     onSuccess: () => {
       toast.success("تمت الأرشفة");
@@ -109,19 +107,6 @@ export function MediaDetailsSheet({ item, open, onOpenChange }: Props) {
     onSuccess: () => {
       toast.success("تمت الاستعادة");
       qc.invalidateQueries({ queryKey: mediaLibraryKeys.all });
-    },
-    onError: (e: Error) => toast.error(e.message),
-  });
-
-  const remove = useMutation({
-    mutationFn: async () => {
-      if (!item) return;
-      await mediaLibrary.remove(item.id, false);
-    },
-    onSuccess: () => {
-      toast.success("تم الحذف نهائيًا");
-      qc.invalidateQueries({ queryKey: mediaLibraryKeys.all });
-      onOpenChange(false);
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -149,7 +134,9 @@ export function MediaDetailsSheet({ item, open, onOpenChange }: Props) {
                   className="gap-2"
                   onClick={() => {
                     if (!signed) return;
-                    navigator.clipboard.writeText(signed).then(() => toast.success("تم نسخ الرابط"));
+                    navigator.clipboard
+                      .writeText(signed)
+                      .then(() => toast.success("تم نسخ الرابط"));
                   }}
                   disabled={!signed}
                 >
@@ -182,25 +169,6 @@ export function MediaDetailsSheet({ item, open, onOpenChange }: Props) {
                   <Download className="h-4 w-4" />
                   تنزيل
                 </Button>
-                {can("media.replace") && (
-                  <label className="inline-flex">
-                    <input
-                      type="file"
-                      hidden
-                      onChange={(e) => {
-                        const f = e.target.files?.[0];
-                        if (f) replaceFile.mutate(f);
-                        e.target.value = "";
-                      }}
-                    />
-                    <Button size="sm" variant="outline" className="gap-2" asChild>
-                      <span>
-                        <RefreshCw className="h-4 w-4" />
-                        استبدال
-                      </span>
-                    </Button>
-                  </label>
-                )}
               </div>
 
               <Separator />
@@ -208,22 +176,45 @@ export function MediaDetailsSheet({ item, open, onOpenChange }: Props) {
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold text-foreground">البيانات الوصفية</h3>
                 <div className="space-y-2">
-                  <Label htmlFor="md-alt-ar" className="text-xs">النص البديل (عربي)</Label>
+                  <Label htmlFor="md-alt-ar" className="text-xs">
+                    النص البديل (عربي)
+                  </Label>
                   <Input id="md-alt-ar" value={altAr} onChange={(e) => setAltAr(e.target.value)} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="md-alt-en" className="text-xs">النص البديل (إنجليزي)</Label>
-                  <Input id="md-alt-en" value={altEn} onChange={(e) => setAltEn(e.target.value)} dir="ltr" />
+                  <Label htmlFor="md-alt-en" className="text-xs">
+                    النص البديل (إنجليزي)
+                  </Label>
+                  <Input
+                    id="md-alt-en"
+                    value={altEn}
+                    onChange={(e) => setAltEn(e.target.value)}
+                    dir="ltr"
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="md-cap" className="text-xs">وصف مختصر</Label>
-                  <Textarea id="md-cap" rows={2} value={captionAr} onChange={(e) => setCaptionAr(e.target.value)} />
+                  <Label htmlFor="md-cap" className="text-xs">
+                    وصف مختصر
+                  </Label>
+                  <Textarea
+                    id="md-cap"
+                    rows={2}
+                    value={captionAr}
+                    onChange={(e) => setCaptionAr(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="md-tags" className="text-xs">الوسوم (مفصولة بفواصل)</Label>
+                  <Label htmlFor="md-tags" className="text-xs">
+                    الوسوم (مفصولة بفواصل)
+                  </Label>
                   <Input id="md-tags" value={tags} onChange={(e) => setTags(e.target.value)} />
                 </div>
-                <Button size="sm" className="gap-2" onClick={() => saveMeta.mutate()} disabled={saveMeta.isPending}>
+                <Button
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => saveMeta.mutate()}
+                  disabled={saveMeta.isPending}
+                >
                   <Save className="h-4 w-4" />
                   حفظ البيانات
                 </Button>
@@ -233,18 +224,34 @@ export function MediaDetailsSheet({ item, open, onOpenChange }: Props) {
 
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold text-foreground">
-                  الاستخدامات ({usagesQuery.data?.length ?? 0})
+                  الاستخدامات ({usagesQuery.data ? usagesQuery.data.length : "غير معروف"})
                 </h3>
                 {usagesQuery.isLoading ? (
                   <p className="text-xs text-muted-foreground">جاري التحميل…</p>
+                ) : usagesQuery.isError ? (
+                  <p className="text-xs text-destructive">
+                    تعذّر التحقق من جميع المراجع. الأرشفة معطّلة حتى تنجح إعادة المحاولة.
+                  </p>
                 ) : usagesQuery.data && usagesQuery.data.length > 0 ? (
                   <ul className="space-y-1.5 text-xs">
                     {usagesQuery.data.map((u) => (
-                      <li key={u.id} className="flex items-center gap-2 rounded-lg border border-border bg-surface-muted/40 px-3 py-2">
-                        <LinkIcon className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-                        <span className="font-mono text-[11px] text-muted-foreground">{u.entity_table}</span>
-                        <Badge variant="secondary" className="text-[10px]">{u.field_name}</Badge>
-                        <span className="truncate text-muted-foreground" title={u.entity_id}>#{u.entity_id.slice(0, 8)}</span>
+                      <li
+                        key={`${u.table}:${u.entityId}:${u.field}`}
+                        className="flex items-center gap-2 rounded-lg border border-border bg-surface-muted/40 px-3 py-2"
+                      >
+                        <LinkIcon
+                          className="h-3.5 w-3.5 text-muted-foreground"
+                          aria-hidden="true"
+                        />
+                        <span className="font-mono text-[11px] text-muted-foreground">
+                          {u.table}
+                        </span>
+                        <Badge variant="secondary" className="text-[10px]">
+                          {u.field}
+                        </Badge>
+                        <span className="truncate text-muted-foreground" title={u.entityId}>
+                          #{u.entityId.slice(0, 8)}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -262,7 +269,7 @@ export function MediaDetailsSheet({ item, open, onOpenChange }: Props) {
                     variant="outline"
                     className="gap-2"
                     onClick={() => archive.mutate()}
-                    disabled={archive.isPending}
+                    disabled={archive.isPending || usagesQuery.isLoading || usagesQuery.isError}
                   >
                     <Archive className="h-4 w-4" />
                     أرشفة
@@ -277,20 +284,6 @@ export function MediaDetailsSheet({ item, open, onOpenChange }: Props) {
                   >
                     <ArchiveRestore className="h-4 w-4" />
                     استعادة
-                  </Button>
-                )}
-                {can("media.delete") && (
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    className="gap-2"
-                    onClick={() => {
-                      if (confirm("سيتم حذف الملف نهائيًا. هل أنت متأكد؟")) remove.mutate();
-                    }}
-                    disabled={remove.isPending}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    حذف نهائي
                   </Button>
                 )}
               </div>

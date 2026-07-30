@@ -7,11 +7,13 @@
  * to any public table with the standard `id / created_at / updated_at`
  * shape.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- generic PostgREST builders are table-specific */
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
 import { CmsError, fromPostgrest, toCmsError } from "./errors";
 import type { EntityMeta, ListQuery, Page, UUID } from "./types";
+import { requireMutationResult } from "./mutation-safety";
 
 type PublicTable = keyof Database["public"]["Tables"];
 
@@ -21,15 +23,15 @@ export interface Repository<T extends { id: UUID }> {
   getBySlug?(slug: string): Promise<T | null>;
   create(input: Partial<T>): Promise<T>;
   update(id: UUID, patch: Partial<T>): Promise<T>;
-  remove(id: UUID): Promise<void>;
+  remove(id: UUID): Promise<number>;
 }
 
 export interface SupabaseRepositoryOptions {
-  slugColumn?: string;                // defaults to "slug" if present
-  searchColumns?: string[];           // for `search` ILIKE queries
-  defaultOrderBy?: string;            // defaults to "updated_at"
-  defaultOrderDir?: "asc" | "desc";   // defaults to "desc"
-  select?: string;                    // PostgREST select expression
+  slugColumn?: string; // defaults to "slug" if present
+  searchColumns?: string[]; // for `search` ILIKE queries
+  defaultOrderBy?: string; // defaults to "updated_at"
+  defaultOrderDir?: "asc" | "desc"; // defaults to "desc"
+  select?: string; // PostgREST select expression
 }
 
 /** Generic Supabase repository. Works for any table with `id`. */
@@ -49,8 +51,7 @@ export function createSupabaseRepository<T extends EntityMeta>(
     async list(query: ListQuery = {}): Promise<Page<T>> {
       try {
         // Cast to any: PostgREST builder types are per-table and we're intentionally generic here.
-        let q = ((supabase as any).from(table) as any)
-          .select(select, { count: "exact" });
+        let q = ((supabase as any).from(table) as any).select(select, { count: "exact" });
 
         if (query.status && query.status !== "all") q = q.eq("status", query.status);
         if (typeof query.featured === "boolean") q = q.eq("featured", query.featured);
@@ -117,8 +118,7 @@ export function createSupabaseRepository<T extends EntityMeta>(
           .insert(input as never)
           .select(select)
           .single();
-        if (error) throw fromPostgrest(error);
-        return data as T;
+        return requireMutationResult("create", { data, error }) as T;
       } catch (err) {
         throw toCmsError(err);
       }
@@ -130,9 +130,8 @@ export function createSupabaseRepository<T extends EntityMeta>(
           .update(patch as never)
           .eq("id", id)
           .select(select)
-          .single();
-        if (error) throw fromPostgrest(error);
-        return data as T;
+          .maybeSingle();
+        return requireMutationResult("update", { data, error }) as T;
       } catch (err) {
         throw toCmsError(err);
       }
@@ -140,8 +139,12 @@ export function createSupabaseRepository<T extends EntityMeta>(
 
     async remove(id) {
       try {
-        const { error } = await ((supabase as any).from(table) as any).delete().eq("id", id);
-        if (error) throw fromPostgrest(error);
+        const { data, error } = await ((supabase as any).from(table) as any)
+          .delete({ count: "exact" })
+          .eq("id", id)
+          .select("id");
+        requireMutationResult("delete", { data, error });
+        return Array.isArray(data) ? data.length : 1;
       } catch (err) {
         throw toCmsError(err);
       }
@@ -187,13 +190,16 @@ export function createInMemoryRepository<T extends EntityMeta>(seed: T[] = []): 
     },
     async update(id, patch) {
       const idx = rows.findIndex((r) => r.id === id);
-      if (idx === -1) throw new CmsError("not_found", "العنصر غير موجود");
+      if (idx === -1) throw new CmsError("stale", "العنصر غير موجود أو تغيّر منذ فتحه");
       const updated = { ...rows[idx], ...patch, updated_at: new Date().toISOString() } as T;
       rows[idx] = updated;
       return updated;
     },
     async remove(id) {
+      const before = rows.length;
       rows = rows.filter((r) => r.id !== id);
+      if (rows.length === before) throw new CmsError("not_found", "العنصر غير موجود");
+      return 1;
     },
   };
 }

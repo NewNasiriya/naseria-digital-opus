@@ -16,6 +16,16 @@ dist-ssr
 .nitro
 *.local
 
+# Environment files (commit only the documented, secret-free template)
+.env
+.env.*
+!.env.example
+
+# Supabase CLI local state and temporary artifacts
+.supabase/
+supabase/.temp/
+supabase/.branches/
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
