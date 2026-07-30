@@ -1,76 +1,45 @@
-# Phase 10 — Premium Administration Dashboard
+## Diagnosis (read-only; nothing was changed)
 
-Build the complete `/admin` experience as a UI/interface architecture pass. No authentication, no permissions, no CRUD writes — those land in later phases and will slot into this shell without further UI work.
+### 1. Backend reference
+- Code and `.env`: project ref `tlyehajicuotulmfaewi` (`https://tlyehajicuotulmfaewi.supabase.co`), consumed via `import.meta.env.VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` in `src/integrations/supabase/client.ts`.
+- Published build: the live JS bundle `https://newnasiriya.com/assets/client-Bp6Ispas.js` contains **zero occurrences** of the project ref or the key. The published deployment references **no backend at all**.
+- `newnasiriya.com` and `naseria-digital-opus.lovable.app` serve the **same** build (identical title/markup), so the custom domain is correctly attached — it is not a wrong-project issue.
 
-The public website is not touched.
+### 2. Do the rows satisfy public filters and RLS?
+Yes. Verified with anonymous REST calls using the publishable key (no session):
+- `news?status=eq.published` → returns rows (e.g. "بدء استقبال ملفات الطلاب الجدد", published_at 2026-07-01).
+- `achievements` → 2 published rows returned to `anon`.
+- `gallery_albums` → 2 published rows; `gallery_items` readable through the album-published policy.
+- `homepage_hero` → 1 published row returned.
+- `media` → readable.
+- `statistics` → 3 rows, all `is_visible = true` (the table is `statistics`, not `school_stats`).
+RLS policies are split correctly into `TO anon` (published only) and `TO authenticated` (published OR staff). **No RLS or query-filter problem exists.**
 
-## Architecture
-
-```text
-src/routes/
-  admin.tsx              → shared admin shell (sidebar + topbar + main)
-  admin.index.tsx        → dashboard home
-  admin.$module.tsx      → dynamic module landing page (uses registry)
-
-src/components/admin/
-  AdminShell.tsx         → layout composition
-  AdminSidebar.tsx       → primary nav, mirrors public site structure
-  AdminTopbar.tsx        → global search, notifications, user avatar
-  AdminSectionHeader.tsx → page title + description + primary action slot
-  StatTile.tsx           → dashboard stat block
-  ModuleCard.tsx         → dashboard module tile
-  QuickActionButton.tsx  → dashboard quick action
-  ActivityFeed.tsx       → recent activity list
-  EmptyState.tsx         → reusable placeholder (list views)
-  ModuleLandingSkeleton.tsx → shared list-view scaffold for module pages
-
-src/lib/
-  admin-modules.ts       → single registry of all admin modules (icon, title,
-                           description, path, quick action, hint copy)
+### 3. Exact runtime error on the live domain
+Browser load of `https://newnasiriya.com/`:
 ```
+[Supabase] Missing Supabase environment variable(s): SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY. Connect Supabase in Lovable Cloud.
+Error: Missing Supabase environment variable(s)... at client-Bp6Ispas.js:11:54385
+```
+Thrown three times during hydration. **Zero network requests to supabase.co were made** — every data hook fails before it can fetch, so news, achievements, gallery, hero and statistics all render empty and the count-up statistics show nothing.
 
-The registry powers the sidebar, the dashboard module grid, and the dynamic
-`admin.$module.tsx` route — one source of truth so future phases only add
-real content per module without re-touching navigation.
+Cause: `VITE_SUPABASE_*` are build-time replacements. `.env` is git-ignored, so the build that produced the current published assets ran without those variables and inlined nothing. The preview works because the sandbox `.env` is present there.
 
-## Dashboard home (/admin)
+### 4. Is the CMS on the same database / admin identity?
+- Yes, same client module and same project ref — admin and public read/write the identical database.
+- Database state: 1 auth user (email confirmed), 1 profile, 1 `user_roles` row with role `admin`. Storage/media rows intact.
+- Consequence: on the **published domain** the admin CMS is equally broken (same missing-env throw at `/auth` and `/admin`), while inside the Lovable preview it works normally. No second/forked backend exists.
 
-- Personalised welcome band ("مرحبًا بعودتك" + Egypt date, no name yet — placeholder for future auth).
-- 4 stat tiles: Published Pages, News This Month, Media Files, Drafts Waiting.
-- Quick actions row (6): Create News, Upload Timetable, Replace Honor Board, Upload Achievement Photos, Open Media Library, Publish Drafts.
-- Modules grid (14 cards): icon, title, description, count placeholder, last-updated placeholder, draft count placeholder, "فتح" CTA.
-- Two-column lower band: Recent Activity (empty state now) + Drafts Waiting (empty state now).
+### 5. Minimal safe recovery plan (no data moves, no deletions)
+1. Re-publish from Lovable so the build runs with Cloud env injection, producing a bundle with the URL and publishable key inlined. This is the entire fix — one publish action.
+2. Re-verify: reload `newnasiriya.com`, confirm the bundle contains the project ref, confirm zero console errors, confirm news/achievements/gallery/statistics render, confirm `/auth` sign-in and `/admin` load.
+3. If the republished bundle is still keyless, the publish pipeline is not injecting Cloud env — then (and only then) add a runtime-safe fallback so the client reads the keys from a server-provided config instead of build-time inlining. No database or content change either way.
+4. Optional hardening, not required for recovery: a small SSR-rendered fallback so a client-side backend failure degrades gracefully instead of showing an empty page.
 
-## Module landing pages (/admin/$module)
+Nothing in the database, storage, auth, or RLS needs to be touched.
 
-All 14 modules share one scaffold via `admin.$module.tsx`:
-- Section header with title, description, primary action.
-- Toolbar row: search field, filter chip placeholder, sort placeholder.
-- Empty state card explaining what will live here + primary CTA.
-- Preserves the exact tone and rhythm of the public site.
-
-Modules registered: homepage, about, academic, news, achievements, honor,
-activities, gallery, media, contact, users, settings, seo, status.
-
-## Design language
-
-- Reuses existing tokens (`bg-surface-muted`, `border-border`, `text-foreground`, `text-muted-foreground`, `bg-primary`, `bg-sidebar` variants already defined in styles.css).
-- Reuses shadcn `Button`, `Input` primitives.
-- RTL logical properties throughout.
-- Sidebar collapses to a bottom sheet on mobile via a `Sheet` primitive (already installed via shadcn) — falls back gracefully; if `Sheet` is not yet in the project we use a lightweight drawer using existing components.
-
-## Head metadata
-
-- Every admin route gets its own `head()` with title `<module> · لوحة الإدارة` and a `noindex, nofollow` meta so the CMS is never crawled.
-
-## Out of scope (deferred)
-
-- Authentication + role gating (Phase 11).
-- Real CRUD editors (each module gets its own follow-up phase).
-- Data reads from Supabase for counts (added when auth-gated server fns land; placeholders show "—" today).
-- Notification center popover contents (icon + empty popover only).
-
-## Verification
-
-- Typecheck via tsgo.
-- Playwright smoke on `/admin`, `/admin/news`, `/admin/media` at 375 / 1024 / 1440 to confirm no overflow, sidebar behaviour, and RTL alignment.
+### 6. Actions requiring your explicit approval
+- Publishing/redeploying the app (step 1) — this is a deployment action.
+- Any code change (step 3 or 4).
+- Any change to secrets or environment variables.
+- Nothing else; no migration, no data write, no storage change is proposed.
