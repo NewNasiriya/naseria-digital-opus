@@ -68,7 +68,7 @@ export function Hero({ intro }: HeroProps) {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="relative isolate overflow-hidden"
+      className="home-hero-luxury relative isolate overflow-hidden"
     >
       {/* Background — both images mounted, crossfaded via opacity */}
       <div className="absolute inset-0 -z-10">
@@ -96,40 +96,41 @@ export function Hero({ intro }: HeroProps) {
         {/* Readability overlays — subtle, keeps warm tones */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/45 to-slate-950/70"
+          className="home-hero-overlay-primary absolute inset-0"
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-l from-slate-950/60 via-transparent to-slate-950/20"
+          className="home-hero-overlay-secondary absolute inset-0"
         />
+        <div aria-hidden="true" className="home-hero-texture absolute inset-0" />
       </div>
 
       <Container
         size="wide"
-        className="relative flex min-h-[78vh] flex-col justify-center py-24 text-white sm:min-h-[85vh]"
+        className="home-hero-content relative flex min-h-[78vh] flex-col justify-center py-20 text-white sm:min-h-[85vh] sm:py-24"
       >
-        <div className="max-w-3xl">
-          <p className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-sm">
+        <div className="home-hero-copy max-w-3xl">
+          <p className="home-hero-kicker inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-sm">
             <span
               aria-hidden="true"
-              className="h-1.5 w-1.5 rounded-full bg-white"
+              className="home-hero-kicker-dot h-1.5 w-1.5 rounded-full"
             />
             الموقع الرسمي للمدرسة
           </p>
 
           <h1
             id="hero-heading"
-            className="mt-6 text-white [text-wrap:balance] drop-shadow-sm"
+            className="home-hero-title mt-6 text-white [text-wrap:balance]"
             style={{ fontSize: "clamp(2.25rem, 1.4rem + 3.2vw, 3.75rem)" }}
           >
             مدرسة الناصرية الابتدائية الجديدة — الموقع الرسمي
           </h1>
 
-          <p className="mt-3 text-base font-medium tracking-wide text-white/85 sm:text-lg">
+          <p className="home-hero-subtitle mt-3 text-base font-medium tracking-wide sm:text-lg">
             New Al-Nasiriyah Primary School
           </p>
 
-          <p className="mt-6 max-w-2xl text-base leading-loose text-white/90 sm:text-lg">
+          <p className="home-hero-intro mt-6 max-w-2xl text-base leading-loose sm:text-lg">
             {intro?.trim() || DEFAULT_INTRO}
           </p>
 
@@ -137,7 +138,7 @@ export function Hero({ intro }: HeroProps) {
             <Button
               asChild
               size="lg"
-              className="bg-white text-primary hover:bg-white/90"
+              className="home-hero-action home-hero-primary-action bg-white px-6 text-primary hover:bg-white/95"
             >
               <Link to="/about">
                 تعرف على المدرسة
@@ -148,7 +149,7 @@ export function Hero({ intro }: HeroProps) {
               asChild
               size="lg"
               variant="outline"
-              className="border-white/40 bg-white/5 text-white backdrop-blur-sm hover:bg-white/15 hover:text-white"
+              className="home-hero-action home-hero-secondary-action px-6 text-white backdrop-blur-sm hover:bg-white/15 hover:text-white"
             >
               <Link to="/academic">
                 <CalendarDays className="h-4 w-4" aria-hidden="true" />
@@ -162,9 +163,12 @@ export function Hero({ intro }: HeroProps) {
         <a
           href="#stats"
           aria-label="التمرير للأسفل"
-          className="absolute inset-x-0 bottom-6 mx-auto grid h-11 w-11 place-items-center rounded-full border border-white/40 text-white/90 transition-colors hover:bg-white/10"
+          className="home-hero-scroll absolute inset-x-0 bottom-6 mx-auto grid h-11 w-11 place-items-center rounded-full border border-white/40 text-white/90 hover:bg-white/10"
         >
-          <ChevronDown className="h-5 w-5 animate-bounce" aria-hidden="true" />
+          <ChevronDown
+            className="h-5 w-5 animate-bounce motion-reduce:animate-none"
+            aria-hidden="true"
+          />
         </a>
       </Container>
     </section>
