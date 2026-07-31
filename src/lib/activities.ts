@@ -55,6 +55,14 @@ export interface ActivityListOptions {
   featuredOnly?: boolean;
 }
 
+const ACTIVITY_SELECT = `
+  id,slug,title_ar,summary_ar,body_ar,event_date,published_at,is_featured,
+  category:activity_categories!activities_category_id_fkey(id,key,name_ar,icon_key),
+  cover:media!activities_cover_image_media_id_fkey(bucket,storage_path,alt_ar,alt_en),
+  gallery:activity_media(id,caption_ar,display_order,
+    media:media!activity_media_media_id_fkey(bucket,storage_path,alt_ar,alt_en))
+`;
+
 export function mapActivityRow(row: RawActivityRow): ActivityListItem {
   const gallery = (row.gallery ?? [])
     .map((item) => {
@@ -90,13 +98,7 @@ export async function fetchActivities(
 ): Promise<ActivityListItem[]> {
   let query = supabase
     .from("activities")
-    .select(
-      `id,slug,title_ar,summary_ar,body_ar,event_date,published_at,is_featured,
-       category:activity_categories!activities_category_id_fkey(id,key,name_ar,icon_key),
-       cover:media!activities_cover_image_media_id_fkey(bucket,storage_path,alt_ar,alt_en),
-       gallery:activity_media(id,caption_ar,display_order,
-         media:media!activity_media_media_id_fkey(bucket,storage_path,alt_ar,alt_en))`,
-    )
+    .select(ACTIVITY_SELECT)
     .eq("status", "published")
     .order("is_featured", { ascending: false })
     .order("event_date", { ascending: false, nullsFirst: false })
@@ -110,13 +112,33 @@ export async function fetchActivities(
   return ((data ?? []) as unknown as RawActivityRow[]).map(mapActivityRow);
 }
 
-export function activityExcerpt(item: ActivityListItem, maxChars = 190): string | null {
+export async function fetchActivityBySlug(
+  slug: string,
+): Promise<ActivityListItem | null> {
+  const { data, error } = await supabase
+    .from("activities")
+    .select(ACTIVITY_SELECT)
+    .eq("slug", slug)
+    .eq("status", "published")
+    .maybeSingle();
+  if (error) throw error;
+  return data ? mapActivityRow(data as unknown as RawActivityRow) : null;
+}
+
+export function activityExcerpt(
+  item: ActivityListItem,
+  maxChars = 190,
+): string | null {
   const source = item.summary_ar?.trim() || item.body_ar?.trim();
   if (!source) return null;
   const clean = source.replace(/\s+/g, " ");
   if (clean.length <= maxChars) return clean;
   const slice = clean.slice(0, maxChars);
-  const cut = Math.max(slice.lastIndexOf("،"), slice.lastIndexOf("."), slice.lastIndexOf(" "));
+  const cut = Math.max(
+    slice.lastIndexOf("،"),
+    slice.lastIndexOf("."),
+    slice.lastIndexOf(" "),
+  );
   return `${slice.slice(0, cut > 60 ? cut : maxChars).trim()}…`;
 }
 
