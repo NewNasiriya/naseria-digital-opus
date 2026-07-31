@@ -19,7 +19,7 @@ export function GradeSelector({
   tone = "default",
 }: GradeSelectorProps) {
   return (
-    <Section id="grades" tone={tone} spacing="default">
+    <Section id="grades" tone={tone} spacing="default" className="academic-grades-section">
       <Container size="wide">
         <div className="text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
@@ -37,7 +37,7 @@ export function GradeSelector({
               key={g.level}
               to="/academic/grades/$level"
               params={{ level: String(g.level) }}
-              className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:elevation-md"
+              className="academic-grade-card group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:elevation-md"
             >
               <div
                 aria-hidden="true"
@@ -46,13 +46,13 @@ export function GradeSelector({
               <div className="relative flex items-center justify-between">
                 <span
                   aria-hidden="true"
-                  className="grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground"
+                  className="academic-card-icon grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground"
                 >
                   <GraduationCap className="h-6 w-6" />
                 </span>
                 <span
                   aria-hidden="true"
-                  className="rounded-full bg-surface-muted px-3 py-1 text-xs font-semibold text-muted-foreground"
+                  className="academic-grade-level rounded-full bg-surface-muted px-3 py-1 text-xs font-semibold text-muted-foreground"
                 >
                   المستوى {g.level}
                 </span>
@@ -63,7 +63,7 @@ export function GradeSelector({
               <p className="relative mt-1 text-xs font-medium tracking-wide text-muted-foreground">
                 {g.name_en}
               </p>
-              <span className="relative mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+              <span className="academic-card-action relative mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary">
                 استعراض الصف
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
               </span>
