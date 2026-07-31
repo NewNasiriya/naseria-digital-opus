@@ -105,10 +105,34 @@
   color: white !important;
 }
 
+/* ---------- Sticky header: stable during live theme switching ---------- */
+
+.site-header-luxury,
+.site-header-luxury[data-scrolled="true"] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: linear-gradient(90deg, oklch(0.12 0.045 258), oklch(0.2 0.075 258), oklch(0.12 0.045 258)) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.site-header-luxury[data-scrolled="true"] {
+  box-shadow:
+    0 1px 0 oklch(0.78 0.125 82 / 0.22),
+    0 18px 44px -30px oklch(0.03 0.04 258 / 0.92) !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .honor-luxury-card,
   .honor-luxury-card:hover {
     transition: none !important;
     transform: none !important;
+  }
+
+  .site-header-luxury,
+  .site-header-luxury * {
+    transition: none !important;
   }
 }
