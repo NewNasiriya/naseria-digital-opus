@@ -65,13 +65,17 @@ jobs:
       - name: Export local test credentials
         shell: bash
         run: |
-          supabase status -o env \
+          eval "$(supabase status -o env \
             --override-name api.url=TEST_SUPABASE_URL \
             --override-name auth.anon_key=TEST_SUPABASE_ANON_KEY \
-            --override-name auth.service_role_key=TEST_SUPABASE_SERVICE_ROLE_KEY \
-            >> "$GITHUB_ENV"
-          echo "TEST_SUPABASE_ALLOWED_PROJECT_REF=local" >> "$GITHUB_ENV"
-          echo "TEST_SUPABASE_SAFETY_ACK=isolated-cms-integrity" >> "$GITHUB_ENV"
+            --override-name auth.service_role_key=TEST_SUPABASE_SERVICE_ROLE_KEY)"
+          {
+            echo "TEST_SUPABASE_URL=$TEST_SUPABASE_URL"
+            echo "TEST_SUPABASE_ANON_KEY=$TEST_SUPABASE_ANON_KEY"
+            echo "TEST_SUPABASE_SERVICE_ROLE_KEY=$TEST_SUPABASE_SERVICE_ROLE_KEY"
+            echo "TEST_SUPABASE_ALLOWED_PROJECT_REF=local"
+            echo "TEST_SUPABASE_SAFETY_ACK=isolated-cms-integrity"
+          } >> "$GITHUB_ENV"
 
       - name: Run real image and PDF lifecycle integration test
         run: bun run test:integration
