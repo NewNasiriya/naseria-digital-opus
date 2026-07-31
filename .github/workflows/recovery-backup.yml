@@ -1,0 +1,75 @@
+name: Generate Recovery Backup
+
+on:
+  push:
+    branches:
+      - chatgpt/recovery-backup-2026-07-31
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout complete repository history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build repository recovery package
+        shell: bash
+        run: |
+          set -euo pipefail
+          BACKUP_DIR="Naseria-Recovery-Backup-2026-07-31"
+          mkdir -p "$BACKUP_DIR/repository" "$BACKUP_DIR/metadata"
+
+          git fetch --all --tags --prune
+          git bundle create "$BACKUP_DIR/repository/naseria-digital-opus-full-history.bundle" --all
+          git archive --format=zip --output="$BACKUP_DIR/repository/source-main.zip" origin/main
+          git archive --format=zip --output="$BACKUP_DIR/repository/source-cms-integrity-fixes.zip" origin/chatgpt/cms-production-integrity-fixes-v1
+
+          git show-ref > "$BACKUP_DIR/metadata/repository-refs.txt"
+          git log --all --date=iso-strict --pretty=format:'%H%x09%ad%x09%D%x09%s' > "$BACKUP_DIR/metadata/commit-history.tsv"
+          git rev-parse origin/main > "$BACKUP_DIR/metadata/main-commit-sha.txt"
+          git rev-parse origin/chatgpt/cms-production-integrity-fixes-v1 > "$BACKUP_DIR/metadata/cms-integrity-fixes-commit-sha.txt"
+
+          cat > "$BACKUP_DIR/RESTORE-REPOSITORY.md" <<'EOF'
+          # Repository restore
+
+          ## Restore the complete Git repository
+
+          ```bash
+          git clone naseria-digital-opus-full-history.bundle naseria-digital-opus
+          cd naseria-digital-opus
+          git remote add origin https://github.com/NewNasiriya/naseria-digital-opus.git
+          git checkout main
+          ```
+
+          The bundle contains all reachable branches, tags, and commit history captured at backup time.
+
+          ## Restore source only
+
+          Extract `source-main.zip` for the currently deployed baseline, or
+          `source-cms-integrity-fixes.zip` for the reviewed CMS-integrity branch.
+          EOF
+
+          (
+            cd "$BACKUP_DIR"
+            find . -type f -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt
+          )
+
+          tar -czf "${BACKUP_DIR}.tar.gz" "$BACKUP_DIR"
+          sha256sum "${BACKUP_DIR}.tar.gz" > "${BACKUP_DIR}.tar.gz.sha256"
+
+      - name: Upload immutable recovery artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Naseria-Recovery-Backup-2026-07-31
+          path: |
+            Naseria-Recovery-Backup-2026-07-31.tar.gz
+            Naseria-Recovery-Backup-2026-07-31.tar.gz.sha256
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
