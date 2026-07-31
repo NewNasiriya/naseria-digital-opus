@@ -44,7 +44,7 @@ function HomePage() {
   return (
     <>
       <SiteHeader />
-      <main id="main">
+      <main id="main" className="home-luxury">
         <HeroWithCms />
         <AcademicTimelineWidget />
         <Stats />
@@ -70,4 +70,3 @@ function HeroWithCms() {
   });
   return <Hero intro={data?.subheadline_ar ?? undefined} />;
 }
-
