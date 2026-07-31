@@ -1,0 +1,77 @@
+name: CMS Integrity
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "supabase/migrations/**"
+      - "tests/**"
+      - "package.json"
+      - "bun.lock"
+      - ".github/workflows/cms-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-and-build:
+    name: Unit tests and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install locked dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run CMS integrity unit tests
+        run: bun run test:unit
+
+      - name: Build production application
+        run: bun run build
+
+  isolated-supabase-integration:
+    name: Isolated Supabase media lifecycle
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TEST_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
+      TEST_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}
+      TEST_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}
+      TEST_SUPABASE_SAFETY_ACK: isolated-cms-integrity
+    steps:
+      - name: Check whether isolated test secrets exist
+        id: gate
+        shell: bash
+        run: |
+          if [[ -n "$TEST_SUPABASE_URL" && -n "$TEST_SUPABASE_ANON_KEY" && -n "$TEST_SUPABASE_SERVICE_ROLE_KEY" ]]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "Isolated Supabase secrets are not configured; integration test is intentionally skipped."
+          fi
+
+      - name: Checkout
+        if: steps.gate.outputs.enabled == 'true'
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        if: steps.gate.outputs.enabled == 'true'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install locked dependencies
+        if: steps.gate.outputs.enabled == 'true'
+        run: bun install --frozen-lockfile
+
+      - name: Run isolated media lifecycle test
+        if: steps.gate.outputs.enabled == 'true'
+        run: bun run test:integration
