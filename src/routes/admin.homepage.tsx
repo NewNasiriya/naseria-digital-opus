@@ -173,10 +173,10 @@ function HeroEditor() {
             onChange={(e) => setHeadline(e.target.value)}
             dir="rtl"
             maxLength={200}
-            placeholder="مدرسة الناصرية الابتدائية الجديدة — الموقع الرسمي"
+            placeholder="مدرسة الناصرية الابتدائية الجديدة"
           />
           <p className="text-xs text-muted-foreground">
-            محفوظ في قاعدة البيانات. لا يظهر حاليًا في الواجهة العامة (سيُوصَّل في موجة لاحقة).
+            العنوان الرئيسي الكبير في أعلى الصفحة. اتركه فارغًا لاستخدام الاسم الافتراضي.
           </p>
         </div>
 
