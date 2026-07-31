@@ -10,7 +10,10 @@ interface CategoriesFilterProps {
 
 export function CategoriesFilter({ categories, activeSlug }: CategoriesFilterProps) {
   return (
-    <nav aria-label="تصنيفات الأخبار" className="flex flex-wrap gap-2">
+    <nav
+      aria-label="تصنيفات الأخبار"
+      className="news-categories-filter flex flex-wrap gap-2"
+    >
       <Link
         to="/news"
         search={{}}

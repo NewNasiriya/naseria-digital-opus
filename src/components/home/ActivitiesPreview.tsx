@@ -48,14 +48,18 @@ const ACTIVITIES: ActivityCard[] = [
 
 export function ActivitiesPreview() {
   return (
-    <Section tone="muted" spacing="default">
+    <Section
+      tone="muted"
+      spacing="default"
+      className="home-activities-luxury"
+    >
       <Container size="wide">
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
+            <p className="home-section-eyebrow text-sm font-semibold uppercase tracking-[0.15em] text-primary">
               أنشطة المدرسة
             </p>
-            <h2 className="mt-3 rule-accent inline-block">
+            <h2 className="home-section-title mt-3 inline-block">
               حياة مدرسية غنية ومتوازنة
             </h2>
           </div>
@@ -75,11 +79,11 @@ export function ActivitiesPreview() {
               <Link
                 key={a.title}
                 to="/activities"
-                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:elevation-md"
+                className="home-luxury-card home-activity-card group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card p-6 elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:elevation-md"
               >
                 <span
                   aria-hidden="true"
-                  className="grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground"
+                  className="home-card-icon grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground"
                 >
                   <Icon className="h-6 w-6" />
                 </span>

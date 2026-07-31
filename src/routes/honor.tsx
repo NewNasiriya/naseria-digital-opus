@@ -11,7 +11,7 @@ function HonorLayout() {
   return (
     <>
       <SiteHeader />
-      <main id="main">
+      <main id="main" className="public-luxury-inner honor-luxury-page">
         <Outlet />
       </main>
       <SiteFooter />

@@ -47,14 +47,14 @@ function SectionHeader({
   icon?: typeof Newspaper;
 }) {
   return (
-    <div className="mb-8 flex items-end justify-between gap-4">
+    <div className="news-page-section-header mb-8 flex items-end justify-between gap-4">
       <div>
         {eyebrow && (
-          <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
+          <p className="news-page-eyebrow text-sm font-semibold uppercase tracking-[0.15em] text-primary">
             {eyebrow}
           </p>
         )}
-        <h2 className="mt-2 flex items-center gap-2 rule-accent text-2xl">
+        <h2 className="news-page-title mt-2 flex items-center gap-2 rule-accent text-2xl">
           {Icon && <Icon className="h-6 w-6 text-primary" aria-hidden="true" />}
           {title}
         </h2>
@@ -76,7 +76,6 @@ function SkeletonList({ count = 6 }: { count?: number }) {
     </div>
   );
 }
-
 
 function NewsIndexPage() {
   const { category, q, page = 1 } = Route.useSearch();
@@ -120,10 +119,10 @@ function NewsIndexPage() {
       />
 
       {showPinned && (
-        <Section tone="muted" spacing="sm">
+        <Section tone="muted" spacing="sm" className="news-pinned-section">
           <Container size="wide">
             <SectionHeader eyebrow="الأهم" title="أخبار مثبّتة" icon={Pin} />
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            <div className="news-pinned-grid grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {pinnedQ.data!.map((item) => (
                 <NewsCard key={item.id} item={item} variant="card" />
               ))}
@@ -132,9 +131,9 @@ function NewsIndexPage() {
         </Section>
       )}
 
-      <Section tone="default" spacing="default">
+      <Section tone="default" spacing="default" className="news-index-section">
         <Container size="wide">
-          <div className="mx-auto flex max-w-3xl flex-col gap-6">
+          <div className="news-tools-panel mx-auto flex max-w-3xl flex-col gap-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <SectionHeader
                 title={
@@ -154,7 +153,7 @@ function NewsIndexPage() {
             )}
           </div>
 
-          <div className="mx-auto mt-10 max-w-3xl">
+          <div className="news-list-panel mx-auto mt-10 max-w-3xl">
             {listQ.isLoading ? (
               <SkeletonList />
             ) : items.length === 0 ? (
@@ -186,7 +185,6 @@ function NewsIndexPage() {
               </>
             )}
           </div>
-
         </Container>
       </Section>
 
@@ -205,14 +203,14 @@ function AnnouncementsSection() {
   if (q.isLoading || items.length === 0) return null;
 
   return (
-    <Section tone="muted" spacing="default">
+    <Section tone="muted" spacing="default" className="news-announcements-section">
       <Container size="wide">
         <SectionHeader
           eyebrow="إعلانات رسمية"
           title="إعلانات المدرسة"
           icon={Megaphone}
         />
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="news-announcements-grid grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
             <NewsCard key={item.id} item={item} variant="compact" />
           ))}

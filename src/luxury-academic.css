@@ -1,0 +1,118 @@
+/* Academic public pages — presentation only. */
+
+.academic-luxury-page {
+  background:
+    radial-gradient(circle at 10% 8%, oklch(0.78 0.125 82 / 0.05), transparent 26rem),
+    linear-gradient(180deg, var(--v2-paper), var(--v2-ivory), var(--v2-paper));
+}
+
+.academic-luxury-page > section:not(.inner-page-hero) {
+  background: transparent !important;
+}
+
+.academic-grades-section {
+  background:
+    radial-gradient(circle at 88% 12%, oklch(0.48 0.14 255 / 0.05), transparent 24rem),
+    transparent !important;
+}
+
+.academic-grade-card,
+.academic-resource-card,
+.academic-guideline-card {
+  position: relative;
+  border-color: var(--v2-line) !important;
+  border-radius: 1.8rem !important;
+  background:
+    linear-gradient(145deg, oklch(1 0 0 / 0.72), transparent 58%),
+    var(--card) !important;
+  box-shadow: var(--v2-shadow-card) !important;
+  transition: transform 300ms ease, border-color 300ms ease, box-shadow 300ms ease !important;
+}
+
+.dark .academic-grade-card,
+.dark .academic-resource-card,
+.dark .academic-guideline-card {
+  background:
+    linear-gradient(145deg, oklch(1 0 0 / 0.035), transparent 58%),
+    var(--card) !important;
+}
+
+.academic-grade-card::before,
+.academic-resource-card::before,
+.academic-guideline-card::before {
+  position: absolute;
+  inset-inline: 1.4rem;
+  top: 0;
+  z-index: 2;
+  height: 2px;
+  content: "";
+  background: linear-gradient(90deg, transparent, var(--v2-gold), transparent);
+}
+
+.academic-grade-card:hover,
+.academic-resource-card:hover,
+.academic-guideline-card:hover {
+  transform: translateY(-8px) !important;
+  border-color: var(--v2-line-gold) !important;
+  box-shadow: var(--v2-shadow-xl) !important;
+}
+
+.academic-card-icon {
+  border: 1px solid oklch(0.78 0.125 82 / 0.26);
+  background: linear-gradient(145deg, oklch(0.78 0.125 82 / 0.14), oklch(0.48 0.14 255 / 0.09)) !important;
+  color: var(--v2-blue) !important;
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.42);
+}
+
+.dark .academic-card-icon {
+  color: var(--v2-gold) !important;
+}
+
+.academic-grade-level {
+  border: 1px solid var(--v2-line);
+  background: color-mix(in oklch, var(--surface-muted) 72%, transparent) !important;
+}
+
+.academic-card-action {
+  margin-top: auto !important;
+  padding-top: 1.4rem;
+  color: var(--v2-blue) !important;
+  font-weight: 700 !important;
+}
+
+.dark .academic-card-action {
+  color: var(--v2-gold) !important;
+}
+
+.academic-resources-section {
+  background:
+    radial-gradient(circle at 14% 16%, oklch(0.78 0.125 82 / 0.055), transparent 24rem),
+    color-mix(in oklch, var(--surface-muted) 64%, var(--background)) !important;
+}
+
+.academic-guideline-list li {
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--v2-line);
+}
+
+.academic-guideline-list li:last-child {
+  border-bottom: 0;
+}
+
+.academic-luxury-page h2.rule-accent {
+  font-size: clamp(2rem, 1.45rem + 1.45vw, 3.2rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.3 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .academic-grade-card,
+  .academic-resource-card,
+  .academic-guideline-card,
+  .academic-grade-card:hover,
+  .academic-resource-card:hover,
+  .academic-guideline-card:hover {
+    transition: none !important;
+    transform: none !important;
+  }
+}

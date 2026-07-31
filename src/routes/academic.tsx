@@ -11,7 +11,7 @@ function AcademicLayout() {
   return (
     <>
       <SiteHeader />
-      <main id="main">
+      <main id="main" className="public-luxury-inner academic-luxury-page">
         <Outlet />
       </main>
       <SiteFooter />

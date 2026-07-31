@@ -11,7 +11,7 @@ function AchievementsLayout() {
   return (
     <>
       <SiteHeader />
-      <main id="main">
+      <main id="main" className="public-luxury-inner achievements-luxury-page">
         <Outlet />
       </main>
       <SiteFooter />

@@ -12,9 +12,9 @@ export function HonorCard({ board }: HonorCardProps) {
     <Link
       to="/honor/grades/$level"
       params={{ level: String(board.grade_level) }}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:elevation-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+      className="honor-luxury-card group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:elevation-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
     >
-      <div className="relative aspect-[3/4] overflow-hidden bg-surface-muted">
+      <div className="honor-luxury-media relative aspect-[3/4] overflow-hidden bg-surface-muted">
         <img
           src={board.image_url}
           alt={`${board.title_ar ?? board.grade_name_ar} — ${board.academic_year}`}
@@ -43,7 +43,7 @@ export function HonorCard({ board }: HonorCardProps) {
         </div>
         <span
           aria-hidden="true"
-          className="mt-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground"
+          className="honor-luxury-action mt-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors group-hover:border-primary group-hover:bg-primary group-hover:text-primary-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
         </span>

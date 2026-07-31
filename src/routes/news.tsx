@@ -11,7 +11,7 @@ function NewsLayout() {
   return (
     <>
       <SiteHeader />
-      <main id="main">
+      <main id="main" className="public-luxury-inner news-luxury-page">
         <Outlet />
       </main>
       <SiteFooter />

@@ -22,11 +22,15 @@ export function AboutHero({
   message = DEFAULT_MESSAGE,
 }: AboutHeroProps) {
   return (
-    <Section tone="default" spacing="default" className="pt-10 sm:pt-16">
+    <Section
+      tone="default"
+      spacing="default"
+      className="about-hero-luxury pt-10 sm:pt-16"
+    >
       <Container size="wide">
         <nav
           aria-label="مسار التنقل"
-          className="mb-6 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground"
+          className="about-hero-breadcrumbs mb-6 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground"
         >
           <Link
             to="/"
@@ -41,18 +45,18 @@ export function AboutHero({
           </span>
         </nav>
 
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-          <div className="order-2 lg:order-1">
-            <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
+        <div className="about-hero-grid grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div className="about-hero-copy order-2 lg:order-1">
+            <p className="about-hero-eyebrow text-sm font-semibold uppercase tracking-[0.15em] text-primary">
               {eyebrow}
             </p>
-            <h1 className="mt-4 rule-accent inline-block text-3xl font-bold leading-tight text-foreground sm:text-4xl lg:text-5xl">
+            <h1 className="about-hero-title mt-4 rule-accent inline-block text-3xl font-bold leading-tight text-foreground sm:text-4xl lg:text-5xl">
               {heading}
             </h1>
-            <p className="mt-8 max-w-xl text-base leading-loose text-muted-foreground sm:text-lg">
+            <p className="about-hero-message mt-8 max-w-xl text-base leading-loose text-muted-foreground sm:text-lg">
               {message?.trim() || DEFAULT_MESSAGE}
             </p>
-            <div className="mt-9 flex flex-wrap items-center gap-3">
+            <div className="about-hero-actions mt-9 flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
                 <Link to="/contact">
                   <Phone className="h-4 w-4" aria-hidden="true" />
@@ -68,24 +72,24 @@ export function AboutHero({
             </div>
           </div>
 
-          <div className="order-1 lg:order-2">
+          <div className="about-hero-media order-1 lg:order-2">
             <figure className="relative">
               <span
                 aria-hidden="true"
                 className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-primary-soft via-transparent to-transparent blur-xl"
               />
-              <div className="relative overflow-hidden rounded-3xl border border-border bg-surface-muted elevation-md">
+              <div className="about-hero-image-frame relative overflow-hidden rounded-3xl border border-border bg-surface-muted elevation-md">
                 <img
                   src={entranceAsset.url}
                   alt="بوابة مدرسة الناصرية الابتدائية الجديدة"
-                  className="aspect-[4/3] h-full w-full object-cover"
+                  className="about-hero-image aspect-[4/3] h-full w-full object-cover"
                   loading="eager"
                   decoding="async"
                 />
               </div>
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute -bottom-4 -start-4 hidden h-24 w-24 rounded-2xl border border-border bg-card elevation-sm sm:block"
+                className="about-hero-decoration pointer-events-none absolute -bottom-4 -start-4 hidden h-24 w-24 rounded-2xl border border-border bg-card elevation-sm sm:block"
               />
             </figure>
           </div>

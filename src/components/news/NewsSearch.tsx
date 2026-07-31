@@ -37,7 +37,7 @@ export function NewsSearch({ initialValue = "" }: NewsSearchProps) {
     <form
       role="search"
       onSubmit={(e) => e.preventDefault()}
-      className="relative w-full sm:max-w-sm"
+      className="news-search-luxury relative w-full sm:max-w-sm"
     >
       <label htmlFor="news-search" className="sr-only">
         بحث في الأخبار

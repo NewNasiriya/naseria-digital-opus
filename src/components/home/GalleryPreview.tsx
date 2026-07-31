@@ -22,14 +22,19 @@ export function GalleryPreview() {
   if (!isLoading && (!data || data.length === 0)) return null;
 
   return (
-    <Section id="gallery-preview" tone="muted" spacing="default">
+    <Section
+      id="gallery-preview"
+      tone="muted"
+      spacing="default"
+      className="home-gallery-luxury"
+    >
       <Container size="wide">
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
+            <p className="home-section-eyebrow text-sm font-semibold uppercase tracking-[0.15em] text-primary">
               أرشيف المدرسة
             </p>
-            <h2 className="mt-3 rule-accent inline-block">معرض الصور</h2>
+            <h2 className="home-section-title mt-3 inline-block">معرض الصور</h2>
           </div>
           <Button asChild variant="ghost" className="text-primary">
             <Link to="/gallery">
@@ -44,7 +49,7 @@ export function GalleryPreview() {
             ? [0, 1, 2].map((i) => (
                 <div
                   key={i}
-                  className="overflow-hidden rounded-2xl border border-border bg-card"
+                  className="home-luxury-card overflow-hidden rounded-2xl border border-border bg-card"
                 >
                   <div className="aspect-[4/3] w-full animate-pulse bg-surface-muted" />
                   <div className="space-y-3 p-5">
@@ -60,7 +65,7 @@ export function GalleryPreview() {
                     key={album.id}
                     to="/gallery/$slug"
                     params={{ slug: album.slug }}
-                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:elevation-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    className="home-luxury-card home-gallery-card group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:elevation-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     aria-label={`فتح ألبوم ${album.title_ar}`}
                   >
                     <div className="relative aspect-[4/3] w-full overflow-hidden bg-surface-muted">

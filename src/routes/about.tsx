@@ -35,7 +35,7 @@ function AboutPage() {
   return (
     <>
       <SiteHeader />
-      <main id="main">
+      <main id="main" className="public-luxury-inner about-luxury-page">
         <AboutHero />
         <SchoolOverview data={data?.overview} />
         <PrincipalWelcome data={data?.principal} />

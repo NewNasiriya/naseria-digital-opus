@@ -45,11 +45,11 @@ function ListCard({ list }: { list: InstructionList }) {
     (a, b) => a.display_order - b.display_order,
   );
   return (
-    <article className="rounded-2xl border border-border bg-card p-6 elevation-sm">
+    <article className="academic-guideline-card rounded-2xl border border-border bg-card p-6 elevation-sm">
       <div className="flex items-center gap-3">
         <span
           aria-hidden="true"
-          className="grid h-10 w-10 place-items-center rounded-xl bg-primary-soft text-primary"
+          className="academic-card-icon grid h-10 w-10 place-items-center rounded-xl bg-primary-soft text-primary"
         >
           <ListChecks className="h-5 w-5" />
         </span>
@@ -61,7 +61,7 @@ function ListCard({ list }: { list: InstructionList }) {
         </p>
       )}
       {items.length > 0 && (
-        <ul className="mt-5 space-y-3">
+        <ul className="academic-guideline-list mt-5 space-y-3">
           {items.map((it) => (
             <li key={it.id} className="flex items-start gap-3">
               <CheckCircle2
@@ -81,7 +81,7 @@ function ListCard({ list }: { list: InstructionList }) {
 
 function Skeleton() {
   return (
-    <div className="rounded-2xl border border-border bg-card p-6">
+    <div className="academic-guideline-card rounded-2xl border border-border bg-card p-6">
       <div className="h-5 w-1/2 animate-pulse rounded bg-surface-muted" />
       <div className="mt-4 space-y-2">
         <div className="h-3 w-full animate-pulse rounded bg-surface-muted" />
@@ -106,7 +106,7 @@ export function GuidelinesList({
   const lists = data ?? [];
 
   return (
-    <Section spacing="default">
+    <Section spacing="default" className="academic-guidelines-section">
       <Container size="wide">
         {isLoading ? (
           <div className="grid gap-6 md:grid-cols-2">

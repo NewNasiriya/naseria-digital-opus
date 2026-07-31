@@ -29,16 +29,16 @@ export function PageHero({
   actions,
 }: PageHeroProps) {
   return (
-    <section className="relative isolate overflow-hidden bg-surface-muted">
+    <section className="inner-page-hero relative isolate overflow-hidden bg-surface-muted">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/[0.04] to-transparent"
+        className="inner-page-hero-overlay pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/[0.04] to-transparent"
       />
-      <Container size="wide" className="relative py-14 sm:py-20">
+      <Container size="wide" className="inner-page-hero-container relative py-14 sm:py-20">
         {crumbs && crumbs.length > 0 && (
           <nav
             aria-label="مسار التنقل"
-            className="mb-6 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground"
+            className="inner-page-breadcrumbs mb-6 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground"
           >
             <Link
               to="/"
@@ -62,21 +62,21 @@ export function PageHero({
           </nav>
         )}
 
-        <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
+        <p className="inner-page-eyebrow text-sm font-semibold uppercase tracking-[0.15em] text-primary">
           {eyebrow}
         </p>
         <h1
-          className="mt-3 text-foreground [text-wrap:balance]"
+          className="inner-page-title mt-3 text-foreground [text-wrap:balance]"
           style={{ fontSize: "clamp(1.75rem, 1.1rem + 2.4vw, 2.75rem)" }}
         >
           {title}
         </h1>
         {description && (
-          <p className="mt-5 max-w-2xl text-base leading-loose text-muted-foreground">
+          <p className="inner-page-description mt-5 max-w-2xl text-base leading-loose text-muted-foreground">
             {description}
           </p>
         )}
-        {actions && <div className="mt-8 flex flex-wrap gap-3">{actions}</div>}
+        {actions && <div className="inner-page-actions mt-8 flex flex-wrap gap-3">{actions}</div>}
       </Container>
     </section>
   );

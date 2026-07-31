@@ -101,12 +101,12 @@ export function NewsCard({ item, variant = "row" }: NewsCardProps) {
   return (
     <article
       className={cn(
-        "group relative",
-        variant === "row" && "py-7 first:pt-0",
+        "news-index-item group relative",
+        variant === "row" && "news-index-item-row py-7 first:pt-0",
         variant === "card" &&
-          "flex h-full flex-col rounded-xl border border-border bg-card p-6 transition-colors duration-300 hover:border-primary/40",
+          "news-index-card flex h-full flex-col rounded-xl border border-border bg-card p-6 transition-colors duration-300 hover:border-primary/40",
         variant === "compact" &&
-          "flex h-full flex-col rounded-xl border border-border bg-card p-5 transition-colors duration-300 hover:border-primary/40",
+          "news-index-compact flex h-full flex-col rounded-xl border border-border bg-card p-5 transition-colors duration-300 hover:border-primary/40",
       )}
     >
       <Link

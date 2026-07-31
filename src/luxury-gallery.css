@@ -1,0 +1,59 @@
+/* Gallery presentation layer only. */
+
+.gallery-luxury-page {
+  background: linear-gradient(180deg, var(--v2-paper), var(--v2-ivory), var(--v2-paper));
+}
+
+.gallery-luxury-page > section:not(.inner-page-hero) {
+  background: transparent !important;
+}
+
+.gallery-luxury-page section:not(.inner-page-hero) > div > .mb-8.grid {
+  gap: 0 !important;
+  overflow: hidden;
+  border: 1px solid var(--v2-line);
+  border-radius: 1.8rem;
+  background: linear-gradient(135deg, var(--v2-ink), var(--v2-ink-soft));
+  box-shadow: var(--v2-shadow-xl);
+}
+
+.gallery-luxury-page section:not(.inner-page-hero) > div > .mb-8.grid > div {
+  min-height: 110px;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.gallery-luxury-page section:not(.inner-page-hero) > div > .mb-8.grid p {
+  color: white !important;
+}
+
+.gallery-luxury-page section:not(.inner-page-hero) > div > .mb-8.flex {
+  padding: 1.25rem !important;
+  border-color: var(--v2-line) !important;
+  border-radius: 1.6rem !important;
+  background: var(--card) !important;
+  box-shadow: var(--v2-shadow-card);
+}
+
+.gallery-luxury-page section:not(.inner-page-hero) a.group {
+  border-color: var(--v2-line) !important;
+  border-radius: 1.8rem !important;
+  background: var(--card) !important;
+  box-shadow: var(--v2-shadow-card) !important;
+  transition: transform 300ms ease, border-color 300ms ease, box-shadow 300ms ease !important;
+}
+
+.gallery-luxury-page section:not(.inner-page-hero) a.group:hover {
+  transform: translateY(-8px) !important;
+  border-color: var(--v2-line-gold) !important;
+  box-shadow: var(--v2-shadow-xl) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-luxury-page section:not(.inner-page-hero) a.group,
+  .gallery-luxury-page section:not(.inner-page-hero) a.group:hover {
+    transition: none !important;
+    transform: none !important;
+  }
+}

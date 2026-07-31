@@ -10,6 +10,18 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import luxuryCss from "../luxury.css?url";
+import luxuryV2Css from "../luxury-v2.css?url";
+import luxuryV2RefinementsCss from "../luxury-v2-refinements.css?url";
+import luxuryInnerCss from "../luxury-inner.css?url";
+import luxuryNewsCss from "../luxury-news.css?url";
+import luxuryAchievementsCss from "../luxury-achievements.css?url";
+import luxuryActivitiesCss from "../luxury-activities.css?url";
+import luxuryGalleryCss from "../luxury-gallery.css?url";
+import luxuryHonorCss from "../luxury-honor.css?url";
+import luxuryAcademicCss from "../luxury-academic.css?url";
+import luxuryContactCss from "../luxury-contact.css?url";
+import luxuryDetailsCss from "../luxury-details.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { trackPageView } from "../lib/analytics";
 import { ThemeProvider, THEME_INIT_SCRIPT } from "../lib/theme";
@@ -119,6 +131,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "stylesheet", href: luxuryCss },
+      { rel: "stylesheet", href: luxuryV2Css },
+      { rel: "stylesheet", href: luxuryV2RefinementsCss },
+      { rel: "stylesheet", href: luxuryInnerCss },
+      { rel: "stylesheet", href: luxuryNewsCss },
+      { rel: "stylesheet", href: luxuryAchievementsCss },
+      { rel: "stylesheet", href: luxuryActivitiesCss },
+      { rel: "stylesheet", href: luxuryGalleryCss },
+      { rel: "stylesheet", href: luxuryHonorCss },
+      { rel: "stylesheet", href: luxuryAcademicCss },
+      { rel: "stylesheet", href: luxuryContactCss },
+      { rel: "stylesheet", href: luxuryDetailsCss },
 
       // Favicons + PWA manifest.
       { rel: "icon", href: "/favicon.ico", sizes: "any" },
