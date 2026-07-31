@@ -1,12 +1,12 @@
 name: Generate Recovery Backup
 
 on:
-  push:
-    branches:
-      - chatgpt/recovery-backup-2026-07-31
   pull_request:
     branches:
       - main
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/recovery-backup.yml
   workflow_dispatch:
 
 permissions:
@@ -30,8 +30,11 @@ jobs:
 
           git fetch --all --tags --prune
           git bundle create "$BACKUP_DIR/repository/naseria-digital-opus-full-history.bundle" --all
+          git bundle verify "$BACKUP_DIR/repository/naseria-digital-opus-full-history.bundle"
           git archive --format=zip --output="$BACKUP_DIR/repository/source-main.zip" origin/main
           git archive --format=zip --output="$BACKUP_DIR/repository/source-cms-integrity-fixes.zip" origin/chatgpt/cms-production-integrity-fixes-v1
+          unzip -t "$BACKUP_DIR/repository/source-main.zip"
+          unzip -t "$BACKUP_DIR/repository/source-cms-integrity-fixes.zip"
 
           git show-ref > "$BACKUP_DIR/metadata/repository-refs.txt"
           git log --all --date=iso-strict --pretty=format:'%H%x09%ad%x09%D%x09%s' > "$BACKUP_DIR/metadata/commit-history.tsv"
@@ -58,19 +61,14 @@ jobs:
           `source-cms-integrity-fixes.zip` for the reviewed CMS-integrity branch.
           EOF
 
-          git bundle verify "$BACKUP_DIR/repository/naseria-digital-opus-full-history.bundle"
-          unzip -tq "$BACKUP_DIR/repository/source-main.zip"
-          unzip -tq "$BACKUP_DIR/repository/source-cms-integrity-fixes.zip"
-
           (
             cd "$BACKUP_DIR"
-            find . -type f ! -name 'SHA256SUMS.txt' -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt
+            find . -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt
             sha256sum -c SHA256SUMS.txt
           )
 
           tar -czf "${BACKUP_DIR}.tar.gz" "$BACKUP_DIR"
           sha256sum "${BACKUP_DIR}.tar.gz" > "${BACKUP_DIR}.tar.gz.sha256"
-          sha256sum -c "${BACKUP_DIR}.tar.gz.sha256"
 
       - name: Upload immutable recovery artifact
         uses: actions/upload-artifact@v4
