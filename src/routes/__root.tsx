@@ -105,14 +105,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "theme-color", content: SITE_THEME_COLOR },
       { name: "color-scheme", content: "light dark" },
       { name: "application-name", content: SITE_NAME_AR },
+
+      // Sitewide OG defaults. Per-route head() overrides title/description/image.
       { property: "og:site_name", content: SITE_NAME_AR },
       { property: "og:locale", content: SITE_LOCALE },
       { property: "og:type", content: "website" },
+
+      // Apple / mobile web app defaults.
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "default" },
       { name: "apple-mobile-web-app-title", content: SITE_NAME_AR },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "format-detection", content: "telephone=no" },
+
+      // Authorship.
       { name: "author", content: SITE_NAME_AR },
     ],
     links: [
@@ -121,12 +127,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: luxuryV2Css },
       { rel: "stylesheet", href: luxuryV2RefinementsCss },
       { rel: "stylesheet", href: luxuryInnerCss },
+
+      // Favicons + PWA manifest.
       { rel: "icon", href: "/favicon.ico", sizes: "any" },
       { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
       { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" },
       { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
       { rel: "mask-icon", href: "/favicon.png", color: SITE_THEME_COLOR },
       { rel: "manifest", href: "/site.webmanifest" },
+
+      // Font preconnects.
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       {
         rel: "preconnect",
@@ -176,6 +186,7 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="ar" dir="rtl">
       <head>
         <HeadContent />
+        {/* Pre-hydration theme init — prevents FOUC on refresh. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
       <body>
@@ -193,6 +204,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <PageViewTracker />
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
       </ThemeProvider>
     </QueryClientProvider>
@@ -202,6 +214,7 @@ function RootComponent() {
 function PageViewTracker() {
   const router = useRouter();
   useEffect(() => {
+    // Log the initial page render.
     trackPageView(router.state.location.pathname);
     const unsub = router.subscribe("onResolved", (event) => {
       const path = event.toLocation?.pathname ?? router.state.location.pathname;
