@@ -1,0 +1,63 @@
+/* Honor presentation layer only. */
+
+.honor-luxury-page {
+  background:
+    radial-gradient(circle at 10% 10%, oklch(0.78 0.125 82 / 0.05), transparent 24rem),
+    linear-gradient(180deg, var(--v2-paper), var(--v2-ivory), var(--v2-paper));
+}
+
+.honor-luxury-page > section:not(.inner-page-hero) {
+  background: transparent !important;
+}
+
+.honor-luxury-page section:not(.inner-page-hero) h2 {
+  max-width: 18ch;
+  font-size: clamp(2rem, 1.5rem + 1.35vw, 3.1rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.3 !important;
+}
+
+.honor-luxury-card {
+  border-color: var(--v2-line) !important;
+  border-radius: 1.8rem !important;
+  background: var(--card) !important;
+  box-shadow: var(--v2-shadow-card) !important;
+  transition: transform 300ms ease, border-color 300ms ease, box-shadow 300ms ease !important;
+}
+
+.honor-luxury-card::before {
+  position: absolute;
+  inset-inline: 1.4rem;
+  top: 0;
+  z-index: 3;
+  height: 2px;
+  content: "";
+  background: linear-gradient(90deg, transparent, var(--v2-gold), transparent);
+}
+
+.honor-luxury-card:hover {
+  transform: translateY(-8px) !important;
+  border-color: var(--v2-line-gold) !important;
+  box-shadow: var(--v2-shadow-xl) !important;
+}
+
+.honor-luxury-media::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 56%, oklch(0.06 0.04 258 / 0.24));
+}
+
+.honor-luxury-action {
+  border-color: var(--v2-line-gold) !important;
+  color: var(--v2-gold-deep) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .honor-luxury-card,
+  .honor-luxury-card:hover {
+    transition: none !important;
+    transform: none !important;
+  }
+}
