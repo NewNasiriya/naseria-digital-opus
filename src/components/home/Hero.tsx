@@ -29,7 +29,7 @@ type IdleWindow = Window & {
   requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
 };
 
-export function Hero({ intro }: HeroProps) {
+export function Hero({ headline, intro }: HeroProps) {
   const { mode, resolved } = useTheme();
 
   // Auto mode → time-based; explicit modes → theme-based.
