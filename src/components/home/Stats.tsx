@@ -83,7 +83,7 @@ function StatCard({ stat, active }: { stat: StatItem; active: boolean }) {
   const value = useCountUp(stat.value, active);
   const Icon = stat.icon;
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-border bg-card p-8 elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:elevation-md">
+    <article className="home-luxury-card home-stat-card group relative overflow-hidden rounded-2xl border border-border bg-card p-8 elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:elevation-md">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
@@ -98,7 +98,7 @@ function StatCard({ stat, active }: { stat: StatItem; active: boolean }) {
         </div>
         <span
           aria-hidden="true"
-          className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary"
+          className="home-stat-icon grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-primary-soft text-primary"
         >
           <Icon className="h-6 w-6" />
         </span>
@@ -159,13 +159,20 @@ export function Stats({ items }: StatsProps) {
   }, []);
 
   return (
-    <Section id="stats" tone="default" spacing="default">
+    <Section
+      id="stats"
+      tone="default"
+      spacing="default"
+      className="home-stats-luxury"
+    >
       <Container size="wide">
         <header className="mb-8 max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
+          <p className="home-section-eyebrow text-sm font-semibold uppercase tracking-[0.15em] text-primary">
             المدرسة بالأرقام
           </p>
-          <h2 className="mt-3 rule-accent inline-block">إحصاءات مدرسة الناصرية الابتدائية الجديدة</h2>
+          <h2 className="home-section-title mt-3 inline-block">
+            إحصاءات مدرسة الناصرية الابتدائية الجديدة
+          </h2>
           <p className="mt-3 text-sm leading-loose text-muted-foreground">
             مؤشرات موجزة عن حجم المجتمع المدرسي والطاقة الاستيعابية للفصول الدراسية.
           </p>
