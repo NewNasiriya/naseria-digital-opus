@@ -186,7 +186,7 @@ function LoadingLayout() {
       <div className="lg:col-span-3">
         <div className="home-luxury-card h-72 animate-pulse rounded-2xl border border-border bg-surface-muted" />
       </div>
-      <div className="space-y-6 lg:col-span-2">
+      <div className="home-news-briefs-panel space-y-6 lg:col-span-2">
         <SkeletonRow />
         <SkeletonRow />
       </div>
@@ -259,11 +259,11 @@ export function LatestNews() {
               <LeadStory item={lead} />
             </div>
             {briefs.length > 0 && (
-              <div className="lg:col-span-2">
-                <p className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              <div className="home-news-briefs-panel lg:col-span-2">
+                <p className="home-news-briefs-title mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                   موجز الأخبار
                 </p>
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {briefs.map((item, i) => (
                     <BriefItem key={item.id} item={item} index={i + 1} />
                   ))}
