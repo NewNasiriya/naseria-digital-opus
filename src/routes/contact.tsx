@@ -28,9 +28,6 @@ export const Route = createFileRoute("/contact")({
       description:
         "قنوات التواصل الرسمية مع إدارة مدرسة الناصرية الابتدائية الجديدة — العنوان، مواعيد العمل، البريد الإلكتروني، والموقع على الخريطة.",
     });
-    // School / EducationalOrganization JSON-LD for rich results on the
-    // contact page. Address/phone/hours reflect the CMS-managed defaults;
-    // update via the site_settings and working_hours tables.
     const schoolSchema = schemaScript({
       "@context": "https://schema.org",
       "@type": "School",
@@ -67,11 +64,10 @@ function ContactPage() {
   const { data: hours = [], isLoading: hoursLoading } = useWorkingHours();
   const { data: socials = [] } = useSocialLinks();
 
-
   return (
     <>
       <SiteHeader />
-      <main id="main">
+      <main id="main" className="public-luxury-inner contact-luxury-page">
         <PageHero
           eyebrow="التواصل"
           title="تواصل مع إدارة المدرسة"
@@ -79,7 +75,7 @@ function ContactPage() {
           crumbs={[{ label: "تواصل معنا" }]}
         />
 
-        <Section spacing="default">
+        <Section spacing="default" className="contact-cards-section">
           <Container size="wide">
             {infoLoading ? (
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -104,11 +100,11 @@ function ContactPage() {
           </Container>
         </Section>
 
-        <Section tone="muted" spacing="default">
+        <Section tone="muted" spacing="default" className="contact-map-section">
           <Container size="wide">
-            <div className="grid items-stretch gap-8 lg:grid-cols-[1.1fr_1fr]">
+            <div className="contact-map-layout grid items-stretch gap-8 lg:grid-cols-[1.1fr_1fr]">
               <LocationMap embedUrl={info?.google_maps_embed_url ?? null} />
-              <div className="flex flex-col justify-center">
+              <div className="contact-map-copy flex flex-col justify-center">
                 <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
                   موقع المدرسة
                 </p>
