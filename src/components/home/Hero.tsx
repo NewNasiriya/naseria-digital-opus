@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 
 import schoolDay from "@/assets/school-day.png.asset.json";
 import schoolNight from "@/assets/school-night.png.asset.json";
-import { SchoolLogo } from "@/components/brand/SchoolLogo";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/lib/theme";
@@ -159,17 +158,6 @@ export function Hero({ intro }: HeroProps) {
                   </Link>
                 </Button>
               </div>
-            </div>
-          </div>
-
-          <div className="home-hero-seal" aria-hidden="true">
-            <div className="home-hero-seal-frame">
-              <SchoolLogo
-                decorative
-                eager
-                size={168}
-                className="home-hero-seal-logo"
-              />
             </div>
           </div>
         </div>
