@@ -1,0 +1,85 @@
+name: CMS Integrity
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "supabase/**"
+      - "tests/**"
+      - "package.json"
+      - "bun.lock"
+      - ".github/workflows/cms-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-and-build:
+    name: Unit tests and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install locked dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run CMS integrity unit tests
+        run: bun run test:unit
+
+      - name: Build production application
+        run: bun run build
+
+  local-supabase-integration:
+    name: Disposable local Supabase media lifecycle
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install locked dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Set up Supabase CLI
+        uses: supabase/setup-cli@v2
+        with:
+          version: latest
+          github-token: ${{ github.token }}
+
+      - name: Start disposable local Supabase and apply every migration
+        run: supabase start
+
+      - name: Export local test credentials
+        shell: bash
+        run: |
+          eval "$(supabase status -o env \
+            --override-name api.url=TEST_SUPABASE_URL \
+            --override-name auth.anon_key=TEST_SUPABASE_ANON_KEY \
+            --override-name auth.service_role_key=TEST_SUPABASE_SERVICE_ROLE_KEY)"
+          {
+            echo "TEST_SUPABASE_URL=$TEST_SUPABASE_URL"
+            echo "TEST_SUPABASE_ANON_KEY=$TEST_SUPABASE_ANON_KEY"
+            echo "TEST_SUPABASE_SERVICE_ROLE_KEY=$TEST_SUPABASE_SERVICE_ROLE_KEY"
+            echo "TEST_SUPABASE_ALLOWED_PROJECT_REF=local"
+            echo "TEST_SUPABASE_SAFETY_ACK=isolated-cms-integrity"
+          } >> "$GITHUB_ENV"
+
+      - name: Run real image and PDF lifecycle integration test
+        run: bun run test:integration
+
+      - name: Stop and delete local Supabase containers
+        if: always()
+        run: supabase stop --no-backup

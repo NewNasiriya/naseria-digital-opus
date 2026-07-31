@@ -1,13 +1,7 @@
 /**
  * Media Library service — the single source of truth for every uploaded
- * asset. Sits on top of `mediaService` (which handles the raw
- * Supabase Storage + `media` table plumbing) and adds the operations the
- * enterprise-grade library UI needs: listing with filters, usage
- * aggregation, in-place replacement, safe deletion, and folder
- * inventory.
- *
- * UI code MUST call this module — never touch `supabase.storage.*` or
- * the `media` / `media_usages` tables directly.
+ * asset. UI code MUST call this module rather than touching Storage or the
+ * media tables directly.
  */
 import { supabase } from "@/integrations/supabase/client";
 
@@ -16,10 +10,7 @@ import { mediaService } from "./media";
 import { validateFile } from "./validation";
 import type { Page, UUID } from "./types";
 
-/** Broad content classes surfaced to the UI as tabs / filters. */
 export type MediaKind = "image" | "document" | "video" | "audio" | "other";
-
-/** Bucket identifiers used across the app. */
 export type MediaBucket = "media" | "documents" | "private-uploads";
 
 export interface MediaItem {
@@ -41,10 +32,8 @@ export interface MediaItem {
   created_at: string;
   updated_at: string;
   created_by: UUID | null;
-  /** Derived: leading path segment (before the uuid filename). */
   folder: string;
   kind: MediaKind;
-  /** Populated by `attachUsageCounts`. */
   usage_count?: number;
 }
 
@@ -63,7 +52,6 @@ export interface MediaListQuery {
   bucket?: MediaBucket | "all";
   folder?: string | "all";
   archived?: boolean;
-  /** When true, list only assets with zero references in `media_usages`. */
   unusedOnly?: boolean;
   tag?: string;
   limit?: number;
@@ -71,8 +59,6 @@ export interface MediaListQuery {
   orderBy?: "created_at" | "file_name" | "size_bytes";
   orderDir?: "asc" | "desc";
 }
-
-/* ---------- helpers ---------- */
 
 export function classifyMime(mime: string): MediaKind {
   if (!mime) return "other";
@@ -106,7 +92,7 @@ export function formatBytes(bytes: number | null | undefined): string {
   let n = bytes;
   while (n >= 1024 && i < units.length - 1) {
     n /= 1024;
-    i++;
+    i += 1;
   }
   return `${n.toFixed(n >= 100 || i === 0 ? 0 : 1)} ${units[i]}`;
 }
@@ -135,8 +121,6 @@ function mapRow(row: any): MediaItem {
     kind: classifyMime(row.mime_type),
   };
 }
-
-/* ---------- service ---------- */
 
 export const mediaLibrary = {
   async list(query: MediaListQuery = {}): Promise<Page<MediaItem>> {
@@ -179,7 +163,6 @@ export const mediaLibrary = {
         }
       }
       if (folder !== "all") {
-        // Match either exact folder or nested under it.
         q = q.or(`storage_path.like.${folder}/%,storage_path.like.${folder}%`);
       }
 
@@ -189,9 +172,10 @@ export const mediaLibrary = {
       const { data, error, count } = await q;
       if (error) throw fromPostgrest(error);
       const rows = (data ?? []).map(mapRow);
-
       const withUsage = await attachUsageCounts(rows);
-      const filtered = unusedOnly ? withUsage.filter((r) => (r.usage_count ?? 0) === 0) : withUsage;
+      const filtered = unusedOnly
+        ? withUsage.filter((row) => (row.usage_count ?? 0) === 0)
+        : withUsage;
 
       return {
         rows: filtered,
@@ -218,7 +202,24 @@ export const mediaLibrary = {
     }
   },
 
-  async listFolders(bucket?: MediaBucket): Promise<{ folder: string; count: number }[]> {
+  /** Authoritative database reference count, independent of media_usages. */
+  async referenceCount(mediaId: UUID): Promise<number> {
+    try {
+      const { data, error } = await (supabase as any).rpc(
+        "media_reference_count",
+        { _media_id: mediaId },
+      );
+      if (error) throw fromPostgrest(error);
+      const count = Number(data ?? 0);
+      return Number.isFinite(count) ? count : 0;
+    } catch (err) {
+      throw toCmsError(err);
+    }
+  },
+
+  async listFolders(
+    bucket?: MediaBucket,
+  ): Promise<{ folder: string; count: number }[]> {
     try {
       let q = (supabase as any)
         .from("media")
@@ -230,8 +231,8 @@ export const mediaLibrary = {
       if (error) throw fromPostgrest(error);
       const counts = new Map<string, number>();
       for (const row of data ?? []) {
-        const f = folderOf(row.storage_path);
-        counts.set(f, (counts.get(f) ?? 0) + 1);
+        const folder = folderOf(row.storage_path);
+        counts.set(folder, (counts.get(folder) ?? 0) + 1);
       }
       return Array.from(counts.entries())
         .map(([folder, count]) => ({ folder, count }))
@@ -243,7 +244,17 @@ export const mediaLibrary = {
 
   async updateMeta(
     id: UUID,
-    patch: Partial<Pick<MediaItem, "alt_ar" | "alt_en" | "caption_ar" | "caption_en" | "tags" | "is_archived">>,
+    patch: Partial<
+      Pick<
+        MediaItem,
+        | "alt_ar"
+        | "alt_en"
+        | "caption_ar"
+        | "caption_en"
+        | "tags"
+        | "is_archived"
+      >
+    >,
   ): Promise<void> {
     try {
       const { error } = await (supabase as any)
@@ -256,13 +267,7 @@ export const mediaLibrary = {
     }
   },
 
-  /**
-   * Replace the underlying file of a media asset while preserving its id,
-   * `storage_path`, and every existing `media_usages` link.
-   *
-   * MIME must match the original kind (image ↔ image, document ↔ document)
-   * to avoid silently breaking consuming modules.
-   */
+  /** Replace a Storage object in place while preserving media id and path. */
   async replace(id: UUID, file: File): Promise<void> {
     try {
       const { data: existing, error: readErr } = await (supabase as any)
@@ -272,6 +277,16 @@ export const mediaLibrary = {
         .single();
       if (readErr) throw fromPostgrest(readErr);
       if (!existing) throw new CmsError("not_found", "الملف غير موجود");
+      if (
+        existing.bucket === "external" ||
+        existing.storage_path.startsWith("/") ||
+        /^(https?:)?\/\//.test(existing.storage_path)
+      ) {
+        throw new CmsError(
+          "validation",
+          "الملفات الخارجية لا يمكن استبدالها عبر التخزين. ارفع ملفًا جديدًا ثم اربطه بالمحتوى.",
+        );
+      }
 
       const oldKind = classifyMime(existing.mime_type);
       const newKind = classifyMime(file.type);
@@ -281,10 +296,8 @@ export const mediaLibrary = {
           "نوع الملف الجديد يجب أن يطابق النوع الأصلي (صورة مقابل صورة، مستند مقابل مستند).",
         );
       }
-      // Block script-capable formats (SVG/HTML/JS) regardless of kind match.
       const invalid = validateFile(file);
       if (invalid) throw new CmsError("validation", invalid);
-
 
       const { error: upErr } = await supabase.storage
         .from(existing.bucket)
@@ -293,7 +306,9 @@ export const mediaLibrary = {
           upsert: true,
           contentType: file.type,
         });
-      if (upErr) throw new CmsError("storage", upErr.message, { cause: upErr });
+      if (upErr) {
+        throw new CmsError("storage", upErr.message, { cause: upErr });
+      }
 
       const { error: updErr } = await (supabase as any)
         .from("media")
@@ -311,19 +326,29 @@ export const mediaLibrary = {
   },
 
   /**
-   * Archive an asset. Refuses when usages exist unless `force` is true.
+   * Archive is never allowed while an authoritative content reference exists.
+   * `force` can only bypass stale derived media_usages rows, not direct FKs.
    */
   async archive(id: UUID, force = false): Promise<void> {
     try {
+      const references = await this.referenceCount(id);
+      if (references > 0) {
+        throw new CmsError(
+          "conflict",
+          `لا يمكن أرشفة الملف لأنه مرتبط فعليًا بـ ${references} سجل محتوى. استبدل أو أزل الارتباط أولًا.`,
+        );
+      }
+
       if (!force) {
         const usages = await this.listUsages(id);
         if (usages.length > 0) {
           throw new CmsError(
             "conflict",
-            `لا يمكن أرشفة الملف لأنه مستخدم في ${usages.length} موقع. أزل الاستخدامات أولاً أو استخدم "أرشفة رغم الاستخدام".`,
+            `لا يمكن أرشفة الملف لأن سجل الاستخدام يحتوي على ${usages.length} مرجع. راجع الاستخدامات أولًا.`,
           );
         }
       }
+
       await this.updateMeta(id, { is_archived: true });
     } catch (err) {
       throw toCmsError(err);
@@ -335,34 +360,55 @@ export const mediaLibrary = {
   },
 
   /**
-   * Hard-delete: remove from storage, drop the `media` row (usage rows
-   * cascade). Refuses when usages exist unless `force` is true.
+   * Hard delete first removes the metadata row. The database trigger performs
+   * an atomic authoritative reference check; therefore a blocked delete can
+   * never remove the underlying Storage object. Storage cleanup happens only
+   * after the database has accepted the deletion. A cleanup failure can leave
+   * an orphaned object, but can never break live content.
    */
   async remove(id: UUID, force = false): Promise<void> {
     try {
+      const references = await this.referenceCount(id);
+      if (references > 0) {
+        throw new CmsError(
+          "conflict",
+          `لا يمكن حذف الملف لأنه مرتبط فعليًا بـ ${references} سجل محتوى.`,
+        );
+      }
+
       const usages = await this.listUsages(id);
       if (!force && usages.length > 0) {
         throw new CmsError(
           "conflict",
-          `لا يمكن حذف الملف لأنه مستخدم في ${usages.length} موقع.`,
+          `لا يمكن حذف الملف لأن سجل الاستخدام يحتوي على ${usages.length} مرجع.`,
         );
       }
-      const { data: row, error: readErr } = await (supabase as any)
-        .from("media")
-        .select("bucket,storage_path")
-        .eq("id", id)
-        .single();
-      if (readErr) throw fromPostgrest(readErr);
 
-      if (row) {
-        const { error: rmErr } = await supabase.storage.from(row.bucket).remove([row.storage_path]);
-        // Ignore missing-object errors so metadata cleanup still runs.
-        if (rmErr && !/not.*found/i.test(rmErr.message)) {
-          throw new CmsError("storage", rmErr.message, { cause: rmErr });
+      const { data: deleted, error: deleteError } = await (supabase as any)
+        .from("media")
+        .delete()
+        .eq("id", id)
+        .select("bucket,storage_path")
+        .single();
+      if (deleteError) throw fromPostgrest(deleteError);
+
+      if (
+        deleted &&
+        deleted.bucket !== "external" &&
+        !deleted.storage_path.startsWith("/") &&
+        !/^(https?:)?\/\//.test(deleted.storage_path)
+      ) {
+        const { error: storageError } = await supabase.storage
+          .from(deleted.bucket)
+          .remove([deleted.storage_path]);
+        if (storageError && !/not.*found/i.test(storageError.message)) {
+          throw new CmsError(
+            "storage",
+            "تم حذف سجل الوسائط بأمان، لكن تعذر تنظيف الملف غير المرتبط من التخزين. راجع التخزين يدويًا.",
+            { cause: storageError },
+          );
         }
       }
-      const { error: delErr } = await (supabase as any).from("media").delete().eq("id", id);
-      if (delErr) throw fromPostgrest(delErr);
     } catch (err) {
       throw toCmsError(err);
     }
@@ -372,11 +418,9 @@ export const mediaLibrary = {
   upload: mediaService.upload,
 };
 
-/* ---------- usage aggregation ---------- */
-
 async function attachUsageCounts(items: MediaItem[]): Promise<MediaItem[]> {
   if (items.length === 0) return items;
-  const ids = items.map((i) => i.id);
+  const ids = items.map((item) => item.id);
   try {
     const { data, error } = await (supabase as any)
       .from("media_usages")
@@ -387,15 +431,20 @@ async function attachUsageCounts(items: MediaItem[]): Promise<MediaItem[]> {
     for (const row of data ?? []) {
       counts.set(row.media_id, (counts.get(row.media_id) ?? 0) + 1);
     }
-    return items.map((it) => ({ ...it, usage_count: counts.get(it.id) ?? 0 }));
+    return items.map((item) => ({
+      ...item,
+      usage_count: counts.get(item.id) ?? 0,
+    }));
   } catch {
-    return items.map((it) => ({ ...it, usage_count: 0 }));
+    return items.map((item) => ({ ...item, usage_count: 0 }));
   }
 }
 
 export const mediaLibraryKeys = {
   all: ["media-library"] as const,
-  list: (query: MediaListQuery) => ["media-library", "list", query] as const,
+  list: (query: MediaListQuery) =>
+    ["media-library", "list", query] as const,
   usages: (id: UUID) => ["media-library", "usages", id] as const,
-  folders: (bucket?: MediaBucket) => ["media-library", "folders", bucket ?? "all"] as const,
+  folders: (bucket?: MediaBucket) =>
+    ["media-library", "folders", bucket ?? "all"] as const,
 };

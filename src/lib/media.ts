@@ -7,55 +7,71 @@ export interface MediaRef {
   alt_en?: string | null;
 }
 
-/**
- * Resolve a media row to a public URL. Supports Supabase Storage buckets
- * and externally-hosted assets (CDN pointers) via the reserved bucket
- * name `external`, where `storage_path` holds the full URL (absolute or
- * root-relative like `/__l5e/assets-v1/...`).
- */
-export function mediaPublicUrl(m: MediaRef | null | undefined): string | null {
-  if (!m || !m.storage_path) return null;
-  let path = m.storage_path;
-  // Legacy CDN prefix `/__l5e/assets-v1/` is only routed on Lovable-hosted
-  // subdomains. On custom production domains those URLs 404. The equivalent
-  // path served from the app's `public/lovable-assets/` mirror is
-  // `/lovable-assets/`. Normalize both at read time so historic CMS rows
-  // keep working even if the underlying data has not yet been migrated.
+const PUBLIC_STORAGE_BUCKETS = new Set(["media", "documents"]);
+
+/** Normalize legacy Lovable asset pointers for custom production domains. */
+export function normalizeMediaPath(path: string): string {
   if (path.startsWith("/__l5e/assets-v1/")) {
-    path = path.replace("/__l5e/assets-v1/", "/lovable-assets/");
+    return path.replace("/__l5e/assets-v1/", "/lovable-assets/");
   }
-  if (m.bucket === "external" || /^(https?:)?\/\//.test(path) || path.startsWith("/")) {
-    return path;
-  }
-  const bucket = m.bucket ?? "media";
-  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-  return data?.publicUrl ?? null;
+  return path;
+}
+
+/** External and application-hosted assets never need Supabase signing. */
+export function isExternalMediaRef(m: MediaRef | null | undefined): boolean {
+  if (!m?.storage_path) return false;
+  const path = normalizeMediaPath(m.storage_path);
+  return (
+    m.bucket === "external" ||
+    /^(https?:)?\/\//.test(path) ||
+    path.startsWith("/")
+  );
 }
 
 /**
- * Resolve a media row to a *usable* URL.
+ * Resolve a media row to a URL that is safe to render immediately.
  *
- * Storage buckets in this project are private: object access is granted by
- * RLS on `storage.objects` (only media backing published content), so the
- * plain public URL 404s. For those rows a short-lived signed URL is issued;
- * externally-hosted assets fall through to `mediaPublicUrl`.
+ * External/root-relative assets are returned unchanged. Objects in the
+ * private `media` and `documents` buckets are routed through the same-origin
+ * `/media-url` endpoint, which verifies that the object belongs to published
+ * content before issuing a short-lived Supabase signed URL. This keeps every
+ * existing synchronous public consumer working while centralising signing in
+ * one audited server route.
+ *
+ * `private-uploads` is intentionally never exposed by this resolver.
+ */
+export function mediaPublicUrl(m: MediaRef | null | undefined): string | null {
+  if (!m?.storage_path) return null;
+  const path = normalizeMediaPath(m.storage_path);
+
+  if (isExternalMediaRef({ ...m, storage_path: path })) return path;
+
+  const bucket = m.bucket ?? "media";
+  if (!PUBLIC_STORAGE_BUCKETS.has(bucket)) return null;
+
+  const params = new URLSearchParams({ bucket, path });
+  return `/media-url?${params.toString()}`;
+}
+
+/**
+ * Resolve a media row directly to a signed URL when the current Supabase
+ * session is allowed to read it (for example, public published content or an
+ * authenticated CMS editor). External assets bypass signing. If direct
+ * signing is unavailable, public buckets fall back to the verified server
+ * resolver rather than an unusable private-bucket public URL.
  */
 export async function mediaSignedUrl(
   m: MediaRef | null | undefined,
   expiresInSeconds = 60 * 60,
 ): Promise<string | null> {
-  if (!m || !m.storage_path) return null;
-  const path = m.storage_path;
-  const isExternal =
-    m.bucket === "external" ||
-    /^(https?:)?\/\//.test(path) ||
-    path.startsWith("/");
-  if (isExternal) return mediaPublicUrl(m);
+  if (!m?.storage_path) return null;
+  if (isExternalMediaRef(m)) return mediaPublicUrl(m);
 
   const bucket = m.bucket ?? "media";
   const { data, error } = await supabase.storage
     .from(bucket)
-    .createSignedUrl(path, expiresInSeconds);
-  if (error || !data?.signedUrl) return mediaPublicUrl(m);
-  return data.signedUrl;
+    .createSignedUrl(m.storage_path, expiresInSeconds);
+
+  if (!error && data?.signedUrl) return data.signedUrl;
+  return mediaPublicUrl(m);
 }

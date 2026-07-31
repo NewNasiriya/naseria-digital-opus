@@ -32,7 +32,12 @@ export const Route = createFileRoute("/")({
       meta: seo.meta,
       links: [
         ...seo.links,
-        { rel: "preload", as: "image", href: schoolDay.url, fetchpriority: "high" },
+        {
+          rel: "preload",
+          as: "image",
+          href: schoolDay.url,
+          fetchpriority: "high",
+        },
         { rel: "preload", as: "image", href: schoolNight.url },
       ],
     };
@@ -68,5 +73,12 @@ function HeroWithCms() {
     queryFn: fetchHomepageHero,
     staleTime: 60_000,
   });
-  return <Hero intro={data?.subheadline_ar ?? undefined} />;
+
+  return (
+    <Hero
+      headline={data?.headline_ar ?? undefined}
+      intro={data?.subheadline_ar ?? undefined}
+      actions={data?.actions ?? undefined}
+    />
+  );
 }
