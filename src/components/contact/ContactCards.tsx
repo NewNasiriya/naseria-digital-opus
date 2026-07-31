@@ -12,7 +12,6 @@ import { SocialLinksRow } from "@/components/contact/SocialLinks";
 
 import { Button } from "@/components/ui/button";
 
-
 interface CardProps {
   icon: LucideIcon;
   title: string;
@@ -22,15 +21,15 @@ interface CardProps {
 
 function ContactCard({ icon: Icon, title, children, footer }: CardProps) {
   return (
-    <article className="flex h-full flex-col rounded-2xl border border-border bg-card p-6 elevation-sm">
+    <article className="contact-luxury-card flex h-full flex-col rounded-2xl border border-border bg-card p-6 elevation-sm">
       <span
         aria-hidden="true"
-        className="grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary"
+        className="contact-card-icon grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary"
       >
         <Icon className="h-6 w-6" />
       </span>
       <h2 className="mt-5 text-lg font-semibold text-foreground">{title}</h2>
-      <div className="mt-3 flex-1 text-sm leading-loose text-muted-foreground">
+      <div className="contact-card-body mt-3 flex-1 text-sm leading-loose text-muted-foreground">
         {children}
       </div>
       {footer && <div className="mt-5">{footer}</div>}
@@ -126,7 +125,6 @@ export function SocialCard({ links }: { links: SocialLink[] }) {
     </ContactCard>
   );
 }
-
 
 export function PhoneCard({ info }: { info: ContactInfo | null }) {
   const phones = info?.phones ?? [];
