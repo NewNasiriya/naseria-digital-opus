@@ -54,6 +54,57 @@
   color: var(--v2-gold-deep) !important;
 }
 
+/* ---------- Global visual QA: explicit cross-theme contrast ---------- */
+
+.about-luxury-page .home-stats-luxury {
+  background: linear-gradient(135deg, oklch(0.12 0.045 258), oklch(0.22 0.08 258)) !important;
+  color: white !important;
+}
+
+.about-luxury-page .home-stats-luxury .home-section-eyebrow {
+  color: var(--v2-gold) !important;
+}
+
+.about-luxury-page .home-stats-luxury .home-section-title,
+.about-luxury-page .home-stats-luxury .home-section-title + p,
+.about-luxury-page .home-stats-luxury .home-stat-card p:first-child {
+  color: white !important;
+}
+
+.about-luxury-page .home-stats-luxury .home-stat-card p:nth-child(2),
+.about-luxury-page .home-stats-luxury .home-section-title + p {
+  color: oklch(0.94 0.012 255 / 0.76) !important;
+}
+
+.home-cta-luxury {
+  background: linear-gradient(135deg, oklch(0.11 0.045 258), oklch(0.22 0.08 258)) !important;
+  color: white !important;
+}
+
+.home-cta-luxury h2,
+.home-cta-luxury > div > p,
+.home-cta-luxury .home-contact-chip,
+.home-cta-luxury .home-contact-chip a,
+.home-cta-luxury .home-contact-chip span {
+  color: white !important;
+}
+
+.home-cta-luxury .home-contact-chip {
+  border: 1px solid oklch(1 0 0 / 0.16);
+  background: oklch(1 0 0 / 0.08) !important;
+}
+
+.home-cta-luxury .home-cta-primary {
+  background: white !important;
+  color: oklch(0.22 0.08 258) !important;
+}
+
+.home-cta-luxury .home-hero-action:not(.home-cta-primary) {
+  border-color: oklch(1 0 0 / 0.38) !important;
+  background: oklch(1 0 0 / 0.04) !important;
+  color: white !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .honor-luxury-card,
   .honor-luxury-card:hover {
