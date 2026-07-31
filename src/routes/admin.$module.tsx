@@ -1,15 +1,15 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { z } from "zod";
-import { ChevronRight, Plus, Search, Sparkles } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 
 import { AdminSectionHeader } from "@/components/admin/AdminSectionHeader";
 import { EmptyState } from "@/components/admin/EmptyState";
 import { Button } from "@/components/ui/button";
-import { ADMIN_MODULE_BY_SLUG } from "@/lib/admin-modules";
 import { getCmsUiModule } from "@/cms/ui";
-import { EntityListView } from "@/cms/ui/EntityListView";
 import { EntityEditor } from "@/cms/ui/EntityEditor";
-// Side-effect: register every CMS module with the shared UI registry.
+import { EntityListView } from "@/cms/ui/EntityListView";
+import { isAdminModuleImplemented } from "@/lib/admin-module-availability";
+import { ADMIN_MODULE_BY_SLUG } from "@/lib/admin-modules";
 import "@/cms/ui/modules";
 
 const searchSchema = z.object({
@@ -17,17 +17,24 @@ const searchSchema = z.object({
   new: z
     .union([z.boolean(), z.string()])
     .optional()
-    .transform((v) => (v === true || v === "1" || v === "true" ? true : undefined))
+    .transform((value) =>
+      value === true || value === "1" || value === "true" ? true : undefined,
+    )
     .catch(undefined),
 });
 
 export const Route = createFileRoute("/admin/$module")({
   validateSearch: (raw) => searchSchema.parse(raw ?? {}),
   head: ({ params }) => {
-    const mod = params ? ADMIN_MODULE_BY_SLUG[params.module] : undefined;
+    const module = params ? ADMIN_MODULE_BY_SLUG[params.module] : undefined;
     return {
       meta: [
-        { title: mod ? `${mod.short} · لوحة الإدارة` : "لوحة الإدارة" },
+        {
+          title:
+            module && isAdminModuleImplemented(module)
+              ? `${module.short} · لوحة الإدارة`
+              : "لوحة الإدارة",
+        },
         { name: "robots", content: "noindex, nofollow" },
       ],
     };
@@ -36,8 +43,8 @@ export const Route = createFileRoute("/admin/$module")({
   notFoundComponent: () => (
     <EmptyState
       icon={Search}
-      title="القسم غير موجود"
-      description="لم نتمكن من العثور على القسم المطلوب في لوحة الإدارة."
+      title="القسم غير متاح"
+      description="هذا القسم مخفي حتى يكتمل ربطه واختباره مع الموقع العام."
     />
   ),
 });
@@ -45,104 +52,77 @@ export const Route = createFileRoute("/admin/$module")({
 function ModuleRoute() {
   const { module: slug } = Route.useParams();
   const search = Route.useSearch();
-  const mod = ADMIN_MODULE_BY_SLUG[slug];
-  if (!mod) throw notFound();
+  const module = ADMIN_MODULE_BY_SLUG[slug];
+  if (!module || !isAdminModuleImplemented(module)) throw notFound();
 
-  const ui = getCmsUiModule(mod.id);
+  const ui = getCmsUiModule(module.id);
+  // Complete bespoke routes are matched before this dynamic route. A module
+  // reaching this point without a shared CMS registration is not functional
+  // and must not present a misleading placeholder editor.
+  if (!ui) throw notFound();
+
   const wantsEditor = Boolean(search.id) || Boolean(search.new);
+  const isEditing =
+    Boolean(search.id) ||
+    (Boolean(search.new) && ui.list.allowCreate !== false);
   const listHref = `/admin/${slug}`;
   const newHref = `/admin/${slug}?new=1`;
 
-  // If the module has a UI registration, render the shared list or editor.
-  if (ui) {
-    const isEditing = Boolean(search.id) || (Boolean(search.new) && ui.list.allowCreate !== false);
-    if (wantsEditor && isEditing) {
-      return (
-        <>
-          <AdminSectionHeader
-            eyebrow="تحرير المحتوى"
-            title={search.id ? `تحرير ${ui.editor.entityLabel}` : `إضافة ${ui.editor.entityLabel}`}
-            crumbs={[
-              { label: "لوحة التحكم", to: "/admin" },
-              { label: mod.short, to: listHref },
-              { label: search.id ? "تحرير" : "جديد" },
-            ]}
-          />
-          <EntityEditor
-            config={ui.editor}
-            repository={ui.repository}
-            service={ui.service}
-            id={search.id}
-            listHref={listHref}
-          />
-        </>
-      );
-    }
-
+  if (wantsEditor && isEditing) {
     return (
       <>
         <AdminSectionHeader
-          eyebrow="إدارة القسم"
-          title={mod.title}
-          description={mod.description}
+          eyebrow="تحرير المحتوى"
+          title={
+            search.id
+              ? `تحرير ${ui.editor.entityLabel}`
+              : `إضافة ${ui.editor.entityLabel}`
+          }
           crumbs={[
             { label: "لوحة التحكم", to: "/admin" },
-            { label: mod.short },
+            { label: module.short, to: listHref },
+            { label: search.id ? "تحرير" : "جديد" },
           ]}
-          publicHref={mod.publicHref}
-          action={
-            ui.list.allowCreate === false ? null : (
-              <Button size="sm" className="gap-1.5" asChild>
-                <Link to={newHref}>
-                  <Plus className="h-4 w-4" />
-                  إضافة {ui.list.entityLabel}
-                </Link>
-              </Button>
-            )
-          }
         />
-        <EntityListView
-          config={ui.list}
+        <EntityEditor
+          config={ui.editor}
           repository={ui.repository}
           service={ui.service}
-          editHrefFor={(id) => `${listHref}?id=${id}`}
-          newHref={newHref}
+          id={search.id}
+          listHref={listHref}
         />
       </>
     );
   }
 
-  // No UI registration yet — show a helpful "coming soon" state that still
-  // links to any dedicated route (e.g. /admin/media, /admin/contact) that
-  // already exists as a bespoke page.
-  const Icon = mod.icon;
   return (
     <>
       <AdminSectionHeader
         eyebrow="إدارة القسم"
-        title={mod.title}
-        description={mod.description}
+        title={module.title}
+        description={module.description}
         crumbs={[
           { label: "لوحة التحكم", to: "/admin" },
-          { label: mod.short },
+          { label: module.short },
         ]}
-        publicHref={mod.publicHref}
-      />
-      <EmptyState
-        icon={Icon}
-        title="قيد التفعيل ضمن الموجات القادمة"
-        description="تم إعداد بنية الإدارة الموحّدة (قائمة، محرّر، حفظ تلقائي، سجل إصدارات، نشر) وسيتم توصيل هذا القسم بها في الموجة التالية."
+        publicHref={module.publicHref}
         action={
-          mod.publicHref ? (
-            <Button asChild variant="outline" size="sm" className="gap-1.5">
-              <a href={mod.publicHref} target="_blank" rel="noreferrer">
-                <Sparkles className="h-4 w-4" />
-                عرض القسم العام
-                <ChevronRight className="h-3.5 w-3.5" />
-              </a>
+          ui.list.allowCreate === false ? null : (
+            <Button size="sm" className="gap-1.5" asChild>
+              <Link to={newHref}>
+                <Plus className="h-4 w-4" />
+                إضافة {ui.list.entityLabel}
+              </Link>
             </Button>
-          ) : null
+          )
         }
+      />
+      <EntityListView
+        config={ui.list}
+        repository={ui.repository}
+        service={ui.service}
+        editHrefFor={(id) => `${listHref}?id=${id}`}
+        newHref={newHref}
       />
     </>
   );
