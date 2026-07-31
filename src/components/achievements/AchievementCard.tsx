@@ -26,8 +26,9 @@ export function AchievementCard({
   return (
     <article
       className={cn(
-        "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:elevation-md",
-        isFeatured && "md:flex-row",
+        "achievement-luxury-card group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:elevation-md",
+        isFeatured && "achievement-luxury-featured md:flex-row",
+        isCompact && "achievement-luxury-compact",
       )}
     >
       <Link
@@ -39,7 +40,7 @@ export function AchievementCard({
 
       <div
         className={cn(
-          "relative overflow-hidden bg-surface-muted",
+          "achievement-luxury-media relative overflow-hidden bg-surface-muted",
           isFeatured
             ? "aspect-[16/10] md:aspect-auto md:w-3/5"
             : isCompact
