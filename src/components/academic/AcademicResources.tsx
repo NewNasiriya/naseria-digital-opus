@@ -68,7 +68,7 @@ const CARDS: ResourceCard[] = [
 
 export function AcademicResources() {
   return (
-    <Section tone="muted" spacing="default">
+    <Section tone="muted" spacing="default" className="academic-resources-section">
       <Container size="wide">
         <div className="text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
@@ -83,11 +83,11 @@ export function AcademicResources() {
               <Link
                 key={c.to}
                 to={c.to}
-                className="group flex h-full flex-col rounded-2xl border border-border bg-card p-6 elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:elevation-md"
+                className="academic-resource-card group flex h-full flex-col rounded-2xl border border-border bg-card p-6 elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:elevation-md"
               >
                 <span
                   aria-hidden="true"
-                  className="grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground"
+                  className="academic-card-icon grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground"
                 >
                   <Icon className="h-6 w-6" />
                 </span>
@@ -97,7 +97,7 @@ export function AcademicResources() {
                 <p className="mt-2 text-sm leading-loose text-muted-foreground">
                   {c.description}
                 </p>
-                <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+                <span className="academic-card-action mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-primary">
                   الاطلاع
                   <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                 </span>
