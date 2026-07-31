@@ -8,7 +8,6 @@ import {
   Award,
   Trophy,
   FolderOpen,
-  Send,
   Clock,
   History,
 } from "lucide-react";
@@ -17,7 +16,7 @@ import { EmptyState } from "@/components/admin/EmptyState";
 import { ModuleCard } from "@/components/admin/ModuleCard";
 import { QuickActionButton } from "@/components/admin/QuickActionButton";
 import { StatTile } from "@/components/admin/StatTile";
-import { ADMIN_MODULES } from "@/lib/admin-modules";
+import { VISIBLE_ADMIN_MODULES } from "@/lib/admin-module-availability";
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({
@@ -43,7 +42,7 @@ function AdminHome() {
     { label: "استبدال كشف الشرف", icon: Award, to: "/admin/honor" },
     { label: "رفع صور إنجاز", icon: Trophy, to: "/admin/achievements" },
     { label: "فتح مكتبة الوسائط", icon: FolderOpen, to: "/admin/media" },
-    { label: "نشر المسودات", icon: Send, to: "/admin/status" },
+    { label: "إضافة فعالية أكاديمية", icon: Clock, to: "/admin/timeline" },
   ];
 
   return (
@@ -55,8 +54,8 @@ function AdminHome() {
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">{today}</p>
         <p className="mt-4 max-w-2xl text-sm leading-loose text-muted-foreground">
-          هذه لوحة إدارة موقع المدرسة. تحكّم في جميع أقسام الموقع من مكان واحد،
-          ونشر التحديثات مباشرة إلى الموقع العام.
+          هذه لوحة إدارة موقع المدرسة. تظهر هنا فقط الأقسام المتصلة فعليًا
+          بالموقع العام والمختبرة للنشر.
         </p>
       </section>
 
@@ -107,8 +106,8 @@ function AdminHome() {
           </div>
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {quickActions.map((a) => (
-            <QuickActionButton key={a.label} {...a} />
+          {quickActions.map((action) => (
+            <QuickActionButton key={action.label} {...action} />
           ))}
         </div>
       </section>
@@ -120,17 +119,17 @@ function AdminHome() {
               id="modules-heading"
               className="text-lg font-semibold text-foreground"
             >
-              أقسام الموقع
+              أقسام الموقع المتاحة
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              كل قسم يعكس صفحة على الموقع العام. اختر القسم الذي تريد إدارته.
+              الوحدات غير المكتملة مخفية حتى لا تُعرض وظائف لا تؤثر على الموقع.
             </p>
           </div>
         </div>
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {ADMIN_MODULES.map((m) => (
-            <li key={m.id}>
-              <ModuleCard module={m} />
+          {VISIBLE_ADMIN_MODULES.map((module) => (
+            <li key={module.id}>
+              <ModuleCard module={module} />
             </li>
           ))}
         </ul>
