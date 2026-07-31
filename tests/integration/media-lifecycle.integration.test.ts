@@ -19,8 +19,13 @@ const configured = Boolean(
 
 export function projectRefFromUrl(value: string): string | null {
   try {
-    const hostname = new URL(value).hostname;
-    return hostname.endsWith(".supabase.co") ? hostname.split(".")[0] : null;
+    const parsed = new URL(value);
+    if (parsed.hostname === "127.0.0.1" || parsed.hostname === "localhost") {
+      return "local";
+    }
+    return parsed.hostname.endsWith(".supabase.co")
+      ? parsed.hostname.split(".")[0]
+      : null;
   } catch {
     return null;
   }
@@ -29,7 +34,7 @@ export function projectRefFromUrl(value: string): string | null {
 export function assertIsolatedProject(value: string): void {
   const projectRef = projectRefFromUrl(value);
   if (!projectRef) {
-    throw new Error("TEST_SUPABASE_URL must be a Supabase project URL");
+    throw new Error("TEST_SUPABASE_URL must be a Supabase or local CLI URL");
   }
   if (PRODUCTION_PROJECT_REFS.has(projectRef)) {
     throw new Error(
