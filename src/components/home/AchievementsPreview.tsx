@@ -12,10 +12,10 @@ function SectionHeader() {
   return (
     <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
       <div>
-        <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
+        <p className="home-section-eyebrow text-sm font-semibold uppercase tracking-[0.15em] text-primary">
           إنجازات المدرسة
         </p>
-        <h2 className="mt-3 rule-accent inline-block">
+        <h2 className="home-section-title mt-3 inline-block">
           أحدث المشاريع والتطويرات
         </h2>
       </div>
@@ -31,7 +31,7 @@ function SectionHeader() {
 
 function SkeletonCard() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-card">
+    <div className="home-luxury-card overflow-hidden rounded-2xl border border-border bg-card">
       <div className="aspect-[16/10] w-full animate-pulse bg-surface-muted" />
       <div className="space-y-3 p-6">
         <div className="h-3 w-24 animate-pulse rounded bg-surface-muted" />
@@ -44,7 +44,7 @@ function SkeletonCard() {
 
 function EmptyState() {
   return (
-    <div className="rounded-2xl border border-dashed border-border bg-surface p-12 text-center">
+    <div className="home-luxury-card rounded-2xl border border-dashed border-border bg-surface p-12 text-center">
       <div
         aria-hidden="true"
         className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary-soft text-primary"
@@ -78,7 +78,11 @@ export function AchievementsPreview() {
   });
 
   return (
-    <Section tone="default" spacing="default">
+    <Section
+      tone="default"
+      spacing="default"
+      className="home-achievements-luxury"
+    >
       <Container size="wide">
         <SectionHeader />
         <div className="mt-10">
@@ -91,7 +95,7 @@ export function AchievementsPreview() {
           ) : isError || !data || data.length === 0 ? (
             <EmptyState />
           ) : (
-            <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <ul className="home-achievements-grid grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {data.map((item) => (
                 <li key={item.id}>
                   <AchievementCard item={item} />
