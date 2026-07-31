@@ -1,0 +1,76 @@
+/*
+ * Institutional Luxury V2 refinements
+ * -----------------------------------
+ * Final presentation-only corrections requested during visual review.
+ * No content, data, image source, CMS, Supabase, route, or deployment logic.
+ */
+
+/* Keep the school building visible after removing the decorative seal. */
+.home-hero-layout {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.home-hero-panel {
+  width: min(100%, 58rem);
+  margin-inline-start: auto;
+  border-color: oklch(1 0 0 / 0.24) !important;
+  background:
+    linear-gradient(145deg, oklch(1 0 0 / 0.075), transparent 48%),
+    oklch(0.055 0.035 258 / 0.2) !important;
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.12),
+    0 30px 72px -46px oklch(0.01 0.02 258 / 0.58) !important;
+  backdrop-filter: blur(5px) saturate(108%) !important;
+  -webkit-backdrop-filter: blur(5px) saturate(108%) !important;
+}
+
+.home-hero-panel::before,
+.home-hero-panel::after {
+  opacity: 0.72;
+}
+
+.home-hero-overlay-primary {
+  background:
+    linear-gradient(
+      90deg,
+      oklch(0.04 0.025 258 / 0.08) 0%,
+      oklch(0.05 0.03 258 / 0.13) 42%,
+      oklch(0.055 0.038 258 / 0.52) 100%
+    ),
+    linear-gradient(
+      180deg,
+      oklch(0.03 0.02 258 / 0.08),
+      oklch(0.035 0.025 258 / 0.34)
+    ) !important;
+}
+
+.home-hero-overlay-secondary {
+  background:
+    radial-gradient(circle at 16% 34%, oklch(0.78 0.125 82 / 0.1), transparent 20rem),
+    radial-gradient(circle at 86% 68%, oklch(0.48 0.14 255 / 0.11), transparent 27rem) !important;
+}
+
+.home-hero-texture {
+  opacity: 0.07 !important;
+}
+
+.home-hero-seal {
+  display: none !important;
+}
+
+/* Remove the decorative circle from the lead news card. */
+.home-news-lead::after {
+  display: none !important;
+  content: none !important;
+}
+
+@media (max-width: 767px) {
+  .home-hero-panel {
+    width: 100%;
+    background:
+      linear-gradient(145deg, oklch(1 0 0 / 0.08), transparent 48%),
+      oklch(0.055 0.035 258 / 0.3) !important;
+    backdrop-filter: blur(6px) saturate(108%) !important;
+    -webkit-backdrop-filter: blur(6px) saturate(108%) !important;
+  }
+}
