@@ -115,7 +115,7 @@ jobs:
             local path="$3"
             local file_name="$4"
             local destination="$BACKUP_DIR/media/storage/${bucket}/${asset_id}-${file_name}"
-            local response signed
+            local response signed url
 
             response="$(curl -sS -X POST \
               --retry 2 --connect-timeout 15 --max-time 120 \
@@ -133,8 +133,12 @@ jobs:
 
             if [[ "$signed" == http* ]]; then
               url="$signed"
-            else
+            elif [[ "$signed" == /storage/v1/* ]]; then
               url="$VITE_SUPABASE_URL$signed"
+            elif [[ "$signed" == /object/* ]]; then
+              url="$VITE_SUPABASE_URL/storage/v1$signed"
+            else
+              url="$VITE_SUPABASE_URL/storage/v1/${signed#/}"
             fi
 
             if download_url "$url" "$destination"; then
