@@ -4,9 +4,9 @@ import { X } from "lucide-react";
 import { SchoolLogo } from "@/components/brand/SchoolLogo";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { VISIBLE_ADMIN_MODULES } from "@/lib/admin-module-availability";
 import {
   ADMIN_GROUP_LABEL,
-  ADMIN_MODULES,
   DASHBOARD_ICON,
   type AdminModule,
 } from "@/lib/admin-modules";
@@ -23,9 +23,9 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
       ? pathname === "/admin" || pathname === "/admin/"
       : pathname === href || pathname.startsWith(href + "/");
 
-  const grouped = ADMIN_MODULES.reduce<Record<string, AdminModule[]>>(
-    (acc, m) => {
-      (acc[m.group] ??= []).push(m);
+  const grouped = VISIBLE_ADMIN_MODULES.reduce<Record<string, AdminModule[]>>(
+    (acc, module) => {
+      (acc[module.group] ??= []).push(module);
       return acc;
     },
     {},
@@ -34,7 +34,6 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
 
   return (
     <>
-      {/* Mobile scrim */}
       {open && (
         <button
           type="button"
@@ -76,7 +75,10 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
           </Button>
         </div>
 
-        <nav aria-label="أقسام لوحة الإدارة" className="flex-1 overflow-y-auto px-3 py-4">
+        <nav
+          aria-label="أقسام لوحة الإدارة"
+          className="flex-1 overflow-y-auto px-3 py-4"
+        >
           <ul className="space-y-1">
             <li>
               <NavLink
@@ -89,26 +91,30 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
             </li>
           </ul>
 
-          {groupOrder.map((group) => (
-            <div key={group} className="mt-6">
-              <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-sidebar-foreground/60">
-                {ADMIN_GROUP_LABEL[group]}
-              </p>
-              <ul className="space-y-1">
-                {grouped[group]?.map((m) => (
-                  <li key={m.id}>
-                    <NavLink
-                      href={`/admin/${m.slug}`}
-                      label={m.short}
-                      Icon={m.icon}
-                      active={isActive(`/admin/${m.slug}`)}
-                      onNavigate={onClose}
-                    />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {groupOrder.map((group) => {
+            const modules = grouped[group] ?? [];
+            if (modules.length === 0) return null;
+            return (
+              <div key={group} className="mt-6">
+                <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-sidebar-foreground/60">
+                  {ADMIN_GROUP_LABEL[group]}
+                </p>
+                <ul className="space-y-1">
+                  {modules.map((module) => (
+                    <li key={module.id}>
+                      <NavLink
+                        href={`/admin/${module.slug}`}
+                        label={module.short}
+                        Icon={module.icon}
+                        active={isActive(`/admin/${module.slug}`)}
+                        onNavigate={onClose}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })}
         </nav>
 
         <div className="border-t border-sidebar-border p-3">
