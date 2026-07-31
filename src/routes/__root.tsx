@@ -10,6 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import luxuryCss from "../luxury.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { trackPageView } from "../lib/analytics";
 import { ThemeProvider, THEME_INIT_SCRIPT } from "../lib/theme";
@@ -119,6 +120,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "stylesheet", href: luxuryCss },
 
       // Favicons + PWA manifest.
       { rel: "icon", href: "/favicon.ico", sizes: "any" },
