@@ -1,0 +1,88 @@
+/* Public detail pages — presentation only. */
+
+.news-luxury-page > section:first-of-type > div > article,
+.achievements-luxury-page > section > div > article {
+  position: relative;
+}
+
+.news-luxury-page > section:first-of-type > div > article::before {
+  position: absolute;
+  top: -1.5rem;
+  right: 0;
+  width: 5rem;
+  height: 3px;
+  content: "";
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--v2-gold), var(--v2-blue));
+}
+
+.news-luxury-page > section:first-of-type {
+  background:
+    radial-gradient(circle at 12% 8%, oklch(0.78 0.125 82 / 0.05), transparent 25rem),
+    transparent !important;
+}
+
+.news-luxury-page > section:first-of-type article > header h1 {
+  color: var(--v2-ink) !important;
+  font-size: clamp(2.35rem, 1.65rem + 2.05vw, 4.35rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.28 !important;
+  letter-spacing: 0 !important;
+}
+
+.dark .news-luxury-page > section:first-of-type article > header h1 {
+  color: white !important;
+}
+
+.news-luxury-page > section:first-of-type article > header > div:last-child {
+  border-color: var(--v2-line) !important;
+}
+
+.news-luxury-page > section:first-of-type article p,
+.news-luxury-page > section:first-of-type article li {
+  text-wrap: pretty;
+}
+
+.news-luxury-page > section:first-of-type article nav a,
+.achievements-luxury-page nav a {
+  border-color: var(--v2-line) !important;
+  background: var(--card) !important;
+  box-shadow: var(--v2-shadow-card);
+}
+
+.news-luxury-page > section:first-of-type article nav a:hover,
+.achievements-luxury-page nav a:hover {
+  border-color: var(--v2-line-gold) !important;
+  box-shadow: var(--v2-shadow-xl);
+}
+
+.achievements-luxury-page [class*="prose"] h2,
+.achievements-luxury-page section h2 {
+  letter-spacing: 0 !important;
+}
+
+.achievements-luxury-page aside > div,
+.achievements-luxury-page article > div[class*="rounded-2xl"],
+.gallery-luxury-page article,
+.honor-luxury-page article {
+  border-color: var(--v2-line) !important;
+  box-shadow: var(--v2-shadow-card) !important;
+}
+
+.gallery-luxury-page img,
+.achievements-luxury-page img,
+.honor-luxury-page img {
+  background: color-mix(in oklch, var(--surface-muted) 72%, var(--background));
+}
+
+.public-luxury-inner button:focus-visible,
+.public-luxury-inner a:focus-visible {
+  outline: 2px solid var(--v2-gold) !important;
+  outline-offset: 3px !important;
+}
+
+@media (max-width: 767px) {
+  .news-luxury-page > section:first-of-type article > header h1 {
+    font-size: clamp(2rem, 9vw, 3.2rem) !important;
+  }
+}
