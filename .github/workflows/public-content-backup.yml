@@ -1,0 +1,225 @@
+name: Generate Public Content Backup
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/workflows/public-content-backup.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout backup branch
+        uses: actions/checkout@v4
+
+      - name: Export public production content and media
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          set -a
+          source .env
+          set +a
+
+          EXPECTED_PROJECT_REF="tlyehajicuotulmfaewi"
+          ACTUAL_PROJECT_REF="$(printf '%s' "$VITE_SUPABASE_URL" | sed -E 's#https://([^.]+)\.supabase\.co.*#\1#')"
+          if [[ "$ACTUAL_PROJECT_REF" != "$EXPECTED_PROJECT_REF" ]]; then
+            echo "Refusing to export from unexpected project ref: $ACTUAL_PROJECT_REF" >&2
+            exit 1
+          fi
+
+          BACKUP_DIR="Naseria-Public-Content-Backup-2026-07-31"
+          mkdir -p "$BACKUP_DIR/data" "$BACKUP_DIR/media/external" "$BACKUP_DIR/media/storage" "$BACKUP_DIR/metadata"
+          : > "$BACKUP_DIR/metadata/export-status.tsv"
+          : > "$BACKUP_DIR/metadata/media-download-status.tsv"
+
+          TABLES=(
+            academic_calendar_events academic_notes academic_resources academic_timeline_events academic_years
+            achievement_categories achievement_media achievements activities activity_categories activity_media
+            attendance_info behaviour_guidelines contact_info faq_categories faq_items gallery_albums gallery_items
+            grades homepage_hero homepage_hero_actions homepage_sections honor_boards honor_categories honor_entries
+            honor_entry_media instruction_items instruction_lists media media_categories media_usages news
+            news_categories news_media school_info school_policies site_settings social_links statistics timetables
+            working_hours
+          )
+
+          for table in "${TABLES[@]}"; do
+            output="$BACKUP_DIR/data/${table}.json"
+            tmp="${output}.tmp"
+            status="$(curl -sS -o "$tmp" -w '%{http_code}' \
+              --retry 2 --connect-timeout 15 --max-time 120 \
+              -H "apikey: $VITE_SUPABASE_PUBLISHABLE_KEY" \
+              -H "Authorization: Bearer $VITE_SUPABASE_PUBLISHABLE_KEY" \
+              -H 'Accept: application/json' \
+              -H 'Range: 0-9999' \
+              "$VITE_SUPABASE_URL/rest/v1/$table?select=*")"
+
+            if [[ "$status" == "200" || "$status" == "206" ]]; then
+              jq -S . "$tmp" > "$output"
+              count="$(jq 'length' "$output")"
+              printf '%s\t%s\t%s\n' "$table" "$status" "$count" >> "$BACKUP_DIR/metadata/export-status.tsv"
+            else
+              mv "$tmp" "$BACKUP_DIR/data/${table}.error.json"
+              printf '%s\t%s\tERROR\n' "$table" "$status" >> "$BACKUP_DIR/metadata/export-status.tsv"
+            fi
+            rm -f "$tmp"
+          done
+
+          download_url() {
+            local url="$1"
+            local destination="$2"
+            mkdir -p "$(dirname "$destination")"
+            curl -fsSL --retry 2 --connect-timeout 15 --max-time 180 "$url" -o "$destination"
+          }
+
+          download_external_asset() {
+            local asset_id="$1"
+            local path="$2"
+            local file_name="$3"
+            local transformed="$path"
+            local destination="$BACKUP_DIR/media/external/${asset_id}-${file_name}"
+
+            if [[ "$path" == /lovable-assets/* ]]; then
+              transformed="${path/\/lovable-assets\//\/__l5e\/assets-v1\/}"
+            fi
+
+            local candidates=(
+              "https://newnasiriya.com${path}"
+              "https://newnasiriya.com${transformed}"
+              "https://preview--naseria-digital-opus.lovable.app${path}"
+              "https://preview--naseria-digital-opus.lovable.app${transformed}"
+            )
+
+            for candidate in "${candidates[@]}"; do
+              if download_url "$candidate" "$destination"; then
+                printf '%s\texternal\t%s\tDOWNLOADED\t%s\n' "$asset_id" "$path" "$candidate" >> "$BACKUP_DIR/metadata/media-download-status.tsv"
+                return 0
+              fi
+              rm -f "$destination"
+            done
+
+            printf '%s\texternal\t%s\tFAILED\t-\n' "$asset_id" "$path" >> "$BACKUP_DIR/metadata/media-download-status.tsv"
+            return 0
+          }
+
+          download_private_asset() {
+            local asset_id="$1"
+            local bucket="$2"
+            local path="$3"
+            local file_name="$4"
+            local destination="$BACKUP_DIR/media/storage/${bucket}/${asset_id}-${file_name}"
+            local response signed
+
+            response="$(curl -sS -X POST \
+              --retry 2 --connect-timeout 15 --max-time 120 \
+              -H "apikey: $VITE_SUPABASE_PUBLISHABLE_KEY" \
+              -H "Authorization: Bearer $VITE_SUPABASE_PUBLISHABLE_KEY" \
+              -H 'Content-Type: application/json' \
+              -d '{"expiresIn":3600}' \
+              "$VITE_SUPABASE_URL/storage/v1/object/sign/${bucket}/${path}")"
+            signed="$(printf '%s' "$response" | jq -r '.signedURL // .signedUrl // empty' 2>/dev/null || true)"
+
+            if [[ -z "$signed" ]]; then
+              printf '%s\t%s\t%s\tSIGN_FAILED\t%s\n' "$asset_id" "$bucket" "$path" "$(printf '%s' "$response" | tr '\n\t' '  ' | head -c 300)" >> "$BACKUP_DIR/metadata/media-download-status.tsv"
+              return 0
+            fi
+
+            if [[ "$signed" == http* ]]; then
+              url="$signed"
+            else
+              url="$VITE_SUPABASE_URL$signed"
+            fi
+
+            if download_url "$url" "$destination"; then
+              printf '%s\t%s\t%s\tDOWNLOADED\tSIGNED_URL\n' "$asset_id" "$bucket" "$path" >> "$BACKUP_DIR/metadata/media-download-status.tsv"
+            else
+              rm -f "$destination"
+              printf '%s\t%s\t%s\tDOWNLOAD_FAILED\tSIGNED_URL\n' "$asset_id" "$bucket" "$path" >> "$BACKUP_DIR/metadata/media-download-status.tsv"
+            fi
+          }
+
+          if [[ -f "$BACKUP_DIR/data/media.json" ]]; then
+            while IFS= read -r encoded; do
+              row="$(printf '%s' "$encoded" | base64 -d)"
+              id="$(printf '%s' "$row" | jq -r '.id')"
+              bucket="$(printf '%s' "$row" | jq -r '.bucket // empty')"
+              path="$(printf '%s' "$row" | jq -r '.storage_path // empty')"
+              file_name="$(printf '%s' "$row" | jq -r '.file_name // (.id + ".bin")')"
+
+              [[ -z "$path" ]] && continue
+              if [[ "$bucket" == "external" ]]; then
+                download_external_asset "$id" "$path" "$file_name"
+              elif [[ "$bucket" == "media" || "$bucket" == "documents" ]]; then
+                download_private_asset "$id" "$bucket" "$path" "$file_name"
+              else
+                printf '%s\t%s\t%s\tSKIPPED_BUCKET\t-\n' "$id" "$bucket" "$path" >> "$BACKUP_DIR/metadata/media-download-status.tsv"
+              fi
+            done < <(jq -r '.[] | @base64' "$BACKUP_DIR/data/media.json")
+          fi
+
+          if [[ -f "$BACKUP_DIR/data/honor_boards.json" ]]; then
+            while IFS= read -r encoded; do
+              row="$(printf '%s' "$encoded" | base64 -d)"
+              id="$(printf '%s' "$row" | jq -r '.id')"
+              path="$(printf '%s' "$row" | jq -r '.image_url // empty')"
+              [[ -z "$path" ]] && continue
+              file_name="$(basename "$path")"
+              download_external_asset "honor-board-${id}" "$path" "$file_name"
+            done < <(jq -r '.[] | @base64' "$BACKUP_DIR/data/honor_boards.json")
+          fi
+
+          jq -n \
+            --arg created_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg project_ref "$ACTUAL_PROJECT_REF" \
+            --arg source "anonymous read-only export" \
+            --arg main_sha "$(git rev-parse origin/main 2>/dev/null || git rev-parse HEAD)" \
+            '{created_at:$created_at, project_ref:$project_ref, source:$source, repository_main_sha:$main_sha, notes:["No database writes were performed","No service-role key was used","Only rows visible to the anonymous production client are included","Auth secrets, password hashes, private drafts, audit logs, and analytics raw events are intentionally excluded"]}' \
+            > "$BACKUP_DIR/metadata/manifest.json"
+
+          cat > "$BACKUP_DIR/README-AR.md" <<'EOF'
+          # نسخة بيانات ومحتوى الموقع العامة
+
+          هذه النسخة أُنشئت بطريقة قراءة فقط من قاعدة الإنتاج المستخدمة فعليًا بواسطة الموقع.
+
+          تحتوي على:
+          - جداول المحتوى التي تسمح سياسات RLS للزائر العام بقراءتها.
+          - الصور والملفات المنشورة التي أمكن تنزيلها.
+          - تقرير كامل لكل جدول ولكل محاولة تنزيل.
+          - Checksums للتحقق من سلامة الملفات.
+
+          لا تحتوي عمدًا على:
+          - كلمات المرور أو password hashes.
+          - Service Role keys أو أسرار Supabase.
+          - بيانات Auth الحساسة.
+          - المسودات والبيانات الخاصة غير المتاحة للزائر العام.
+          - سجلات التحليلات الخام.
+
+          هذه النسخة تُستخدم مع نسخة Git الكاملة وملفات migrations لاستعادة الموقع. قبل أي Restore على إنتاج جديد، يجب تطبيق الـmigrations ثم استيراد البيانات وفق ترتيب المفاتيح الأجنبية، ثم رفع الملفات إلى Storage وإعادة ربط المسارات.
+          EOF
+
+          (
+            cd "$BACKUP_DIR"
+            find . -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt
+            sha256sum -c SHA256SUMS.txt
+          )
+
+          tar -czf "${BACKUP_DIR}.tar.gz" "$BACKUP_DIR"
+          sha256sum "${BACKUP_DIR}.tar.gz" > "${BACKUP_DIR}.tar.gz.sha256"
+
+      - name: Upload public content recovery artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Naseria-Public-Content-Backup-2026-07-31
+          path: |
+            Naseria-Public-Content-Backup-2026-07-31.tar.gz
+            Naseria-Public-Content-Backup-2026-07-31.tar.gz.sha256
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
