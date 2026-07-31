@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
   head: () => {
     const seo = buildSeo({
       path: "/",
-      title: "مدرسة الناصرية الابتدائية الجديدة — الموقع الرسمي",
+      title: "مدرسة الناصرية الابتدائية الجديدة",
       description:
         "الموقع الرسمي لمدرسة الناصرية الابتدائية الجديدة — الأخبار، الجداول الدراسية، الأنشطة، لوحة الشرف، وإرشادات الطلاب وأولياء الأمور.",
     });
@@ -68,5 +68,5 @@ function HeroWithCms() {
     queryFn: fetchHomepageHero,
     staleTime: 60_000,
   });
-  return <Hero intro={data?.subheadline_ar ?? undefined} />;
+  return <Hero headline={data?.headline_ar ?? undefined} intro={data?.subheadline_ar ?? undefined} />;
 }
