@@ -1,0 +1,153 @@
+/* Inner public-page luxury system. Presentation only. */
+
+.public-luxury-inner {
+  min-height: 70vh;
+  background:
+    radial-gradient(circle at 10% 8%, oklch(0.78 0.125 82 / 0.045), transparent 26rem),
+    radial-gradient(circle at 92% 30%, oklch(0.48 0.14 255 / 0.04), transparent 30rem),
+    linear-gradient(180deg, var(--v2-paper), var(--v2-ivory) 48%, var(--v2-paper));
+}
+
+.public-luxury-inner > section {
+  position: relative;
+  overflow: clip;
+}
+
+.public-luxury-inner > section:not(.inner-page-hero):not(.about-hero-luxury) {
+  padding-block: clamp(4.8rem, 7vw, 7.2rem) !important;
+}
+
+.public-luxury-inner > section:not(.inner-page-hero):not(.about-hero-luxury)::before {
+  position: absolute;
+  inset-inline: 6%;
+  top: 0;
+  height: 1px;
+  content: "";
+  background: linear-gradient(90deg, transparent, var(--v2-line), var(--v2-line-gold), var(--v2-line), transparent);
+  opacity: 0.62;
+}
+
+.public-luxury-inner .rule-accent::after {
+  width: 5rem !important;
+  height: 3px !important;
+  margin-top: 1rem !important;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--v2-gold), var(--v2-gold-deep), var(--v2-blue)) !important;
+}
+
+.inner-page-hero {
+  min-height: 390px;
+  color: white;
+  background:
+    radial-gradient(circle at 14% 18%, oklch(0.78 0.125 82 / 0.17), transparent 22rem),
+    radial-gradient(circle at 88% 80%, oklch(0.48 0.14 255 / 0.2), transparent 28rem),
+    linear-gradient(125deg, oklch(0.11 0.045 258), oklch(0.22 0.085 258) 55%, oklch(0.12 0.045 258));
+}
+
+.inner-page-hero::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background:
+    linear-gradient(oklch(1 0 0 / 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(1 0 0 / 0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, black, transparent 88%);
+}
+
+.inner-page-hero::after {
+  position: absolute;
+  inset-inline: 7%;
+  bottom: 0;
+  height: 2px;
+  content: "";
+  background: linear-gradient(90deg, transparent, var(--v2-gold), white, var(--v2-gold), transparent);
+  opacity: 0.72;
+}
+
+.inner-page-hero-overlay {
+  background: linear-gradient(90deg, transparent, oklch(0.03 0.03 258 / 0.46)) !important;
+}
+
+.inner-page-hero-container {
+  display: grid;
+  align-content: center;
+  min-height: 390px;
+  padding-block: clamp(4rem, 7vw, 6rem) !important;
+}
+
+.inner-page-breadcrumbs {
+  width: fit-content;
+  margin-bottom: 1.8rem !important;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid oklch(1 0 0 / 0.12);
+  border-radius: 999px;
+  background: oklch(1 0 0 / 0.055);
+  color: oklch(0.95 0.01 255 / 0.7) !important;
+  backdrop-filter: blur(10px);
+}
+
+.inner-page-breadcrumbs a,
+.inner-page-breadcrumbs span {
+  color: inherit;
+}
+
+.inner-page-breadcrumbs a:hover {
+  color: white !important;
+}
+
+.inner-page-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--v2-gold) !important;
+  font-size: 0.75rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+}
+
+.inner-page-eyebrow::before {
+  width: 2.75rem;
+  height: 1px;
+  content: "";
+  background: linear-gradient(90deg, transparent, var(--v2-gold));
+}
+
+.inner-page-title {
+  max-width: 17ch;
+  margin-top: 1rem !important;
+  color: white !important;
+  font-size: clamp(2.55rem, 1.75rem + 2.65vw, 5rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0 !important;
+  text-shadow: 0 18px 50px oklch(0.01 0.03 258 / 0.72);
+}
+
+.inner-page-description {
+  max-width: 44rem !important;
+  margin-top: 1.5rem !important;
+  color: oklch(0.96 0.012 255 / 0.76) !important;
+  font-size: clamp(1rem, 0.94rem + 0.22vw, 1.15rem) !important;
+  line-height: 2 !important;
+}
+
+.inner-page-actions {
+  margin-top: 2rem !important;
+}
+
+@media (max-width: 767px) {
+  .inner-page-hero,
+  .inner-page-hero-container {
+    min-height: 340px;
+  }
+
+  .inner-page-title {
+    font-size: clamp(2.2rem, 10vw, 3.6rem) !important;
+  }
+
+  .inner-page-breadcrumbs {
+    border-radius: 1rem;
+  }
+}
