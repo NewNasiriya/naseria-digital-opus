@@ -61,6 +61,9 @@ suite("isolated media lifecycle", () => {
   const token = crypto.randomUUID();
   const imagePath = `integration-tests/${token}/table.png`;
   const documentPath = `integration-tests/${token}/table.pdf`;
+  const testGradeLevel =
+    1_000_000 + Number.parseInt(token.replaceAll("-", "").slice(0, 6), 16);
+  let gradeId: string | null = null;
   let imageMediaId: string | null = null;
   let documentMediaId: string | null = null;
   let timetableId: string | null = null;
@@ -82,6 +85,9 @@ suite("isolated media lifecycle", () => {
     if (timetableId) {
       await admin.from("timetables").delete().eq("id", timetableId);
     }
+    if (gradeId) {
+      await admin.from("grades").delete().eq("id", gradeId);
+    }
     if (imageMediaId) {
       await admin.from("media").delete().eq("id", imageMediaId);
     }
@@ -95,36 +101,20 @@ suite("isolated media lifecycle", () => {
   test(
     "upload, publish, anonymous read, replace, and reference protection",
     async () => {
-      // Select an existing grade that has no published academic timetable.
-      // This read-only preflight happens before any upload or insert and fails
-      // closed if the isolated project is not clean enough for the test.
-      const gradesResult = await admin
+      // A clean migration replay intentionally has no production seed data.
+      // Create one isolated grade owned by this test and remove it afterward.
+      const gradeInsert = await admin
         .from("grades")
-        .select("id,level")
-        .order("level", { ascending: true });
-      expect(gradesResult.error).toBeNull();
-      expect(gradesResult.data?.length).toBeGreaterThan(0);
-
-      const publishedResult = await admin
-        .from("timetables")
-        .select("grade_id")
-        .eq("kind", "academic")
-        .eq("status", "published");
-      expect(publishedResult.error).toBeNull();
-
-      const occupiedGradeIds = new Set(
-        (publishedResult.data ?? [])
-          .map((row) => row.grade_id as string | null)
-          .filter((id): id is string => Boolean(id)),
-      );
-      const testGrade = (gradesResult.data ?? []).find(
-        (grade) => !occupiedGradeIds.has(grade.id as string),
-      );
-      if (!testGrade) {
-        throw new Error(
-          "Isolated project has no grade without a published academic timetable; no test data was written",
-        );
-      }
+        .insert({
+          name_ar: `صف اختبار معزول ${token}`,
+          name_en: `Isolated test grade ${token}`,
+          level: testGradeLevel,
+          display_order: testGradeLevel,
+        })
+        .select("id")
+        .single();
+      expect(gradeInsert.error).toBeNull();
+      gradeId = gradeInsert.data!.id;
 
       const imageV1 = new Uint8Array([
         137, 80, 78, 71, 13, 10, 26, 10, 1, 2, 3, 4,
@@ -183,7 +173,7 @@ suite("isolated media lifecycle", () => {
       const timetableInsert = await admin
         .from("timetables")
         .insert({
-          grade_id: testGrade.id,
+          grade_id: gradeId,
           kind: "academic",
           title_ar: `اختبار تكامل معزول ${token}`,
           cover_image_media_id: imageMediaId,
