@@ -9,6 +9,10 @@ const mediaMigrationUrl = new URL(
   "../../supabase/migrations/20260731143500_cms_media_integrity.sql",
   import.meta.url,
 );
+const parentTrackingMigrationUrl = new URL(
+  "../../supabase/migrations/20260731143600_track_media_usage_parent_updates.sql",
+  import.meta.url,
+);
 const newsMigrationUrl = new URL(
   "../../supabase/migrations/20260731144000_complete_existing_news_bodies.sql",
   import.meta.url,
@@ -52,6 +56,20 @@ describe("CMS integrity migrations", () => {
     );
     expect(source).not.toMatch(/DELETE\s+FROM\s+storage\.objects\b/i);
     expect(source).toMatch(/DELETE\s+FROM\s+public\.media_usages\b/i);
+  });
+
+  test("junction parent updates stay tracked without changing content", async () => {
+    const source = await sql(parentTrackingMigrationUrl);
+    expect(source).toContain("AFTER UPDATE OF news_id");
+    expect(source).toContain("AFTER UPDATE OF achievement_id");
+    expect(source).toContain("AFTER UPDATE OF activity_id");
+    expect(source).toContain("AFTER UPDATE OF album_id");
+    expect(source).toContain("AFTER UPDATE OF honor_entry_id");
+    expect(source).toContain("sync_media_usage_reference");
+    expect(source).not.toMatch(/\bINSERT\s+INTO\b/i);
+    expect(source).not.toMatch(/\bUPDATE\s+public\./i);
+    expect(source).not.toMatch(/\bDELETE\s+FROM\b/i);
+    expect(source).not.toMatch(/\bTRUNCATE\b/i);
   });
 
   test("news migration is guarded and copies only existing editorial text", async () => {
