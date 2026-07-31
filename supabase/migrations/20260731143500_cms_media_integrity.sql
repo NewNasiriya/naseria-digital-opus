@@ -293,7 +293,7 @@ AS $$
     UNION ALL SELECT count(*) FROM public.timetables WHERE cover_image_media_id = _media_id OR document_media_id = _media_id
     UNION ALL SELECT count(*) FROM public.academic_notes WHERE attachment_media_id = _media_id
     UNION ALL SELECT count(*) FROM public.academic_resources WHERE media_id = _media_id
-  ) AS references;
+  ) AS media_refs;
 $$;
 
 CREATE OR REPLACE FUNCTION public.media_is_referenced(_media_id uuid)
