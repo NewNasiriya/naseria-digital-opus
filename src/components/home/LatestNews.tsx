@@ -35,10 +35,10 @@ function SectionHeader() {
   return (
     <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
       <div>
-        <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
+        <p className="home-section-eyebrow text-sm font-semibold uppercase tracking-[0.15em] text-primary">
           آخر المستجدات
         </p>
-        <h2 className="mt-3 rule-accent inline-block">أخبار المدرسة</h2>
+        <h2 className="home-section-title mt-3 inline-block">أخبار المدرسة</h2>
         <p className="mt-3 max-w-xl text-sm leading-loose text-muted-foreground">
           نشرة رسمية بأحدث بيانات وقرارات إدارة المدرسة.
         </p>
@@ -61,7 +61,7 @@ function EditionMeta() {
     year: "numeric",
   }).format(new Date());
   return (
-    <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-y border-border/70 py-3 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+    <div className="home-news-edition mt-8 flex flex-wrap items-center justify-between gap-3 border-y border-border/70 py-3 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
       <span className="font-semibold text-foreground/80">النشرة الرسمية</span>
       <span className="hidden sm:block">إدارة مدرسة الناصرية الابتدائية الجديدة</span>
       <span dir="rtl">{today}</span>
@@ -91,7 +91,7 @@ function DateLine({ iso }: { iso: string | null }) {
 
 function LeadStory({ item }: { item: NewsRow }) {
   return (
-    <article className="group relative flex h-full flex-col justify-between rounded-2xl border border-border bg-card p-8 elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:elevation-md sm:p-10">
+    <article className="home-luxury-card home-news-lead group relative flex h-full flex-col justify-between rounded-2xl border border-border bg-card p-8 elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:elevation-md sm:p-10">
       <span
         aria-hidden="true"
         className="absolute inset-y-0 right-0 w-1.5 rounded-r-2xl bg-primary"
@@ -136,7 +136,7 @@ function LeadStory({ item }: { item: NewsRow }) {
 
 function BriefItem({ item, index }: { item: NewsRow; index: number }) {
   return (
-    <article className="group relative flex gap-5 border-b border-border/70 pb-6 last:border-b-0 last:pb-0">
+    <article className="home-news-brief group relative flex gap-5 border-b border-border/70 pb-6 last:border-b-0 last:pb-0">
       <span
         aria-hidden="true"
         className="mt-1 select-none font-display text-2xl font-bold tabular-nums text-primary/40"
@@ -184,7 +184,7 @@ function LoadingLayout() {
   return (
     <div className="mt-8 grid gap-8 lg:grid-cols-5">
       <div className="lg:col-span-3">
-        <div className="h-72 animate-pulse rounded-2xl border border-border bg-surface-muted" />
+        <div className="home-luxury-card h-72 animate-pulse rounded-2xl border border-border bg-surface-muted" />
       </div>
       <div className="space-y-6 lg:col-span-2">
         <SkeletonRow />
@@ -196,7 +196,7 @@ function LoadingLayout() {
 
 function EmptyState() {
   return (
-    <div className="mt-8 rounded-2xl border border-dashed border-border bg-surface p-12 text-center">
+    <div className="home-luxury-card mt-8 rounded-2xl border border-dashed border-border bg-surface p-12 text-center">
       <div
         aria-hidden="true"
         className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary-soft text-primary"
@@ -240,7 +240,12 @@ export function LatestNews() {
   const briefs = items.slice(1, 5);
 
   return (
-    <Section id="news" tone="default" spacing="default">
+    <Section
+      id="news"
+      tone="default"
+      spacing="default"
+      className="home-news-luxury"
+    >
       <Container size="wide">
         <SectionHeader />
         <EditionMeta />
