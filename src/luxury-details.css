@@ -81,8 +81,28 @@
   outline-offset: 3px !important;
 }
 
+/* Keep mobile media, cards, and long RTL content within the viewport. */
+.public-luxury-inner {
+  overflow-x: clip;
+}
+
+.public-luxury-inner img,
+.public-luxury-inner iframe,
+.public-luxury-inner video {
+  max-width: 100%;
+}
+
+.public-luxury-inner [dir="ltr"],
+.contact-card-body a {
+  overflow-wrap: anywhere;
+}
+
 @media (max-width: 767px) {
   .news-luxury-page > section:first-of-type article > header h1 {
     font-size: clamp(2rem, 9vw, 3.2rem) !important;
+  }
+
+  .public-luxury-inner > section:not(.inner-page-hero):not(.about-hero-luxury) {
+    padding-block: 4rem !important;
   }
 }
