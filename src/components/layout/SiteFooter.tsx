@@ -14,7 +14,6 @@ import {
   useWorkingHours,
 } from "@/lib/contact";
 
-
 type FooterLink = { label: string; to: string };
 
 const BROWSE_LINKS: FooterLink[] = [
@@ -46,23 +45,21 @@ export function SiteFooter() {
   const schoolAr = settings?.school_name_ar ?? "مدرسة الناصرية الابتدائية الجديدة";
   const schoolEn = settings?.school_name_en ?? "New Al-Nasiriyah Primary School";
 
-
   return (
-    <footer className="border-t border-border bg-surface-muted">
+    <footer className="site-footer-luxury border-t border-border bg-surface-muted">
       <Container size="wide" className="py-14">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link
               to="/"
-              className="flex items-center gap-3"
+              className="site-footer-brand-luxury flex items-center gap-3"
               aria-label="الصفحة الرئيسية"
             >
               <SchoolLogo decorative size={48} className="h-12 w-12 shrink-0" />
               <div className="leading-tight">
                 <p className="font-bold text-foreground">{schoolAr}</p>
                 <p className="text-xs text-muted-foreground">{schoolEn}</p>
-
               </div>
             </Link>
             <p className="mt-5 text-sm leading-loose text-muted-foreground">
@@ -78,7 +75,6 @@ export function SiteFooter() {
               </div>
             )}
           </div>
-
 
           {/* Browse */}
           <nav aria-label="روابط الموقع">
@@ -124,10 +120,7 @@ export function SiteFooter() {
               مواعيد العمل
             </h3>
             <ul className="mt-4 space-y-2.5">
-              {(hours.length > 0
-                ? hours
-                : []
-              ).map((h) => (
+              {(hours.length > 0 ? hours : []).map((h) => (
                 <li
                   key={h.id}
                   className="flex items-center justify-between gap-4 text-sm"
