@@ -108,9 +108,10 @@ export function Hero({ intro }: HeroProps) {
         size="wide"
         className="home-hero-content relative flex min-h-[78vh] flex-col justify-center py-20 text-white sm:min-h-[85vh] sm:py-24"
       >
-        <div className="home-hero-layout w-full">
-          <div className="home-hero-panel">
-            <div className="home-hero-copy max-w-3xl">
+        <div className="home-hero-editorial w-full">
+          <div className="home-hero-copy max-w-3xl">
+            <div className="home-hero-kicker-row flex items-center justify-start gap-3">
+              <span className="home-hero-kicker-rule" aria-hidden="true" />
               <p className="home-hero-kicker inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-sm">
                 <span
                   aria-hidden="true"
@@ -118,46 +119,46 @@ export function Hero({ intro }: HeroProps) {
                 />
                 الموقع الرسمي للمدرسة
               </p>
+            </div>
 
-              <h1
-                id="hero-heading"
-                className="home-hero-title mt-6 text-white [text-wrap:balance]"
-                style={{ fontSize: "clamp(2.25rem, 1.4rem + 3.2vw, 3.75rem)" }}
+            <h1
+              id="hero-heading"
+              className="home-hero-title mt-6 text-white [text-wrap:balance]"
+              style={{ fontSize: "clamp(2.25rem, 1.4rem + 3.2vw, 3.75rem)" }}
+            >
+              مدرسة الناصرية الابتدائية الجديدة — الموقع الرسمي
+            </h1>
+
+            <p className="home-hero-subtitle mt-3 text-base font-medium tracking-wide sm:text-lg">
+              New Al-Nasiriyah Primary School
+            </p>
+
+            <p className="home-hero-intro mt-6 max-w-2xl text-base leading-loose sm:text-lg">
+              {intro?.trim() || DEFAULT_INTRO}
+            </p>
+
+            <div className="home-hero-actions mt-9 flex flex-wrap items-center justify-start gap-3">
+              <Button
+                asChild
+                size="lg"
+                className="home-hero-action home-hero-primary-action bg-white px-6 text-primary hover:bg-white/95"
               >
-                مدرسة الناصرية الابتدائية الجديدة — الموقع الرسمي
-              </h1>
-
-              <p className="home-hero-subtitle mt-3 text-base font-medium tracking-wide sm:text-lg">
-                New Al-Nasiriyah Primary School
-              </p>
-
-              <p className="home-hero-intro mt-6 max-w-2xl text-base leading-loose sm:text-lg">
-                {intro?.trim() || DEFAULT_INTRO}
-              </p>
-
-              <div className="mt-9 flex flex-wrap items-center gap-3">
-                <Button
-                  asChild
-                  size="lg"
-                  className="home-hero-action home-hero-primary-action bg-white px-6 text-primary hover:bg-white/95"
-                >
-                  <Link to="/about">
-                    تعرف على المدرسة
-                    <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="home-hero-action home-hero-secondary-action px-6 text-white backdrop-blur-sm hover:bg-white/15 hover:text-white"
-                >
-                  <Link to="/academic">
-                    <CalendarDays className="h-4 w-4" aria-hidden="true" />
-                    الجداول الدراسية
-                  </Link>
-                </Button>
-              </div>
+                <Link to="/about">
+                  تعرف على المدرسة
+                  <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="home-hero-action home-hero-secondary-action px-6 text-white backdrop-blur-sm hover:bg-white/15 hover:text-white"
+              >
+                <Link to="/academic">
+                  <CalendarDays className="h-4 w-4" aria-hidden="true" />
+                  الجداول الدراسية
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
