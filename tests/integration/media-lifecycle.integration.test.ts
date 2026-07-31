@@ -7,10 +7,17 @@ const REQUIRED_ACK = "isolated-cms-integrity";
 const url = process.env.TEST_SUPABASE_URL ?? "";
 const anonKey = process.env.TEST_SUPABASE_ANON_KEY ?? "";
 const serviceRoleKey = process.env.TEST_SUPABASE_SERVICE_ROLE_KEY ?? "";
+const allowedProjectRef = process.env.TEST_SUPABASE_ALLOWED_PROJECT_REF ?? "";
 const acknowledged = process.env.TEST_SUPABASE_SAFETY_ACK === REQUIRED_ACK;
-const configured = Boolean(url && anonKey && serviceRoleKey && acknowledged);
+const configured = Boolean(
+  url &&
+    anonKey &&
+    serviceRoleKey &&
+    allowedProjectRef &&
+    acknowledged,
+);
 
-function projectRefFromUrl(value: string): string | null {
+export function projectRefFromUrl(value: string): string | null {
   try {
     const hostname = new URL(value).hostname;
     return hostname.endsWith(".supabase.co") ? hostname.split(".")[0] : null;
@@ -19,12 +26,19 @@ function projectRefFromUrl(value: string): string | null {
   }
 }
 
-function assertIsolatedProject(value: string): void {
+export function assertIsolatedProject(value: string): void {
   const projectRef = projectRefFromUrl(value);
-  if (!projectRef) throw new Error("TEST_SUPABASE_URL must be a Supabase project URL");
+  if (!projectRef) {
+    throw new Error("TEST_SUPABASE_URL must be a Supabase project URL");
+  }
   if (PRODUCTION_PROJECT_REFS.has(projectRef)) {
     throw new Error(
       `Refusing to run destructive integration tests against production project ${projectRef}`,
+    );
+  }
+  if (allowedProjectRef !== projectRef) {
+    throw new Error(
+      "TEST_SUPABASE_ALLOWED_PROJECT_REF must exactly match the isolated test project URL",
     );
   }
   if (!acknowledged) {
@@ -58,8 +72,8 @@ suite("isolated media lifecycle", () => {
 
   afterAll(async () => {
     if (!admin) return;
-    // Cleanup is restricted to IDs and a random path created by this suite.
-    // Content references are removed before media metadata and objects.
+    // Cleanup is restricted to IDs and random object paths created by this
+    // suite. Content references are removed before metadata and objects.
     if (timetableId) {
       await admin.from("timetables").delete().eq("id", timetableId);
     }
@@ -76,6 +90,37 @@ suite("isolated media lifecycle", () => {
   test(
     "upload, publish, anonymous read, replace, and reference protection",
     async () => {
+      // Select an existing grade that has no published academic timetable.
+      // This read-only preflight happens before any upload or insert and fails
+      // closed if the isolated project is not clean enough for the test.
+      const gradesResult = await admin
+        .from("grades")
+        .select("id,level")
+        .order("level", { ascending: true });
+      expect(gradesResult.error).toBeNull();
+      expect(gradesResult.data?.length).toBeGreaterThan(0);
+
+      const publishedResult = await admin
+        .from("timetables")
+        .select("grade_id")
+        .eq("kind", "academic")
+        .eq("status", "published");
+      expect(publishedResult.error).toBeNull();
+
+      const occupiedGradeIds = new Set(
+        (publishedResult.data ?? [])
+          .map((row) => row.grade_id as string | null)
+          .filter((id): id is string => Boolean(id)),
+      );
+      const testGrade = (gradesResult.data ?? []).find(
+        (grade) => !occupiedGradeIds.has(grade.id as string),
+      );
+      if (!testGrade) {
+        throw new Error(
+          "Isolated project has no grade without a published academic timetable; no test data was written",
+        );
+      }
+
       const imageV1 = new Uint8Array([
         137, 80, 78, 71, 13, 10, 26, 10, 1, 2, 3, 4,
       ]);
@@ -84,18 +129,20 @@ suite("isolated media lifecycle", () => {
       ]);
       const pdf = new TextEncoder().encode("%PDF-1.4\n% isolated test\n");
 
-      const imageUpload = await admin.storage.from("media").upload(
-        imagePath,
-        imageV1,
-        { contentType: "image/png", upsert: false },
-      );
+      const imageUpload = await admin.storage
+        .from("media")
+        .upload(imagePath, imageV1, {
+          contentType: "image/png",
+          upsert: false,
+        });
       expect(imageUpload.error).toBeNull();
 
-      const documentUpload = await admin.storage.from("documents").upload(
-        documentPath,
-        pdf,
-        { contentType: "application/pdf", upsert: false },
-      );
+      const documentUpload = await admin.storage
+        .from("documents")
+        .upload(documentPath, pdf, {
+          contentType: "application/pdf",
+          upsert: false,
+        });
       expect(documentUpload.error).toBeNull();
 
       const imageInsert = await admin
@@ -131,6 +178,7 @@ suite("isolated media lifecycle", () => {
       const timetableInsert = await admin
         .from("timetables")
         .insert({
+          grade_id: testGrade.id,
           kind: "academic",
           title_ar: `اختبار تكامل معزول ${token}`,
           cover_image_media_id: imageMediaId,
@@ -152,7 +200,10 @@ suite("isolated media lifecycle", () => {
 
       const publish = await admin
         .from("timetables")
-        .update({ status: "published", published_at: new Date().toISOString() })
+        .update({
+          status: "published",
+          published_at: new Date().toISOString(),
+        })
         .eq("id", timetableId);
       expect(publish.error).toBeNull();
 
@@ -177,11 +228,12 @@ suite("isolated media lifecycle", () => {
       expect(anonymousPdf.error).toBeNull();
       expect(anonymousPdf.data?.size).toBeGreaterThan(0);
 
-      const replacement = await admin.storage.from("media").upload(
-        imagePath,
-        imageV2,
-        { contentType: "image/png", upsert: true },
-      );
+      const replacement = await admin.storage
+        .from("media")
+        .upload(imagePath, imageV2, {
+          contentType: "image/png",
+          upsert: true,
+        });
       expect(replacement.error).toBeNull();
 
       const preserved = await admin
@@ -190,7 +242,10 @@ suite("isolated media lifecycle", () => {
         .eq("id", imageMediaId)
         .single();
       expect(preserved.error).toBeNull();
-      expect(preserved.data).toEqual({ id: imageMediaId, storage_path: imagePath });
+      expect(preserved.data).toEqual({
+        id: imageMediaId,
+        storage_path: imagePath,
+      });
 
       const archiveAttempt = await admin
         .from("media")
@@ -209,8 +264,12 @@ suite("isolated media lifecycle", () => {
         .select("media_id,entity_table,field_name")
         .in("media_id", [imageMediaId, documentMediaId]);
       expect(usageRows.error).toBeNull();
-      expect(usageRows.data?.some((row) => row.media_id === imageMediaId)).toBe(true);
-      expect(usageRows.data?.some((row) => row.media_id === documentMediaId)).toBe(true);
+      expect(
+        usageRows.data?.some((row) => row.media_id === imageMediaId),
+      ).toBe(true);
+      expect(
+        usageRows.data?.some((row) => row.media_id === documentMediaId),
+      ).toBe(true);
     },
     30_000,
   );
