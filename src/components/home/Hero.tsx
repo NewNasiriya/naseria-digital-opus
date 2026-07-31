@@ -64,7 +64,10 @@ export function Hero({ intro }: HeroProps) {
   }, [showNight, secondaryReady]);
 
   return (
-    <section aria-labelledby="hero-heading" className="relative isolate overflow-hidden">
+    <section
+      aria-labelledby="hero-heading"
+      className="hero-section relative isolate overflow-hidden bg-[color:var(--blue-atmosphere)]"
+    >
       {/* Background — both images mounted, crossfaded via opacity */}
       <div className="absolute inset-0 -z-10">
         <img
@@ -89,44 +92,46 @@ export function Hero({ intro }: HeroProps) {
           />
         ) : null}
         {/* Readability overlays — subtle, keeps warm tones */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/45 to-slate-950/70"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-l from-slate-950/60 via-transparent to-slate-950/20"
-        />
+        <div aria-hidden="true" className="hero-overlay-depth absolute inset-0" />
+        <div aria-hidden="true" className="hero-overlay-directional absolute inset-0" />
+        <div aria-hidden="true" className="hero-vignette absolute inset-0" />
       </div>
 
       <Container
         size="wide"
-        className="relative flex min-h-[78vh] flex-col justify-center py-24 text-white sm:min-h-[85vh]"
+        className="relative flex min-h-[78vh] flex-col justify-center py-20 text-[color:var(--text-image-primary)] sm:min-h-[85vh] sm:py-24"
       >
-        <div className="max-w-3xl">
-          <p className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-sm">
-            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-white" />
+        <div className="max-w-[48rem] pb-10 sm:pb-6">
+          <p className="hero-badge inline-flex min-h-8 items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-medium leading-relaxed tracking-wide text-[color:var(--text-image-secondary)] backdrop-blur-sm">
+            <span
+              aria-hidden="true"
+              className="h-1.5 w-1.5 rounded-full bg-[color:var(--gold-highlight)] shadow-[0_0_0_3px_oklch(1_0_0/0.08)]"
+            />
             الموقع الرسمي للمدرسة
           </p>
 
           <h1
             id="hero-heading"
-            className="mt-6 text-white [text-wrap:balance] drop-shadow-sm"
-            style={{ fontSize: "clamp(2.25rem, 1.4rem + 3.2vw, 3.75rem)" }}
+            className="mt-6 max-w-[46rem] text-[color:var(--text-image-primary)] [text-shadow:0_2px_20px_oklch(0.08_0.04_260/0.38)] [text-wrap:balance]"
+            style={{ fontSize: "clamp(2.15rem, 1.55rem + 2.5vw, 3.45rem)", lineHeight: 1.3 }}
           >
             مدرسة الناصرية الابتدائية الجديدة — الموقع الرسمي
           </h1>
 
-          <p className="mt-3 text-base font-medium tracking-wide text-white/85 sm:text-lg">
+          <p className="mt-3 text-sm font-medium leading-relaxed tracking-wide text-[color:var(--text-image-secondary)] sm:text-base">
             New Al-Nasiriyah Primary School
           </p>
 
-          <p className="mt-6 max-w-2xl text-base leading-loose text-white/90 sm:text-lg">
+          <p className="mt-6 max-w-[42rem] text-base leading-[2] text-[color:var(--text-image-secondary)] sm:text-lg">
             {resolveHeroIntro(intro)}
           </p>
 
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90">
+          <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-9">
+            <Button
+              asChild
+              size="lg"
+              className="hero-action min-h-12 border border-white/80 bg-white px-6 text-primary hover:bg-white/95"
+            >
               <Link to="/about">
                 تعرف على المدرسة
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
@@ -136,7 +141,7 @@ export function Hero({ intro }: HeroProps) {
               asChild
               size="lg"
               variant="outline"
-              className="border-white/40 bg-white/5 text-white backdrop-blur-sm hover:bg-white/15 hover:text-white"
+              className="hero-action min-h-12 border-white/45 bg-slate-950/20 px-6 text-white backdrop-blur-sm hover:border-white/65 hover:bg-white/15 hover:text-white"
             >
               <Link to="/academic">
                 <CalendarDays className="h-4 w-4" aria-hidden="true" />
@@ -150,9 +155,12 @@ export function Hero({ intro }: HeroProps) {
         <a
           href="#stats"
           aria-label="التمرير للأسفل"
-          className="absolute inset-x-0 bottom-6 mx-auto grid h-11 w-11 place-items-center rounded-full border border-white/40 text-white/90 transition-colors hover:bg-white/10"
+          className="hero-scroll absolute inset-x-0 bottom-5 mx-auto grid h-11 w-11 place-items-center rounded-full border border-white/35 text-white/90 hover:border-white/55 hover:bg-white/10 sm:bottom-6"
         >
-          <ChevronDown className="h-5 w-5 animate-bounce" aria-hidden="true" />
+          <ChevronDown
+            className="h-5 w-5 animate-[bounce_2.4s_ease-in-out_infinite] motion-reduce:animate-none"
+            aria-hidden="true"
+          />
         </a>
       </Container>
     </section>

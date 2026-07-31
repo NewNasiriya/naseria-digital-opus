@@ -206,6 +206,26 @@
   /* Institutional gold — sourced from the school crest */
   --brand-gold: oklch(0.72 0.13 82);
   --brand-gold-soft: oklch(0.95 0.05 85);
+
+  /* Public visual system — institutional luxury */
+  --surface-premium: oklch(0.992 0.004 255);
+  --surface-elevated-translucent: oklch(1 0 0 / 88%);
+  --keyline-subtle: oklch(0.48 0.035 258 / 18%);
+  --gold-highlight: oklch(0.76 0.115 82);
+  --blue-atmosphere: oklch(0.225 0.075 258);
+  --shadow-premium: 0 18px 44px -28px oklch(0.16 0.06 260 / 0.34),
+                    0 5px 16px -10px oklch(0.16 0.04 260 / 0.18);
+  --shadow-interaction: 0 10px 22px -14px oklch(0.16 0.06 260 / 0.38);
+  --text-image-primary: oklch(1 0 0);
+  --text-image-secondary: oklch(0.95 0.01 255);
+  --section-separator: linear-gradient(90deg, transparent, oklch(0.76 0.115 82 / 58%), transparent);
+  --focus-premium: 0 0 0 2px oklch(0.995 0.002 250),
+                   0 0 0 5px oklch(0.56 0.12 255 / 0.72);
+  --hero-overlay-depth: linear-gradient(180deg, oklch(0.13 0.045 260 / 0.62) 0%, oklch(0.15 0.05 260 / 0.34) 45%, oklch(0.11 0.045 260 / 0.72) 100%);
+  --hero-overlay-directional: linear-gradient(270deg, oklch(0.11 0.055 260 / 0.68) 0%, oklch(0.14 0.04 260 / 0.18) 60%, transparent 100%);
+  --hero-vignette: radial-gradient(ellipse at center, transparent 42%, oklch(0.08 0.035 260 / 0.38) 100%);
+  --duration-premium: 240ms;
+  --ease-premium: cubic-bezier(0.2, 0.75, 0.25, 1);
 }
 
 /* ---------- Semantic tokens: DARK (reserved for future admin themes) ---------- */
@@ -259,6 +279,16 @@
   /* Institutional gold — slightly warmer for dark surfaces */
   --brand-gold: oklch(0.78 0.13 82);
   --brand-gold-soft: oklch(0.32 0.06 82);
+  --surface-premium: oklch(0.19 0.025 260);
+  --surface-elevated-translucent: oklch(0.18 0.025 260 / 90%);
+  --keyline-subtle: oklch(0.88 0.02 255 / 16%);
+  --gold-highlight: oklch(0.8 0.115 82);
+  --blue-atmosphere: oklch(0.14 0.045 260);
+  --shadow-premium: 0 18px 44px -28px oklch(0.04 0.03 260 / 0.72),
+                    0 5px 16px -10px oklch(0.04 0.02 260 / 0.5);
+  --shadow-interaction: 0 10px 22px -14px oklch(0.04 0.03 260 / 0.78);
+  --focus-premium: 0 0 0 2px oklch(0.16 0.02 260),
+                   0 0 0 5px oklch(0.75 0.11 255 / 0.78);
 }
 
 
@@ -408,6 +438,100 @@
 @keyframes rise {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Public header and hero — restrained institutional depth. */
+@layer components {
+  .site-header {
+    border-color: var(--keyline-subtle);
+    background: var(--surface-elevated-translucent);
+    transition:
+      background-color var(--duration-premium) var(--ease-premium),
+      box-shadow var(--duration-premium) var(--ease-premium),
+      border-color var(--duration-premium) var(--ease-premium);
+  }
+
+  .site-header[data-scrolled="true"] {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-premium);
+  }
+
+  .site-header-nav-link {
+    position: relative;
+    min-height: 2.5rem;
+    transition:
+      color var(--duration-fast) var(--ease-out),
+      background-color var(--duration-fast) var(--ease-out),
+      transform var(--duration-fast) var(--ease-out);
+  }
+
+  .site-header-nav-link:hover {
+    transform: translateY(-1px);
+  }
+
+  .site-header-nav-link:focus-visible,
+  .hero-action:focus-visible,
+  .hero-scroll:focus-visible {
+    box-shadow: var(--focus-premium);
+  }
+
+  .site-header-mobile {
+    border-color: var(--keyline-subtle);
+    background: var(--surface-elevated-translucent);
+    box-shadow: var(--shadow-premium);
+  }
+
+  .hero-overlay-depth { background: var(--hero-overlay-depth); }
+  .hero-overlay-directional { background: var(--hero-overlay-directional); }
+  .hero-vignette { background: var(--hero-vignette); }
+
+  .hero-section::after {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 1;
+    height: 1px;
+    content: "";
+    background: var(--section-separator);
+  }
+
+  .hero-badge {
+    border-color: oklch(1 0 0 / 28%);
+    background: oklch(0.18 0.05 260 / 42%);
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / 12%);
+  }
+
+  .hero-action {
+    box-shadow: 0 1px 0 oklch(1 0 0 / 18%);
+    transition:
+      transform var(--duration-premium) var(--ease-premium),
+      box-shadow var(--duration-premium) var(--ease-premium),
+      background-color var(--duration-premium) var(--ease-premium),
+      border-color var(--duration-premium) var(--ease-premium);
+  }
+
+  .hero-action:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-interaction);
+  }
+
+  .hero-scroll {
+    background: oklch(0.13 0.045 260 / 28%);
+    transition:
+      transform var(--duration-premium) var(--ease-premium),
+      background-color var(--duration-premium) var(--ease-premium),
+      border-color var(--duration-premium) var(--ease-premium);
+  }
+
+  .hero-scroll:hover { transform: translateY(-2px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header-nav-link:hover,
+  .hero-action:hover,
+  .hero-scroll:hover {
+    transform: none;
+  }
 }
 
 /* Admin sidebar off-canvas (mobile). RTL app: sidebar anchored to right, hides to the right. */
