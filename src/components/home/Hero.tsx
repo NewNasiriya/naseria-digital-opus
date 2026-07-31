@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useTheme } from "@/lib/theme";
 
 interface HeroProps {
+  headline?: string | null;
   intro?: string | null;
 }
 
@@ -126,7 +127,7 @@ export function Hero({ intro }: HeroProps) {
               className="home-hero-title mt-6 text-white [text-wrap:balance]"
               style={{ fontSize: "clamp(2.25rem, 1.4rem + 3.2vw, 3.75rem)" }}
             >
-              مدرسة الناصرية الابتدائية الجديدة — الموقع الرسمي
+              {headline?.trim() || "مدرسة الناصرية الابتدائية الجديدة"}
             </h1>
 
             <p className="home-hero-subtitle mt-3 text-base font-medium tracking-wide sm:text-lg">
