@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button";
 import { getCmsUiModule } from "@/cms/ui";
 import { EntityEditor } from "@/cms/ui/EntityEditor";
 import { EntityListView } from "@/cms/ui/EntityListView";
+import { ensureCmsUiModulesRegistered } from "@/cms/ui/modules";
 import { isAdminModuleImplemented } from "@/lib/admin-module-availability";
 import { ADMIN_MODULE_BY_SLUG } from "@/lib/admin-modules";
-import "@/cms/ui/modules";
+
+ensureCmsUiModulesRegistered();
 
 const searchSchema = z.object({
   id: z.string().optional().catch(undefined),
