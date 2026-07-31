@@ -24,9 +24,12 @@ export function AcademicTimelineWidget() {
 
   if (isLoading) {
     return (
-      <section aria-label="التقويم الأكاديمي" className="bg-surface-muted py-6">
+      <section
+        aria-label="التقويم الأكاديمي"
+        className="home-timeline-luxury bg-surface-muted py-6"
+      >
         <Container size="wide">
-          <div className="h-32 animate-pulse rounded-2xl bg-card" />
+          <div className="home-timeline-card h-32 animate-pulse rounded-2xl bg-card" />
         </Container>
       </section>
     );
@@ -46,11 +49,11 @@ export function AcademicTimelineWidget() {
   return (
     <section
       aria-labelledby="timeline-widget-heading"
-      className="relative isolate -mt-6 sm:-mt-10"
+      className="home-timeline-luxury relative isolate -mt-6 sm:-mt-10"
     >
       <Container size="wide">
         <div
-          className={`relative overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-lg ring-1 ${styles.ring} sm:p-8`}
+          className={`home-timeline-card relative overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-lg ring-1 ${styles.ring} sm:p-8`}
         >
           <div
             aria-hidden="true"
@@ -110,11 +113,16 @@ export function AcademicTimelineWidget() {
               )}
               <div className="flex flex-wrap justify-end gap-2">
                 {primaryEvent.cta_text_ar && primaryEvent.cta_href && (
-                  <Button asChild size="sm">
+                  <Button asChild size="sm" className="home-timeline-action">
                     <a href={primaryEvent.cta_href}>{primaryEvent.cta_text_ar}</a>
                   </Button>
                 )}
-                <Button asChild size="sm" variant="outline">
+                <Button
+                  asChild
+                  size="sm"
+                  variant="outline"
+                  className="home-timeline-action"
+                >
                   <Link to="/academic/calendar">
                     <CalendarDays className="h-4 w-4" aria-hidden="true" />
                     التقويم الأكاديمي
@@ -166,7 +174,7 @@ export function CountdownDisplay({
       {cells.map((c) => (
         <div
           key={c.label}
-          className={`flex min-w-[64px] flex-col items-center justify-center rounded-xl border border-border bg-card text-center tabular-nums ${cellPad}`}
+          className={`home-countdown-cell flex min-w-[64px] flex-col items-center justify-center rounded-xl border border-border bg-card text-center tabular-nums ${cellPad}`}
         >
           <span
             className={`font-bold leading-none text-foreground ${num}`}
