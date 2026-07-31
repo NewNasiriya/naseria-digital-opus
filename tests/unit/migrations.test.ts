@@ -1,6 +1,10 @@
 import { describe, expect, test } from "bun:test";
 import { readFile } from "node:fs/promises";
 
+const bucketMigrationUrl = new URL(
+  "../../supabase/migrations/20260731143000_ensure_cms_storage_buckets.sql",
+  import.meta.url,
+);
 const mediaMigrationUrl = new URL(
   "../../supabase/migrations/20260731143500_cms_media_integrity.sql",
   import.meta.url,
@@ -15,9 +19,24 @@ async function sql(url: URL): Promise<string> {
 }
 
 describe("CMS integrity migrations", () => {
+  test("storage bucket setup is additive and never overwrites production configuration", async () => {
+    const source = await sql(bucketMigrationUrl);
+    expect(source).toContain("INSERT INTO storage.buckets");
+    expect(source).toContain("ON CONFLICT (id) DO NOTHING");
+    expect(source).toContain("'media'");
+    expect(source).toContain("'documents'");
+    expect(source).toContain("'private-uploads'");
+    expect(source).not.toMatch(/\bUPDATE\b/i);
+    expect(source).not.toMatch(/\bDELETE\b/i);
+    expect(source).not.toMatch(/\bTRUNCATE\b/i);
+    expect(source).not.toMatch(/\bDROP\b/i);
+  });
+
   test("media backfill is repeat-safe and installs authoritative guards", async () => {
     const source = await sql(mediaMigrationUrl);
-    expect(source).toContain("ON CONFLICT (media_id, entity_table, entity_id, field_name)");
+    expect(source).toContain(
+      "ON CONFLICT (media_id, entity_table, entity_id, field_name)",
+    );
     expect(source).toContain("DO NOTHING");
     expect(source).toContain("media_reference_count");
     expect(source).toContain("trg_prevent_referenced_media_mutation");
