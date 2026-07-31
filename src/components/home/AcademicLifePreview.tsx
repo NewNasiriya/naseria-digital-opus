@@ -54,13 +54,17 @@ const CARDS: AcademicCard[] = [
 
 export function AcademicLifePreview() {
   return (
-    <Section tone="muted" spacing="default">
+    <Section
+      tone="muted"
+      spacing="default"
+      className="home-academic-luxury"
+    >
       <Container size="wide">
-        <div className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.15em] text-primary">
+        <div className="home-section-centered text-center">
+          <p className="home-section-eyebrow text-sm font-semibold uppercase tracking-[0.15em] text-primary">
             الحياة الأكاديمية
           </p>
-          <h2 className="mt-3 rule-accent inline-block">
+          <h2 className="home-section-title mt-3 inline-block">
             كل ما يحتاجه الطالب وولي الأمر
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-loose text-muted-foreground">
@@ -76,11 +80,11 @@ export function AcademicLifePreview() {
               <Link
                 key={c.title}
                 to={c.to}
-                className="group flex h-full flex-col rounded-2xl border border-border bg-card p-6 elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:elevation-md"
+                className="home-luxury-card home-academic-card group flex h-full flex-col rounded-2xl border border-border bg-card p-6 elevation-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-border-strong hover:elevation-md"
               >
                 <span
                   aria-hidden="true"
-                  className="grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground"
+                  className="home-card-icon grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground"
                 >
                   <Icon className="h-6 w-6" />
                 </span>
