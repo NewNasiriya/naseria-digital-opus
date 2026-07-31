@@ -1,0 +1,93 @@
+/* Activities presentation layer only. */
+
+.activities-luxury-page {
+  background:
+    radial-gradient(circle at 12% 10%, oklch(0.78 0.125 82 / 0.05), transparent 25rem),
+    linear-gradient(180deg, var(--v2-paper), var(--v2-ivory) 48%, var(--v2-paper));
+}
+
+.activities-index-section {
+  background:
+    radial-gradient(circle at 84% 8%, oklch(0.78 0.125 82 / 0.07), transparent 22rem),
+    transparent !important;
+}
+
+.activities-grid {
+  gap: 1.25rem !important;
+}
+
+.activity-luxury-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 260px;
+  border-color: var(--v2-line) !important;
+  border-radius: 1.8rem !important;
+  background:
+    linear-gradient(145deg, oklch(1 0 0 / 0.78), transparent 58%),
+    var(--card) !important;
+  box-shadow: var(--v2-shadow-card) !important;
+  transition: transform 280ms ease, border-color 280ms ease, box-shadow 280ms ease;
+}
+
+.dark .activity-luxury-card {
+  background:
+    linear-gradient(145deg, oklch(1 0 0 / 0.035), transparent 58%),
+    var(--card) !important;
+}
+
+.activity-luxury-card::before {
+  position: absolute;
+  inset-inline: 1.3rem;
+  top: 0;
+  height: 2px;
+  content: "";
+  background: linear-gradient(90deg, transparent, var(--v2-gold), var(--v2-blue), transparent);
+}
+
+.activity-luxury-card:hover {
+  transform: translateY(-7px);
+  border-color: var(--v2-line-gold) !important;
+  box-shadow: var(--v2-shadow-xl) !important;
+}
+
+.activity-luxury-icon,
+.activities-notice-icon {
+  border: 1px solid oklch(0.78 0.125 82 / 0.26);
+  border-radius: 1rem !important;
+  background: linear-gradient(145deg, oklch(0.78 0.125 82 / 0.14), oklch(0.48 0.14 255 / 0.08)) !important;
+  color: var(--v2-blue) !important;
+}
+
+.activity-luxury-card h2 {
+  font-size: 1.2rem !important;
+  font-weight: 750 !important;
+}
+
+.activities-notice {
+  border-color: var(--v2-line-gold) !important;
+  border-radius: 2rem !important;
+  background:
+    radial-gradient(circle at 50% 0%, oklch(0.78 0.125 82 / 0.1), transparent 22rem),
+    color-mix(in oklch, var(--surface-muted) 72%, var(--background)) !important;
+  box-shadow: var(--v2-shadow-card);
+}
+
+.activities-notice a {
+  border-radius: 999px !important;
+}
+
+@media (max-width: 767px) {
+  .activity-luxury-card {
+    min-height: 220px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activity-luxury-card {
+    transition: none !important;
+  }
+
+  .activity-luxury-card:hover {
+    transform: none !important;
+  }
+}
