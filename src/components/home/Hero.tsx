@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import schoolDay from "@/assets/school-day.png.asset.json";
 import schoolNight from "@/assets/school-night.png.asset.json";
+import { SchoolLogo } from "@/components/brand/SchoolLogo";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/lib/theme";
@@ -93,7 +94,6 @@ export function Hero({ intro }: HeroProps) {
             decoding="async"
           />
         ) : null}
-        {/* Readability overlays — subtle, keeps warm tones */}
         <div
           aria-hidden="true"
           className="home-hero-overlay-primary absolute inset-0"
@@ -109,57 +109,71 @@ export function Hero({ intro }: HeroProps) {
         size="wide"
         className="home-hero-content relative flex min-h-[78vh] flex-col justify-center py-20 text-white sm:min-h-[85vh] sm:py-24"
       >
-        <div className="home-hero-copy max-w-3xl">
-          <p className="home-hero-kicker inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-sm">
-            <span
-              aria-hidden="true"
-              className="home-hero-kicker-dot h-1.5 w-1.5 rounded-full"
-            />
-            الموقع الرسمي للمدرسة
-          </p>
+        <div className="home-hero-layout w-full">
+          <div className="home-hero-panel">
+            <div className="home-hero-copy max-w-3xl">
+              <p className="home-hero-kicker inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs font-medium tracking-wide backdrop-blur-sm">
+                <span
+                  aria-hidden="true"
+                  className="home-hero-kicker-dot h-1.5 w-1.5 rounded-full"
+                />
+                الموقع الرسمي للمدرسة
+              </p>
 
-          <h1
-            id="hero-heading"
-            className="home-hero-title mt-6 text-white [text-wrap:balance]"
-            style={{ fontSize: "clamp(2.25rem, 1.4rem + 3.2vw, 3.75rem)" }}
-          >
-            مدرسة الناصرية الابتدائية الجديدة — الموقع الرسمي
-          </h1>
+              <h1
+                id="hero-heading"
+                className="home-hero-title mt-6 text-white [text-wrap:balance]"
+                style={{ fontSize: "clamp(2.25rem, 1.4rem + 3.2vw, 3.75rem)" }}
+              >
+                مدرسة الناصرية الابتدائية الجديدة — الموقع الرسمي
+              </h1>
 
-          <p className="home-hero-subtitle mt-3 text-base font-medium tracking-wide sm:text-lg">
-            New Al-Nasiriyah Primary School
-          </p>
+              <p className="home-hero-subtitle mt-3 text-base font-medium tracking-wide sm:text-lg">
+                New Al-Nasiriyah Primary School
+              </p>
 
-          <p className="home-hero-intro mt-6 max-w-2xl text-base leading-loose sm:text-lg">
-            {intro?.trim() || DEFAULT_INTRO}
-          </p>
+              <p className="home-hero-intro mt-6 max-w-2xl text-base leading-loose sm:text-lg">
+                {intro?.trim() || DEFAULT_INTRO}
+              </p>
 
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <Button
-              asChild
-              size="lg"
-              className="home-hero-action home-hero-primary-action bg-white px-6 text-primary hover:bg-white/95"
-            >
-              <Link to="/about">
-                تعرف على المدرسة
-                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="home-hero-action home-hero-secondary-action px-6 text-white backdrop-blur-sm hover:bg-white/15 hover:text-white"
-            >
-              <Link to="/academic">
-                <CalendarDays className="h-4 w-4" aria-hidden="true" />
-                الجداول الدراسية
-              </Link>
-            </Button>
+              <div className="mt-9 flex flex-wrap items-center gap-3">
+                <Button
+                  asChild
+                  size="lg"
+                  className="home-hero-action home-hero-primary-action bg-white px-6 text-primary hover:bg-white/95"
+                >
+                  <Link to="/about">
+                    تعرف على المدرسة
+                    <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="home-hero-action home-hero-secondary-action px-6 text-white backdrop-blur-sm hover:bg-white/15 hover:text-white"
+                >
+                  <Link to="/academic">
+                    <CalendarDays className="h-4 w-4" aria-hidden="true" />
+                    الجداول الدراسية
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <div className="home-hero-seal" aria-hidden="true">
+            <div className="home-hero-seal-frame">
+              <SchoolLogo
+                decorative
+                eager
+                size={168}
+                className="home-hero-seal-logo"
+              />
+            </div>
           </div>
         </div>
 
-        {/* Scroll indicator */}
         <a
           href="#stats"
           aria-label="التمرير للأسفل"
