@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import { ArrowLeft, CalendarDays, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -6,33 +5,77 @@ import schoolDay from "@/assets/school-day.png.asset.json";
 import schoolNight from "@/assets/school-night.png.asset.json";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
+import type { HeroAction } from "@/lib/homepage-hero";
 import { useTheme } from "@/lib/theme";
 
 interface HeroProps {
+  headline?: string | null;
   intro?: string | null;
+  actions?: HeroAction[] | null;
 }
 
+const DEFAULT_HEADLINE = "مدرسة الناصرية الابتدائية الجديدة — الموقع الرسمي";
 const DEFAULT_INTRO =
   "مؤسسة تعليمية حكومية تجمع بين أصالة القيم وحداثة التعليم، لبناء جيل واعٍ ومتميز يخدم مجتمعه ووطنه.";
 
-// Approximate sunrise/sunset — good enough for a cinematic day/night flip.
+const DEFAULT_ACTIONS: HeroAction[] = [
+  {
+    id: "default-about",
+    label_ar: "تعرف على المدرسة",
+    href: "/about",
+    variant: "primary",
+    display_order: 1,
+    external: false,
+  },
+  {
+    id: "default-academic",
+    label_ar: "الجداول الدراسية",
+    href: "/academic",
+    variant: "secondary",
+    display_order: 2,
+    external: false,
+  },
+];
+
 const DAY_START_HOUR = 6;
 const NIGHT_START_HOUR = 18;
 
 function isDaytimeNow(): boolean {
-  const h = new Date().getHours();
-  return h >= DAY_START_HOUR && h < NIGHT_START_HOUR;
+  const hour = new Date().getHours();
+  return hour >= DAY_START_HOUR && hour < NIGHT_START_HOUR;
 }
 
 type IdleWindow = Window & {
   requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
 };
 
-export function Hero({ intro }: HeroProps) {
-  const { mode, resolved } = useTheme();
+function actionPresentation(action: HeroAction) {
+  if (action.variant === "primary") {
+    return {
+      variant: "default" as const,
+      className:
+        "home-hero-action home-hero-primary-action bg-white px-6 text-primary hover:bg-white/95",
+    };
+  }
+  if (action.variant === "ghost") {
+    return {
+      variant: "ghost" as const,
+      className:
+        "home-hero-action px-6 text-white hover:bg-white/15 hover:text-white",
+    };
+  }
+  return {
+    variant: "outline" as const,
+    className:
+      "home-hero-action home-hero-secondary-action px-6 text-white backdrop-blur-sm hover:bg-white/15 hover:text-white",
+  };
+}
 
-  // Auto mode → time-based; explicit modes → theme-based.
-  const [autoDay, setAutoDay] = useState<boolean>(true);
+export function Hero({ headline, intro, actions }: HeroProps) {
+  const { mode, resolved } = useTheme();
+  const displayedActions = actions && actions.length > 0 ? actions : DEFAULT_ACTIONS;
+
+  const [autoDay, setAutoDay] = useState(true);
   useEffect(() => {
     if (mode !== "auto") return;
     setAutoDay(isDaytimeNow());
@@ -41,26 +84,27 @@ export function Hero({ intro }: HeroProps) {
   }, [mode]);
 
   const showNight = mode === "auto" ? !autoDay : resolved === "dark";
-
-  // Defer mounting the secondary image until the browser is idle so it does
-  // not compete with the LCP hero image download. Once mounted it stays
-  // loaded, giving instant future crossfades with zero extra network work.
   const [secondaryReady, setSecondaryReady] = useState(false);
+
   useEffect(() => {
     if (secondaryReady) return;
-    const w = window as IdleWindow;
-    const ric = w.requestIdleCallback;
-    const cic = (w as unknown as { cancelIdleCallback?: (h: number) => void }).cancelIdleCallback;
-    const id = ric
-      ? ric(() => setSecondaryReady(true), { timeout: 2000 })
+    const win = window as IdleWindow;
+    const requestIdle = win.requestIdleCallback;
+    const cancelIdle = (
+      win as unknown as { cancelIdleCallback?: (handle: number) => void }
+    ).cancelIdleCallback;
+    const id = requestIdle
+      ? requestIdle(() => setSecondaryReady(true), { timeout: 2000 })
       : window.setTimeout(() => setSecondaryReady(true), 1200);
     return () => {
-      if (typeof ric === "function" && typeof cic === "function") cic(id);
-      else window.clearTimeout(id);
+      if (typeof requestIdle === "function" && typeof cancelIdle === "function") {
+        cancelIdle(id);
+      } else {
+        window.clearTimeout(id);
+      }
     };
   }, [secondaryReady]);
 
-  // If the user flips to the not-yet-loaded image before idle fires, mount it now.
   useEffect(() => {
     if (showNight && !secondaryReady) setSecondaryReady(true);
   }, [showNight, secondaryReady]);
@@ -70,7 +114,6 @@ export function Hero({ intro }: HeroProps) {
       aria-labelledby="hero-heading"
       className="home-hero-luxury relative isolate overflow-hidden"
     >
-      {/* Background — both images mounted, crossfaded via opacity */}
       <div className="absolute inset-0 -z-10">
         <img
           src={schoolDay.url}
@@ -126,7 +169,7 @@ export function Hero({ intro }: HeroProps) {
               className="home-hero-title mt-6 text-white [text-wrap:balance]"
               style={{ fontSize: "clamp(2.25rem, 1.4rem + 3.2vw, 3.75rem)" }}
             >
-              مدرسة الناصرية الابتدائية الجديدة — الموقع الرسمي
+              {headline?.trim() || DEFAULT_HEADLINE}
             </h1>
 
             <p className="home-hero-subtitle mt-3 text-base font-medium tracking-wide sm:text-lg">
@@ -138,27 +181,33 @@ export function Hero({ intro }: HeroProps) {
             </p>
 
             <div className="home-hero-actions mt-9 flex flex-wrap items-center justify-start gap-3">
-              <Button
-                asChild
-                size="lg"
-                className="home-hero-action home-hero-primary-action bg-white px-6 text-primary hover:bg-white/95"
-              >
-                <Link to="/about">
-                  تعرف على المدرسة
-                  <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="home-hero-action home-hero-secondary-action px-6 text-white backdrop-blur-sm hover:bg-white/15 hover:text-white"
-              >
-                <Link to="/academic">
-                  <CalendarDays className="h-4 w-4" aria-hidden="true" />
-                  الجداول الدراسية
-                </Link>
-              </Button>
+              {displayedActions.map((action) => {
+                const presentation = actionPresentation(action);
+                const isAcademic = action.href.startsWith("/academic");
+                return (
+                  <Button
+                    key={action.id}
+                    asChild
+                    size="lg"
+                    variant={presentation.variant}
+                    className={presentation.className}
+                  >
+                    <a
+                      href={action.href}
+                      target={action.external ? "_blank" : undefined}
+                      rel={action.external ? "noopener noreferrer" : undefined}
+                    >
+                      {isAcademic && (
+                        <CalendarDays className="h-4 w-4" aria-hidden="true" />
+                      )}
+                      {action.label_ar}
+                      {!isAcademic && (
+                        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                      )}
+                    </a>
+                  </Button>
+                );
+              })}
             </div>
           </div>
         </div>
