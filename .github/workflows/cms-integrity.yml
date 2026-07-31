@@ -4,7 +4,7 @@ on:
   pull_request:
     paths:
       - "src/**"
-      - "supabase/migrations/**"
+      - "supabase/**"
       - "tests/**"
       - "package.json"
       - "bun.lock"
@@ -37,42 +37,45 @@ jobs:
       - name: Build production application
         run: bun run build
 
-  isolated-supabase-integration:
-    name: Isolated Supabase media lifecycle
+  local-supabase-integration:
+    name: Disposable local Supabase media lifecycle
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      TEST_SUPABASE_URL: ${{ secrets.TEST_SUPABASE_URL }}
-      TEST_SUPABASE_ANON_KEY: ${{ secrets.TEST_SUPABASE_ANON_KEY }}
-      TEST_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}
-      TEST_SUPABASE_ALLOWED_PROJECT_REF: ${{ secrets.TEST_SUPABASE_ALLOWED_PROJECT_REF }}
-      TEST_SUPABASE_SAFETY_ACK: isolated-cms-integrity
+    timeout-minutes: 25
     steps:
-      - name: Check whether isolated test secrets exist
-        id: gate
-        shell: bash
-        run: |
-          if [[ -n "$TEST_SUPABASE_URL" && -n "$TEST_SUPABASE_ANON_KEY" && -n "$TEST_SUPABASE_SERVICE_ROLE_KEY" && -n "$TEST_SUPABASE_ALLOWED_PROJECT_REF" ]]; then
-            echo "enabled=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "enabled=false" >> "$GITHUB_OUTPUT"
-            echo "Isolated Supabase secrets are not configured; integration test is intentionally skipped."
-          fi
-
       - name: Checkout
-        if: steps.gate.outputs.enabled == 'true'
         uses: actions/checkout@v4
 
       - name: Set up Bun
-        if: steps.gate.outputs.enabled == 'true'
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
       - name: Install locked dependencies
-        if: steps.gate.outputs.enabled == 'true'
         run: bun install --frozen-lockfile
 
-      - name: Run isolated media lifecycle test
-        if: steps.gate.outputs.enabled == 'true'
+      - name: Set up Supabase CLI
+        uses: supabase/setup-cli@v2
+        with:
+          version: latest
+          github-token: ${{ github.token }}
+
+      - name: Start disposable local Supabase and apply every migration
+        run: supabase start
+
+      - name: Export local test credentials
+        shell: bash
+        run: |
+          supabase status -o env \
+            --override-name api.url=TEST_SUPABASE_URL \
+            --override-name auth.anon_key=TEST_SUPABASE_ANON_KEY \
+            --override-name auth.service_role_key=TEST_SUPABASE_SERVICE_ROLE_KEY \
+            >> "$GITHUB_ENV"
+          echo "TEST_SUPABASE_ALLOWED_PROJECT_REF=local" >> "$GITHUB_ENV"
+          echo "TEST_SUPABASE_SAFETY_ACK=isolated-cms-integrity" >> "$GITHUB_ENV"
+
+      - name: Run real image and PDF lifecycle integration test
         run: bun run test:integration
+
+      - name: Stop and delete local Supabase containers
+        if: always()
+        run: supabase stop --no-backup
