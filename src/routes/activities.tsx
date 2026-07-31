@@ -67,7 +67,7 @@ function ActivitiesPage() {
   return (
     <>
       <SiteHeader />
-      <main id="main">
+      <main id="main" className="public-luxury-inner activities-luxury-page">
         <PageHero
           eyebrow="الأنشطة الطلابية"
           title="حياة مدرسية غنية ومتوازنة"
@@ -75,19 +75,19 @@ function ActivitiesPage() {
           crumbs={[{ label: "الأنشطة" }]}
         />
 
-        <Section spacing="default">
+        <Section spacing="default" className="activities-index-section">
           <Container size="wide">
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="activities-grid grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {ACTIVITIES.map((a) => {
                 const Icon = a.icon;
                 return (
                   <article
                     key={a.title}
-                    className="flex h-full flex-col rounded-2xl border border-border bg-card p-6 elevation-sm"
+                    className="activity-luxury-card flex h-full flex-col rounded-2xl border border-border bg-card p-6 elevation-sm"
                   >
                     <span
                       aria-hidden="true"
-                      className="grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary"
+                      className="activity-luxury-icon grid h-12 w-12 place-items-center rounded-xl bg-primary-soft text-primary"
                     >
                       <Icon className="h-6 w-6" />
                     </span>
@@ -102,10 +102,10 @@ function ActivitiesPage() {
               })}
             </div>
 
-            <div className="mt-14 rounded-2xl border border-dashed border-border bg-surface-muted p-8 text-center">
+            <div className="activities-notice mt-14 rounded-2xl border border-dashed border-border bg-surface-muted p-8 text-center">
               <div
                 aria-hidden="true"
-                className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary-soft text-primary"
+                className="activities-notice-icon mx-auto grid h-14 w-14 place-items-center rounded-full bg-primary-soft text-primary"
               >
                 <Sparkles className="h-6 w-6" />
               </div>
