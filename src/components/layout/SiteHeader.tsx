@@ -36,7 +36,7 @@ export function SiteHeader() {
   return (
     <header
       data-scrolled={scrolled}
-      className="site-header-luxury sticky top-0 z-40 w-full border-b supports-[backdrop-filter]:backdrop-blur-md"
+      className="site-header-luxury sticky top-0 z-40 isolate w-full border-b"
     >
       <Container
         size="wide"
